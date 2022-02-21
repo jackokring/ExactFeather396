@@ -6,12 +6,12 @@ license="MIT"
 # A list of mods - how many allowed here is determined by the individual mod loader
 [[mods]]
 modId="ef396"
-version="1.18.1-1.0.0"
+version="1.0.0"
 displayName="ExactFeather396"
 # A URL to query for updates for this mod. See the JSON update specification https://mcforge.readthedocs.io/en/latest/gettingstarted/autoupdate/
-#updateJSONURL="https://change.me.example.invalid/updates.json" #optional
+updateJSONURL="https://raw.githubusercontent.com/jackokring/ExactFeather396/main/update.json"
 # A URL for the "homepage" for this mod, displayed in the mod UI
-#displayURL="https://change.me.to.your.mods.homepage.example.invalid/" #optional
+displayURL="https://github.com/jackokring/ExactFeather396/blob/main/README.md"
 # A file name (in the root of resources directory) containing a logo for display
 logoFile="ef396.png"
 credits="To the great Youtubed tutorials."
