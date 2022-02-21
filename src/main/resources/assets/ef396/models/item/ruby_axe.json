@@ -1,6 +1,6 @@
 {
   "parent": "item/handheld",
   "textures": {
-    "layer0": "tutorial:items/ruby_axe"
+    "layer0": "ef396:items/ruby_axe"
   }
 }

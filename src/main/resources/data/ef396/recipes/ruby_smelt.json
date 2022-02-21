@@ -3,7 +3,7 @@
   "ingredient": {
     "item": "minecraft:emerald"
   },
-  "result": "tutorial:ruby",
+  "result": "ef396:ruby",
   "experience": 1.0,
   "cookingtime": 100
 }

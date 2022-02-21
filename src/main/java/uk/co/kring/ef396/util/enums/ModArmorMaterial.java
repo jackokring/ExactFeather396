@@ -6,17 +6,16 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.crafting.Ingredient;
 import uk.co.kring.ef396.ExactFeather;
 import uk.co.kring.ef396.init.ModItems;
-import net.minecraft.inventory.EquipmentSlot;
-import net.minecraft.item.IArmorMaterial;
+import net.minecraft.world.item.ArmorMaterial;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.function.Supplier;
 
-public enum ModArmorMaterial implements IArmorMaterial {
+public enum ModArmorMaterial implements ArmorMaterial {
 
     RUBY(ExactFeather.MOD_ID + ":ruby", 25, new int[] { 2, 5, 6, 2 }, 18,
-            SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, 0, () -> { return Ingredient.of(ModItems.RUBY.get()); },0);
+            SoundEvents.ARMOR_EQUIP_GENERIC, 0, () -> { return Ingredient.of(ModItems.RUBY.get()); },0);
 
     private static final int[] MAX_DAMAGE_ARRAY = new int[] { 11, 16, 15, 13 };
     private final String name;
@@ -41,27 +40,27 @@ public enum ModArmorMaterial implements IArmorMaterial {
     }
 
     @Override
-    public int getDurability(EquipmentSlot slotIn) {
+    public int getDurabilityForSlot(EquipmentSlot slotIn) {
         return MAX_DAMAGE_ARRAY[slotIn.getIndex()] * this.maxDamageFactor;
     }
 
     @Override
-    public int getDamageReductionAmount(EquipmentSlot slotIn) {
+    public int getDefenseForSlot(EquipmentSlot slotIn) {
         return this.damageReductionAmountArray[slotIn.getIndex()];
     }
 
     @Override
-    public int getEnchantability() {
+    public int getEnchantmentValue() {
         return this.enchantability;
     }
 
     @Override
-    public SoundEvent getSoundEvent() {
+    public SoundEvent getEquipSound() {
         return this.soundEvent;
     }
 
     @Override
-    public Ingredient getRepairMaterial() {
+    public Ingredient getRepairIngredient() {
         return this.repairMaterial.get();
     }
 

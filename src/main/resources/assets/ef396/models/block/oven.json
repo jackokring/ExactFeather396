@@ -1,8 +1,8 @@
 {
   "credit": "Made with Blockbench",
   "textures": {
-    "0": "tutorial:blocks/oven",
-    "particle": "tutorial:blocks/oven"
+    "0": "ef396:blocks/oven",
+    "particle": "ef396:blocks/oven"
   },
   "elements": [
     {

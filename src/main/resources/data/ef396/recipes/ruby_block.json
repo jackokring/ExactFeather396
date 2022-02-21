@@ -10,7 +10,7 @@
   {
     "x":
     {
-      "tag": "tutorial:gems"
+      "tag": "ef396:gems"
     },
     "d":
     {
@@ -19,7 +19,7 @@
   },
   "result":
   {
-    "item": "tutorial:ruby_block",
+    "item": "ef396:ruby_block",
     "count": 1
   }
 }

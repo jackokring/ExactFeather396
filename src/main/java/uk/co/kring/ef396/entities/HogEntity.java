@@ -1,9 +1,11 @@
 package uk.co.kring.ef396.entities;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.ai.goal.BreedGoal;
 import net.minecraft.world.entity.ai.goal.FollowParentGoal;
 import net.minecraft.world.entity.ai.goal.PanicGoal;
@@ -12,6 +14,7 @@ import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
 import uk.co.kring.ef396.init.ModEntityType;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.*;
@@ -37,7 +40,7 @@ public class HogEntity extends Animal {
     private EatGrassGoal eatGrassGoal;
     private int hogTimer;
 
-    public HogEntity(EntityType<? extends AnimalEntity> type, World worldIn) {
+    public HogEntity(EntityType<? extends Animal> type, World worldIn) {
         super(type, worldIn);
     }
 
@@ -110,5 +113,12 @@ public class HogEntity extends Animal {
         } else {
             super.handleStatusUpdate(id);
         }
+    }
+
+    // added to interface TODO
+    @Nullable
+    @Override
+    public AgeableMob getBreedOffspring(ServerLevel p_146743_, AgeableMob p_146744_) {
+        return null;
     }
 }

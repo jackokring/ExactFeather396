@@ -24,7 +24,7 @@
                   }
                 }
               ],
-              "name": "tutorial:ruby_ore"
+              "name": "ef396:ruby_ore"
             },
             {
               "type": "minecraft:item",
@@ -46,7 +46,7 @@
                   }
                 }
               ],
-              "name": "tutorial:ruby"
+              "name": "ef396:ruby"
             }
           ]
         }

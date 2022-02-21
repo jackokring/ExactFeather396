@@ -2,11 +2,11 @@ package uk.co.kring.ef396.util.enums;
 
 import net.minecraft.world.item.crafting.Ingredient;
 import uk.co.kring.ef396.init.ModItems;
-import net.minecraft.item.IItemTier;
+import net.minecraft.world.item.Tier;
 
 import java.util.function.Supplier;
 
-public enum ModItemTier implements IItemTier {
+public enum ModItemTier implements Tier {
 
     RUBY(3, 800, 7.0F, 3.0F, 12, () -> {
         return Ingredient.of(ModItems.RUBY.get());
@@ -29,32 +29,32 @@ public enum ModItemTier implements IItemTier {
     }
 
     @Override
-    public int getMaxUses() {
+    public int getUses() {
         return maxUses;
     }
 
     @Override
-    public float getEfficiency() {
+    public float getSpeed() {
         return efficiency;
     }
 
     @Override
-    public float getAttackDamage() {
+    public float getAttackDamageBonus() {
         return attackDamage;
     }
 
     @Override
-    public int getHarvestLevel() {
+    public int getLevel() {
         return harvestLevel;
     }
 
     @Override
-    public int getEnchantability() {
+    public int getEnchantmentValue() {
         return enchantability;
     }
 
     @Override
-    public Ingredient getRepairMaterial() {
+    public Ingredient getRepairIngredient() {
         return repairMaterial.get();
     }
 }

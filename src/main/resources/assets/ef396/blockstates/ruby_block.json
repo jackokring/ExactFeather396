@@ -1,5 +1,5 @@
 {
   "variants": {
-    "": { "model": "tutorial:block/ruby_block" }
+    "": { "model": "ef396:block/ruby_block" }
   }
 }
