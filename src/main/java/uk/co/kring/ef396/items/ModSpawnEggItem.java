@@ -4,7 +4,6 @@ import net.minecraft.block.DispenserBlock;
 import net.minecraft.core.Direction;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.level.block.DispenserBlock;
@@ -24,7 +23,7 @@ public class ModSpawnEggItem extends SpawnEggItem implements IForgeRegistryEntry
     protected static final List<ModSpawnEggItem> UNADDED_EGGS = new ArrayList<>();
     private final Lazy<? extends EntityType<?>> entityTypeSupplier;
 
-    public ModSpawnEggItem(final RegistryObject<? extends EntityType<?>> entityTypeSupplier, final int primaryColour, final int secondaryColour, final Item.Properties properties) {
+    public ModSpawnEggItem(final RegistryObject<EntityType<HogEntity>> entityTypeSupplier, final int primaryColour, final int secondaryColour, final Properties properties) {
         super(null, primaryColour, secondaryColour, properties);
         this.entityTypeSupplier = Lazy.of(entityTypeSupplier::get);
         UNADDED_EGGS.add(this);
