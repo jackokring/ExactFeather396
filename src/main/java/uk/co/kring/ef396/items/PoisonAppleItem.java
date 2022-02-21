@@ -1,18 +1,17 @@
 package uk.co.kring.ef396.items;
 
-import com.technovision.tutorial.Tutorial;
-import net.minecraft.item.Food;
-import net.minecraft.item.Item;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
+import net.minecraft.client.renderer.EffectInstance;
+import net.minecraft.world.food.Foods;
+import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.IForgeRegistryEntry;
+import uk.co.kring.ef396.ExactFeather;
 
 public class PoisonAppleItem extends Item implements IForgeRegistryEntry<PoisonAppleItem> {
 
     public PoisonAppleItem() {
         super(new Item.Properties()
-                .group(Tutorial.TAB)
-                .food(new Food.Builder()
+                .tab(ExactFeather.TAB)
+                .food(new Food.builder()
                         .hunger(4)
                         .saturation(1.2f)
                         .effect(new EffectInstance(Effects.NAUSEA, 300, 0), 1)

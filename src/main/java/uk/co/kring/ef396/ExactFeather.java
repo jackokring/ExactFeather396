@@ -1,5 +1,6 @@
 package uk.co.kring.ef396;
 
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import uk.co.kring.ef396.entities.HogEntity;
 import uk.co.kring.ef396.init.ModBlocks;
@@ -39,14 +40,11 @@ public class ExactFeather {
 
     private void doClientStuff(final FMLClientSetupEvent event) { }
 
-    // Custom ItemGroup TAB
-    public static final ItemGroup TAB = new ItemGroup("ef396itemgroup") {
+    // Custom CreativeModeTab TAB
+    public static final CreativeModeTab TAB = new CreativeModeTab("ef396CreativeModeTab") {
         @Override
-        public ItemStack createIcon() {
+        public ItemStack makeIcon() {
             return new ItemStack(ModItems.RUBY.get());
         }
     };
-
-    // Directly reference a log4j logger.
-    private static final Logger LOGGER = LogManager.getLogger();
 }
