@@ -19,7 +19,7 @@ import org.apache.logging.log4j.Logger;
 public class ExactFeather {
 
     public static final Logger LOGGER = LogManager.getLogger();
-    public static final String MOD_ID = "tutorial";
+    public static final String MOD_ID = "ef396";
 
     public ExactFeather() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);

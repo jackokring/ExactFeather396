@@ -1,12 +1,13 @@
 package uk.co.kring.ef396.util.enums;
 
-import com.technovision.tutorial.Tutorial;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.crafting.Ingredient;
+import uk.co.kring.ef396.ExactFeather;
 import uk.co.kring.ef396.init.ModItems;
-import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.inventory.EquipmentSlot;
 import net.minecraft.item.IArmorMaterial;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -14,8 +15,8 @@ import java.util.function.Supplier;
 
 public enum ModArmorMaterial implements IArmorMaterial {
 
-    RUBY(Tutorial.MOD_ID + ":ruby", 25, new int[] { 2, 5, 6, 2 }, 18,
-            SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, 0, () -> { return Ingredient.fromItems(ModItems.RUBY.get()); },0);
+    RUBY(ExactFeather.MOD_ID + ":ruby", 25, new int[] { 2, 5, 6, 2 }, 18,
+            SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, 0, () -> { return Ingredient.of(ModItems.RUBY.get()); },0);
 
     private static final int[] MAX_DAMAGE_ARRAY = new int[] { 11, 16, 15, 13 };
     private final String name;
@@ -40,12 +41,12 @@ public enum ModArmorMaterial implements IArmorMaterial {
     }
 
     @Override
-    public int getDurability(EquipmentSlotType slotIn) {
+    public int getDurability(EquipmentSlot slotIn) {
         return MAX_DAMAGE_ARRAY[slotIn.getIndex()] * this.maxDamageFactor;
     }
 
     @Override
-    public int getDamageReductionAmount(EquipmentSlotType slotIn) {
+    public int getDamageReductionAmount(EquipmentSlot slotIn) {
         return this.damageReductionAmountArray[slotIn.getIndex()];
     }
 

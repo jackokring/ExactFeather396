@@ -1,15 +1,15 @@
 package uk.co.kring.ef396.util.enums;
 
+import net.minecraft.world.item.crafting.Ingredient;
 import uk.co.kring.ef396.init.ModItems;
 import net.minecraft.item.IItemTier;
-import net.minecraft.item.crafting.Ingredient;
 
 import java.util.function.Supplier;
 
 public enum ModItemTier implements IItemTier {
 
     RUBY(3, 800, 7.0F, 3.0F, 12, () -> {
-        return Ingredient.fromItems(ModItems.RUBY.get());
+        return Ingredient.of(ModItems.RUBY.get());
     });
 
     private final int harvestLevel;

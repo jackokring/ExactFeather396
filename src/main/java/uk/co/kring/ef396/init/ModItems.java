@@ -1,5 +1,6 @@
 package uk.co.kring.ef396.init;
 
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.*;
 import net.minecraftforge.registries.RegistryObject;
 import uk.co.kring.ef396.ExactFeather;
@@ -7,7 +8,6 @@ import uk.co.kring.ef396.items.ModSpawnEggItem;
 import uk.co.kring.ef396.items.PoisonAppleItem;
 import uk.co.kring.ef396.util.enums.ModArmorMaterial;
 import uk.co.kring.ef396.util.enums.ModItemTier;
-import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -51,14 +51,14 @@ public class ModItems {
 
     // Armor
     public static final RegistryObject<ArmorItem> RUBY_HELMET = ITEMS.register("ruby_helmet",
-            () -> new ArmorItem(ModArmorMaterial.RUBY, EquipmentSlotType.HEAD, new Item.Properties().tab(ExactFeather.TAB)));
+            () -> new ArmorItem(ModArmorMaterial.RUBY, EquipmentSlot.HEAD, new Item.Properties().tab(ExactFeather.TAB)));
 
     public static final RegistryObject<ArmorItem> RUBY_CHESTPLATE = ITEMS.register("ruby_chestplate",
-            () -> new ArmorItem(ModArmorMaterial.RUBY, EquipmentSlotType.CHEST, new Item.Properties().tab(ExactFeather.TAB)));
+            () -> new ArmorItem(ModArmorMaterial.RUBY, EquipmentSlot.CHEST, new Item.Properties().tab(ExactFeather.TAB)));
 
     public static final RegistryObject<ArmorItem> RUBY_LEGGINGS = ITEMS.register("ruby_leggings",
-            () -> new ArmorItem(ModArmorMaterial.RUBY, EquipmentSlotType.LEGS, new Item.Properties().tab(ExactFeather.TAB)));
+            () -> new ArmorItem(ModArmorMaterial.RUBY, EquipmentSlot.LEGS, new Item.Properties().tab(ExactFeather.TAB)));
 
     public static final RegistryObject<ArmorItem> RUBY_BOOTS = ITEMS.register("ruby_boots",
-            () -> new ArmorItem(ModArmorMaterial.RUBY, EquipmentSlotType.FEET, new Item.Properties().tab(ExactFeather.TAB)));
+            () -> new ArmorItem(ModArmorMaterial.RUBY, EquipmentSlot.FEET, new Item.Properties().tab(ExactFeather.TAB)));
 }
