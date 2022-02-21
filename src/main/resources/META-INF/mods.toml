@@ -15,9 +15,13 @@ displayURL="https://github.com/jackokring/ExactFeather396/blob/main/README.md"
 # A file name (in the root of resources directory) containing a logo for display
 logoFile="ef396.png"
 credits="To the great Youtubed tutorials."
-authors="Jacko (ExactFeather396) and base example code from other sources."
+authors="Jacko (ExactFeather396), TechnoVision (Tutorial)."
 description='''
-A mod with all the things I could add and found interesting or experimental.
+A mod with all the things I could add and found interesting. Started as a base tutorial and was expanded upon.
+
+I guess the Forge API evolving doesn't help as the pre-ender chest (teleport chest) mod I made so long ago wouldn't work with today's API.
+
+Have Fun!
 '''
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
 [[dependencies.examplemod]] #optional
