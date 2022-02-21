@@ -41,7 +41,7 @@ public class ExactFeather {
     private void doClientStuff(final FMLClientSetupEvent event) { }
 
     // Custom CreativeModeTab TAB
-    public static final CreativeModeTab TAB = new CreativeModeTab("ef396CreativeModeTab") {
+    public static final CreativeModeTab TAB = new CreativeModeTab("ef396Tab") {
         @Override
         public ItemStack makeIcon() {
             return new ItemStack(ModItems.RUBY.get());
