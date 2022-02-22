@@ -15,6 +15,7 @@ import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 import uk.co.kring.ef396.init.ModEntityType;
@@ -29,7 +30,7 @@ public class HogEntity extends Animal {
     private EatGrassGoal eatGrassGoal;
     private int hogTimer;
 
-    public HogEntity(EntityType<? extends Animal> type, World worldIn) {
+    public HogEntity(EntityType<? extends Animal> type, Level worldIn) {
         super(type, worldIn);
     }
 
@@ -41,8 +42,8 @@ public class HogEntity extends Animal {
     }
 
     @Override
-    public AgeableEntity createChild(AgeableEntity ageable) {
-        return ModEntityType.HOG.get().create(this.world);
+    public AgeableMob createChild(AgeableMob ageable) {
+        return ModEntityType.HOG.get().create(this.level);
     }
 
     @Override

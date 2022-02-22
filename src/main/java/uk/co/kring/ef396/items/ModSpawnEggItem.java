@@ -3,6 +3,7 @@ package uk.co.kring.ef396.items;
 import net.minecraft.core.BlockSource;
 import net.minecraft.core.Direction;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.item.ItemStack;
@@ -33,7 +34,7 @@ public class ModSpawnEggItem extends SpawnEggItem implements IForgeRegistryEntry
         final Map<EntityType<?>, SpawnEggItem> EGGS = ObfuscationReflectionHelper.getPrivateValue(SpawnEggItem.class, null, "field_195987_b");
         DefaultDispenseItemBehavior dispenseBehaviour = new DefaultDispenseItemBehavior() {
             @Override
-            protected ItemStack dispenseStack(BlockSource source, ItemStack stack) {
+            protected ItemStack execute(BlockSource source, ItemStack stack) {
                 Direction direction = source.getBlockState().getValue(DispenserBlock.FACING);
                 EntityType<?> type = ((SpawnEggItem) stack.getItem()).getType(stack.getTag());
                 type.spawn(source.getLevel(), stack, null, source.getPos().relative(direction),
@@ -51,7 +52,7 @@ public class ModSpawnEggItem extends SpawnEggItem implements IForgeRegistryEntry
     }
 
     @Override
-    public EntityType<?> getType(CompoundNBT nbt) {
+    public EntityType<?> getType(CompoundTag nbt) {
         return this.entityTypeSupplier.get();
     }
 
