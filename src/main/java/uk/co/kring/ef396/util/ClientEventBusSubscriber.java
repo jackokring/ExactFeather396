@@ -1,5 +1,6 @@
 package uk.co.kring.ef396.util;
 
+import net.minecraft.world.entity.EntityType;
 import uk.co.kring.ef396.ExactFeather;
 import uk.co.kring.ef396.entity.render.HogRenderer;
 import uk.co.kring.ef396.init.ModEntityType;
