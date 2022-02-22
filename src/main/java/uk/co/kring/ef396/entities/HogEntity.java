@@ -42,11 +42,6 @@ public class HogEntity extends Animal {
     }
 
     @Override
-    public AgeableMob createChild(AgeableMob ageable) {
-        return ModEntityType.HOG.get().create(this.level);
-    }
-
-    @Override
     protected void registerGoals() {
         super.registerGoals();
         this.eatGrassGoal = new EatGrassGoal(this);
@@ -62,7 +57,7 @@ public class HogEntity extends Animal {
     }
 
     @Override
-    protected int getExperiencePoints(Player player) {
+    protected int getExperienceReward(Player player) {
         return 1 + this.getRandom().nextInt(4);
     }
 
@@ -89,14 +84,15 @@ public class HogEntity extends Animal {
     }
 
     @Override
-    public void livingTick() {
-        if (this.world.isRemote) {
+    public void tick() {
+        if (this.level.isClientSide) {
             this.hogTimer = Math.max(0, this.hogTimer - 1);
         }
-        super.livingTick();
+        super.tick();
     }
 
     @OnlyIn(Dist.CLIENT)
+    @Override
     public void handleStatusUpdate(byte id) {
         if (id == 10) {
             this.hogTimer = 40;
@@ -105,10 +101,8 @@ public class HogEntity extends Animal {
         }
     }
 
-    // added to interface TODO
-    @Nullable
     @Override
-    public AgeableMob getBreedOffspring(ServerLevel p_146743_, AgeableMob p_146744_) {
-        return null;
+    public AgeableMob getBreedOffspring(ServerLevel level, AgeableMob mob) {
+        return ModEntityType.HOG.get().create(level);
     }
 }
