@@ -1,14 +1,7 @@
 package uk.co.kring.ef396.entity.model;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.model.EntityModel;
 import uk.co.kring.ef396.entities.HogEntity;
-import net.minecraft.client.renderer.entity.model.EntityModel;
-import net.minecraft.client.renderer.entity.model.QuadrupedModel;
-import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.math.MathHelper;
 
 public class HogModel<T extends HogEntity> extends EntityModel<T> {
 

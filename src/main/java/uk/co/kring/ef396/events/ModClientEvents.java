@@ -1,21 +1,14 @@
 package uk.co.kring.ef396.events;
 
-import com.technovision.tutorial.Tutorial;
+import net.minecraft.client.renderer.EffectInstance;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
 import uk.co.kring.ef396.ExactFeather;
 import uk.co.kring.ef396.init.ModBlocks;
 import uk.co.kring.ef396.init.ModItems;
-import net.minecraft.client.gui.screen.inventory.CraftingScreen;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.passive.SheepEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Items;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -40,7 +33,7 @@ public class ModClientEvents {
         LivingEntity player = event.getEntityLiving();
         if (player.getHeldItemMainhand().getItem() == Items.STICK) {
             ExactFeather.LOGGER.info("Player tried to jump with a stick!");
-            World world = player.getEntityWorld();
+            Level world = player.getEntityWorld();
             world.setBlockState(player.getPosition().add(0, -1, 0), ModBlocks.RUBY_BLOCK.get().getDefaultState());
         }
     }
@@ -52,7 +45,7 @@ public class ModClientEvents {
                 LivingEntity target = (LivingEntity) event.getTarget();
                 if (target instanceof SheepEntity) {
 
-                    PlayerEntity player = event.getPlayer();
+                    Player player = event.getPlayer();
                     target.addPotionEffect(new EffectInstance(Effects.POISON, 200));
                     target.setGlowing(true);
 
