@@ -4,3 +4,4 @@
 
 * Fixed basic faults with 1.18.1 changes in the symbol set.
 * Created workarounds when not possible.
+* Removed Ore generation as 1.18.1 has `data` tags for doing this kind of thing like generating biomes.

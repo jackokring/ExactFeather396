@@ -1,7 +1,7 @@
 {
   "item.ef396.ruby": "Ruby",
   "item.ef396.poison_apple": "Poison Apple",
-  "block.ef396.ruby_block": "Ruby Block",
+  "block.ef396.ruby_block": "Block of Ruby",
   "block.ef396.ruby_ore": "Ruby Ore",
   "block.ef396.oven": "Oven",
   "itemGroup.ef396Tab": "ef396",
@@ -11,7 +11,7 @@
   "item.ef396.ruby_axe": "Ruby Axe",
   "item.ef396.ruby_hoe": "Ruby Hoe",
   "item.ef396.ruby_helmet": "Ruby Helmet",
-  "item.ef396.ruby_chestplate": "Ruby Chest Plate",
+  "item.ef396.ruby_chestplate": "Ruby Chestplate",
   "item.ef396.ruby_leggings": "Ruby Leggings",
   "item.ef396.ruby_boots": "Ruby Boots",
   "item.ef396.hog_spawn_egg": "Hog Spawn Egg",

@@ -6,11 +6,10 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AgeableMob;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.BreedGoal;
-import net.minecraft.world.entity.ai.goal.FollowParentGoal;
-import net.minecraft.world.entity.ai.goal.PanicGoal;
-import net.minecraft.world.entity.ai.goal.TemptGoal;
+import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Items;
@@ -19,39 +18,34 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import uk.co.kring.ef396.init.ModEntityType;
 import net.minecraft.world.entity.EntityType;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class HogEntity extends Animal {
 
     private static final Ingredient TEMPTATION_ITEMS = Ingredient.of(Items.CARROT, Items.POTATO, Items.BEETROOT);
 
-    private EatGrassGoal eatGrassGoal;
-    private int hogTimer;
-
     public HogEntity(EntityType<? extends Animal> type, Level worldIn) {
         super(type, worldIn);
     }
 
-    public static AttributeModifierMap.MutableAttribute setCustomAttributes() {
-        return MobEntity.registerAttributes()
-                .createMutableAttribute(Attributes.MAX_HEALTH, 10.0D)
-                .createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D);
+    @Override
+    public static AttributeSupplier.Builder cc() {//TODO
+        return Mob.createMobAttributes()
+                .add(Attributes.MAX_HEALTH, 10.0D)
+                .add(Attributes.MOVEMENT_SPEED, 0.25D);
     }
 
     @Override
     protected void registerGoals() {
         super.registerGoals();
-        this.eatGrassGoal = new EatGrassGoal(this);
-        this.goalSelector.addGoal(0, new SwimGoal(this));
+        this.goalSelector.addGoal(0, new FloatGoal(this));
         this.goalSelector.addGoal(1, new PanicGoal(this, 1.25D));
         this.goalSelector.addGoal(2, new BreedGoal(this, 1.0D));
         this.goalSelector.addGoal(3, new TemptGoal(this, 1.1D, TEMPTATION_ITEMS, false));
         this.goalSelector.addGoal(4, new FollowParentGoal(this, 1.1D));
-        this.goalSelector.addGoal(5, this.eatGrassGoal);
-        this.goalSelector.addGoal(6, new WaterAvoidingRandomWalkingGoal(this, 1.0D));
-        this.goalSelector.addGoal(7, new LookAtGoal(this, PlayerEntity.class, 6.0F));
-        this.goalSelector.addGoal(8, new LookRandomlyGoal(this));
+        this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 1.0D));
+        this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 6.0F));
+        this.goalSelector.addGoal(7, new RandomLookAroundGoal(this));
+        this.goalSelector.addGoal(8, new EatBlockGoal(this));
     }
 
     @Override
@@ -73,30 +67,6 @@ public class HogEntity extends Animal {
     @Override
     protected void playStepSound(BlockPos pos, BlockState blockIn) {
         this.playSound(SoundEvents.PIG_STEP, 0.15F, 1.0F);
-    }
-
-    @Override
-    protected void updateAITasks() {
-        this.hogTimer = this.eatGrassGoal.getEatingGrassTimer();
-        super.updateAITasks();
-    }
-
-    @Override
-    public void tick() {
-        if (this.level.isClientSide) {
-            this.hogTimer = Math.max(0, this.hogTimer - 1);
-        }
-        super.tick();
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    @Override
-    public void handleStatusUpdate(byte id) {
-        if (id == 10) {
-            this.hogTimer = 40;
-        } else {
-            super.handleStatusUpdate(id);
-        }
     }
 
     @Override
