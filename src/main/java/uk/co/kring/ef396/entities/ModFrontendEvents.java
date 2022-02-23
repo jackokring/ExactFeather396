@@ -1,4 +1,4 @@
-package uk.co.kring.ef396.util;
+package uk.co.kring.ef396.entities;
 
 import net.minecraft.world.entity.EntityType;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
@@ -7,11 +7,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import uk.co.kring.ef396.entities.HogEntity;
-import uk.co.kring.ef396.init.ModEntityType;
+import uk.co.kring.ef396.init.EntityInit;
 
 @Mod.EventBusSubscriber(modid = ExactFeather.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
-public class NonForgeFrontendEvents {
+public class ModFrontendEvents {
 
     @SubscribeEvent
     public static void onRegisterEntities(final RegistryEvent.Register<EntityType<?>> event) {
@@ -20,6 +19,6 @@ public class NonForgeFrontendEvents {
 
     @SubscribeEvent
     public static void onCreateAttributes(EntityAttributeCreationEvent event) {
-        event.put(ModEntityType.HOG.get(), HogEntity.createAttributes().build());
+        event.put(EntityInit.HOG.get(), HogEntity.createAttributes().build());
     }
 }

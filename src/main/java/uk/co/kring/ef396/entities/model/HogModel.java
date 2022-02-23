@@ -1,4 +1,4 @@
-package uk.co.kring.ef396.entity.model;
+package uk.co.kring.ef396.entities.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;

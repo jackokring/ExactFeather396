@@ -16,7 +16,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import uk.co.kring.ef396.init.ModEntityType;
+import uk.co.kring.ef396.init.EntityInit;
 import net.minecraft.world.entity.EntityType;
 
 public class HogEntity extends Animal {
@@ -70,6 +70,6 @@ public class HogEntity extends Animal {
 
     @Override
     public AgeableMob getBreedOffspring(ServerLevel level, AgeableMob mob) {
-        return ModEntityType.HOG.get().create(level);
+        return EntityInit.HOG.get().create(level);
     }
 }

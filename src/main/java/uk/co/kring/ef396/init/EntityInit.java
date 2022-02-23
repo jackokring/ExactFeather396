@@ -9,7 +9,7 @@ import uk.co.kring.ef396.entities.HogEntity;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
-public class ModEntityType {
+public class EntityInit {
 
     public static final DeferredRegister<EntityType<?>> ENTITY_TYPES
             = DeferredRegister.create(ForgeRegistries.ENTITIES, ExactFeather.MOD_ID);

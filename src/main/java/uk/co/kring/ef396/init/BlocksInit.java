@@ -9,7 +9,7 @@ import uk.co.kring.ef396.blocks.RubyOre;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
-public class ModBlocks {
+public class BlocksInit {
 
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, ExactFeather.MOD_ID);
 
