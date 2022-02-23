@@ -1,6 +1,7 @@
 package uk.co.kring.ef396.entities;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -16,12 +17,16 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import uk.co.kring.ef396.ExactFeather;
 import uk.co.kring.ef396.init.EntityInit;
 import net.minecraft.world.entity.EntityType;
 
 public class HogEntity extends Animal {
 
-    private static final Ingredient TEMPTATION_ITEMS = Ingredient.of(Items.CARROT, Items.POTATO, Items.BEETROOT);
+    private static final Ingredient TEMPTATION_ITEMS
+            = Ingredient.of(Items.CARROT, Items.POTATO, Items.BEETROOT);
+    private static final ResourceLocation LOOT_TABLE
+            = new ResourceLocation(ExactFeather.MOD_ID, "entities/hog");
 
     public HogEntity(EntityType<? extends Animal> type, Level worldIn) {
         super(type, worldIn);
@@ -45,6 +50,11 @@ public class HogEntity extends Animal {
         this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 6.0F));
         this.goalSelector.addGoal(7, new RandomLookAroundGoal(this));
         this.goalSelector.addGoal(8, new EatBlockGoal(this));
+    }
+
+    @Override
+    protected ResourceLocation getDefaultLootTable() {
+        return LOOT_TABLE;
     }
 
     @Override
