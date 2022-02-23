@@ -27,8 +27,7 @@ public class HogEntity extends Animal {
         super(type, worldIn);
     }
 
-    @Override
-    public static AttributeSupplier.Builder cc() {//TODO
+    public static AttributeSupplier.Builder createAttributes() {//TODO
         return Mob.createMobAttributes()
                 .add(Attributes.MAX_HEALTH, 10.0D)
                 .add(Attributes.MOVEMENT_SPEED, 0.25D);

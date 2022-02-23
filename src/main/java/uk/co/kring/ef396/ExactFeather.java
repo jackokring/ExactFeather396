@@ -27,7 +27,6 @@ public class ExactFeather {
         bus.addListener(this::setup);
         bus.addListener(this::doClientStuff);
 
-
         ModBlocks.BLOCKS.register(bus);
         ModItems.ITEMS.register(bus);
         ModEntityType.ENTITY_TYPES.register(bus);
@@ -39,7 +38,9 @@ public class ExactFeather {
 
     }
 
-    private void doClientStuff(final FMLClientSetupEvent event) { }
+    private void doClientStuff(final FMLClientSetupEvent event) {
+
+    }
 
     // Custom CreativeModeTab TAB
     public static final CreativeModeTab TAB = new CreativeModeTab("ef396Tab") {

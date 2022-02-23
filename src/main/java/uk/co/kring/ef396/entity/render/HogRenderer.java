@@ -12,7 +12,7 @@ public class HogRenderer extends MobRenderer<HogEntity, HogModel<HogEntity>> {
     protected static final ResourceLocation TEXTURE = new ResourceLocation(ExactFeather.MOD_ID, "textures/entity/hog.png");
 
     public HogRenderer(EntityRendererProvider.Context renderManagerIn) {
-        super(renderManagerIn, new HogModel<>(), 0.7f);
+        super(renderManagerIn, new HogModel<HogEntity>(), 0.7f);//shadow size float
     }
 
     @Override

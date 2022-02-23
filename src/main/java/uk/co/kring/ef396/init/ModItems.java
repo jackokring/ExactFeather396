@@ -4,7 +4,6 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.*;
 import net.minecraftforge.registries.RegistryObject;
 import uk.co.kring.ef396.ExactFeather;
-import uk.co.kring.ef396.items.ModSpawnEggItem;
 import uk.co.kring.ef396.items.PoisonAppleItem;
 import uk.co.kring.ef396.util.enums.ModArmorMaterial;
 import uk.co.kring.ef396.util.enums.ModItemTier;
@@ -20,8 +19,7 @@ public class ModItems {
 
     public static final RegistryObject<PoisonAppleItem> POISON_APPLE = ITEMS.register("poison_apple", PoisonAppleItem::new);
 
-    public static final RegistryObject<ModSpawnEggItem> HOG_SPAWN_EGG = ITEMS.register("hog_spawn_egg",
-            () -> new ModSpawnEggItem(ModEntityType.HOG, 0xE1A68B, 0x99593B, new Item.Properties().tab(ExactFeather.TAB)));
+
 
     // Block Items
     public static final RegistryObject<Item> RUBY_BLOCK_ITEM = ITEMS.register("ruby_block",
