@@ -35,9 +35,6 @@ public class ItemsInit {
     public static final RegistryObject<Item> RUBY_ORE_ITEM = ITEMS.register("ruby_ore",
             () -> new BlockItem(BlocksInit.RUBY_ORE.get(), new Item.Properties().tab(ExactFeather.TAB)));
 
-    public static final RegistryObject<Item> OVEN_ITEM = ITEMS.register("oven",
-            () -> new BlockItem(BlocksInit.OVEN.get(), new Item.Properties().tab(ExactFeather.TAB)));
-
     // Tools
     public static final RegistryObject<SwordItem> RUBY_SWORD = ITEMS.register("ruby_sword",
             () -> new SwordItem(ModItemTier.RUBY, 2, -2.4F,

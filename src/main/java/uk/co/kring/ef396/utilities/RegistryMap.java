@@ -37,7 +37,7 @@ public class RegistryMap<T extends IForgeRegistryEntry<T>> extends PriorityHashM
                 registryObject -> {
                     T object = registryObject.get();
                     String key = registryObject.getId().toString();
-                    this.put(key, object);
+                    super.put(key, object);
                 }
         );
         return entries;
@@ -62,6 +62,12 @@ public class RegistryMap<T extends IForgeRegistryEntry<T>> extends PriorityHashM
     }
 
     @Override
+    public T put(String key, T value) {
+        exception();
+        return null;
+    }
+
+    @Override
     public boolean containsKey(Object key) {
         getEntries();
         return super.containsKey(key);
@@ -69,7 +75,8 @@ public class RegistryMap<T extends IForgeRegistryEntry<T>> extends PriorityHashM
 
     @Override
     public T remove(Object key) {
-        return super.remove(key);
+        exception();
+        return null;
     }
 
     @Override
@@ -109,50 +116,50 @@ public class RegistryMap<T extends IForgeRegistryEntry<T>> extends PriorityHashM
 
     @Override
     public T putIfAbsent(String key, T value) {
-        getEntries();
-        return super.putIfAbsent(key, value);
+        exception();
+        return null;
     }
 
     @Override
     public boolean remove(Object key, Object value) {
-        getEntries();
-        return super.remove(key, value);
+        exception();
+        return false;
     }
 
     @Override
     public boolean replace(String key, T oldValue, T newValue) {
-        getEntries();
-        return super.replace(key, oldValue, newValue);
+        exception();
+        return false;
     }
 
     @Override
     public T replace(String key, T value) {
-        getEntries();
-        return super.replace(key, value);
+        exception();
+        return null;
     }
 
     @Override
     public T computeIfAbsent(String key, Function<? super String, ? extends T> mappingFunction) {
-        getEntries();
-        return super.computeIfAbsent(key, mappingFunction);
+        exception();
+        return null;
     }
 
     @Override
     public T computeIfPresent(String key, BiFunction<? super String, ? super T, ? extends T> remappingFunction) {
-        getEntries();
-        return super.computeIfPresent(key, remappingFunction);
+        exception();
+        return null;
     }
 
     @Override
     public T compute(String key, BiFunction<? super String, ? super T, ? extends T> remappingFunction) {
-        getEntries();
-        return super.compute(key, remappingFunction);
+        exception();
+        return null;
     }
 
     @Override
     public T merge(String key, T value, BiFunction<? super T, ? super T, ? extends T> remappingFunction) {
-        getEntries();
-        return super.merge(key, value, remappingFunction);
+        exception();
+        return null;
     }
 
     @Override
@@ -163,8 +170,7 @@ public class RegistryMap<T extends IForgeRegistryEntry<T>> extends PriorityHashM
 
     @Override
     public void replaceAll(BiFunction<? super String, ? super T, ? extends T> function) {
-        getEntries();
-        super.replaceAll(function);
+        exception();
     }
 
     @Override
@@ -174,6 +180,6 @@ public class RegistryMap<T extends IForgeRegistryEntry<T>> extends PriorityHashM
     }
 
     private Exception exception() {
-        throw new UnsupportedOperationException(this.getClass().toString() + ": is a Registry!");
+        throw new UnsupportedOperationException(this.getClass().toString() + ": is a RegistryMap!");
     }
 }
