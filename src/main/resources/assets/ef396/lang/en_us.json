@@ -3,7 +3,6 @@
   "item.ef396.poison_apple": "Poison Apple",
   "block.ef396.ruby_block": "Block of Ruby",
   "block.ef396.ruby_ore": "Ruby Ore",
-  "block.ef396.oven": "Oven",
   "itemGroup.ef396": "Exact Feather's",
   "item.ef396.ruby_sword": "Ruby Sword",
   "item.ef396.ruby_pickaxe": "Ruby Pickaxe",
@@ -14,6 +13,6 @@
   "item.ef396.ruby_chestplate": "Ruby Chestplate",
   "item.ef396.ruby_leggings": "Ruby Leggings",
   "item.ef396.ruby_boots": "Ruby Boots",
-  "item.ef396.hog_spawn_egg": "Hog Spawn Egg",
-  "entity.ef396.hog": "Hog"
+  "item.ef396.hog_spawn_egg": "H.O.G. Spawn Egg",
+  "entity.ef396.hog": "H.O.G."
 }
