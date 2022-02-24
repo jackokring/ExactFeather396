@@ -1,8 +1,0 @@
-{
-  "variants": {
-    "facing=north": { "model": "ef396:block/oven" },
-    "facing=south": { "model": "ef396:block/oven", "y":  180},
-    "facing=west": { "model": "ef396:block/oven", "y":  270},
-    "facing=east": { "model": "ef396:block/oven", "y":  90}
-  }
-}
