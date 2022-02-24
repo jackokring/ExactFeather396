@@ -30,7 +30,7 @@ public class ExactFeather {
 
         BlocksInit.BLOCKS.register(bus);
         ItemsInit.ITEMS.register(bus);
-        EntityInit.ENTITY_TYPES.register(bus);
+        EntityInit.ENTITIES.register(bus);
         SoundInit.SOUNDS.register(bus);
 
         MinecraftForge.EVENT_BUS.register(this);
@@ -45,7 +45,7 @@ public class ExactFeather {
     }
 
     // Custom CreativeModeTab TAB
-    public static final CreativeModeTab TAB = new CreativeModeTab("ef396Tab") {
+    public static final CreativeModeTab TAB = new CreativeModeTab("ef396") {
         @Override
         public ItemStack makeIcon() {
             return new ItemStack(ItemsInit.RUBY.get());
