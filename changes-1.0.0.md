@@ -9,6 +9,7 @@
 * Class refactoring.
 * Removed `Oven` so need new container start.
 * Added `RegistryMap` for index hashing.
+* Added `PriorityHashMap` for first entry priority. Includes `overwrite()` for `super.put()` behaviour.
 
 ### TODO
 
