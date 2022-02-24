@@ -10,7 +10,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class RegistryMap<T extends IForgeRegistryEntry<T>> extends PriorityHashMap<String, T> {
+public class RegistryMap<T extends IForgeRegistryEntry<T>> extends PriorityHashMap<String, Supplier<? extends T>> {
 
     private final DeferredRegister<T> register;
     private Collection<RegistryObject<T>> cache;
@@ -18,6 +18,10 @@ public class RegistryMap<T extends IForgeRegistryEntry<T>> extends PriorityHashM
     public RegistryMap(DeferredRegister<T> register) {
         this.register = register;
     }
+
+    // TODO put name manglers here??
+    // minecraft:diamond -> item.minecraft.diamond
+    // as full index accessed via type before namespace
 
     public <I extends T> RegistryObject<I> register(String name, Supplier<? extends I> sup) {
         return register.register(name, sup);
@@ -37,9 +41,8 @@ public class RegistryMap<T extends IForgeRegistryEntry<T>> extends PriorityHashM
             cache = register.getEntries();
             cache.forEach(
                     registryObject -> {
-                        T object = registryObject.get();
                         String key = registryObject.getId().toString();
-                        super.put(key, object);
+                        super.put(key, registryObject);
                     }
             );
         }
@@ -59,13 +62,13 @@ public class RegistryMap<T extends IForgeRegistryEntry<T>> extends PriorityHashM
     }
 
     @Override
-    public T get(Object key) {
+    public Supplier<? extends T> get(Object key) {
         getEntries();
         return super.get(key);
     }
 
     @Override
-    public T put(String key, T value) {
+    public Supplier<? extends T> put(String key, Supplier<? extends T> value) {
         exception();
         return null;
     }
@@ -77,7 +80,7 @@ public class RegistryMap<T extends IForgeRegistryEntry<T>> extends PriorityHashM
     }
 
     @Override
-    public T remove(Object key) {
+    public Supplier<? extends T> remove(Object key) {
         exception();
         return null;
     }
@@ -100,25 +103,25 @@ public class RegistryMap<T extends IForgeRegistryEntry<T>> extends PriorityHashM
     }
 
     @Override
-    public Collection<T> values() {
+    public Collection<Supplier<? extends T>> values() {
         getEntries();
         return super.values();
     }
 
     @Override
-    public Set<Entry<String, T>> entrySet() {
+    public Set<Entry<String, Supplier<? extends T>>> entrySet() {
         getEntries();
         return super.entrySet();
     }
 
     @Override
-    public T getOrDefault(Object key, T defaultValue) {
+    public Supplier<? extends T> getOrDefault(Object key, Supplier<? extends T> defaultValue) {
         getEntries();
         return super.getOrDefault(key, defaultValue);
     }
 
     @Override
-    public T putIfAbsent(String key, T value) {
+    public Supplier<? extends T> putIfAbsent(String key, Supplier<? extends T> value) {
         exception();
         return null;
     }
@@ -130,49 +133,49 @@ public class RegistryMap<T extends IForgeRegistryEntry<T>> extends PriorityHashM
     }
 
     @Override
-    public boolean replace(String key, T oldValue, T newValue) {
+    public boolean replace(String key, Supplier<? extends T> oldValue, Supplier<? extends T> newValue) {
         exception();
         return false;
     }
 
     @Override
-    public T replace(String key, T value) {
+    public Supplier<? extends T> replace(String key, Supplier<? extends T> value) {
         exception();
         return null;
     }
 
     @Override
-    public T computeIfAbsent(String key, Function<? super String, ? extends T> mappingFunction) {
+    public Supplier<? extends T> computeIfAbsent(String key, Function<? super String, ? extends Supplier<? extends T>> mappingFunction) {
         exception();
         return null;
     }
 
     @Override
-    public T computeIfPresent(String key, BiFunction<? super String, ? super T, ? extends T> remappingFunction) {
+    public Supplier<? extends T> computeIfPresent(String key, BiFunction<? super String, ? super Supplier<? extends T>, ? extends Supplier<? extends T>> remappingFunction) {
         exception();
         return null;
     }
 
     @Override
-    public T compute(String key, BiFunction<? super String, ? super T, ? extends T> remappingFunction) {
+    public Supplier<? extends T> compute(String key, BiFunction<? super String, ? super Supplier<? extends T>, ? extends Supplier<? extends T>> remappingFunction) {
         exception();
         return null;
     }
 
     @Override
-    public T merge(String key, T value, BiFunction<? super T, ? super T, ? extends T> remappingFunction) {
+    public Supplier<? extends T> merge(String key, Supplier<? extends T> value, BiFunction<? super Supplier<? extends T>, ? super Supplier<? extends T>, ? extends Supplier<? extends T>> remappingFunction) {
         exception();
         return null;
     }
 
     @Override
-    public void forEach(BiConsumer<? super String, ? super T> action) {
+    public void forEach(BiConsumer<? super String, ? super Supplier<? extends T>> action) {
         getEntries();
         super.forEach(action);
     }
 
     @Override
-    public void replaceAll(BiFunction<? super String, ? super T, ? extends T> function) {
+    public void replaceAll(BiFunction<? super String, ? super Supplier<? extends T>, ? extends Supplier<? extends T>> function) {
         exception();
     }
 
