@@ -7,10 +7,12 @@ import uk.co.kring.ef396.blocks.RubyBlock;
 import uk.co.kring.ef396.blocks.RubyOre;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import uk.co.kring.ef396.utilities.RegistryMap;
 
 public class BlocksInit {
 
-    public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, ExactFeather.MOD_ID);
+    public static final RegistryMap<Block> BLOCKS
+            = new RegistryMap<Block>(DeferredRegister.create(ForgeRegistries.BLOCKS, ExactFeather.MOD_ID));
 
     // Blocks
     public static final RegistryObject<Block> RUBY_BLOCK = BLOCKS.register("ruby_block", RubyBlock::new);

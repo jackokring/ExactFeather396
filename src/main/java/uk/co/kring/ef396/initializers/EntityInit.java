@@ -8,11 +8,12 @@ import uk.co.kring.ef396.ExactFeather;
 import uk.co.kring.ef396.entities.HogEntity;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import uk.co.kring.ef396.utilities.RegistryMap;
 
 public class EntityInit {
 
-    public static final DeferredRegister<EntityType<?>> ENTITY_TYPES
-            = DeferredRegister.create(ForgeRegistries.ENTITIES, ExactFeather.MOD_ID);
+    public static final RegistryMap<EntityType<?>> ENTITY_TYPES
+            = new RegistryMap<EntityType<?>>(DeferredRegister.create(ForgeRegistries.ENTITIES, ExactFeather.MOD_ID));
 
     // Entity Types
     public static final RegistryObject<EntityType<HogEntity>> HOG = ENTITY_TYPES.register("hog",

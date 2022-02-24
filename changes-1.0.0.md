@@ -8,6 +8,7 @@
 * Internal `ForgeSpawnEggItem` automation.
 * Class refactoring.
 * Removed `oven` so need new container start.
+* Added `RegistryMap` for index hashing.
 
 ### TODO
 

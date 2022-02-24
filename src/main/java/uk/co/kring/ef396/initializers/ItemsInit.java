@@ -10,11 +10,12 @@ import uk.co.kring.ef396.items.enums.ModArmorMaterial;
 import uk.co.kring.ef396.items.enums.ModItemTier;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import uk.co.kring.ef396.utilities.RegistryMap;
 
 public class ItemsInit {
 
-    public static final DeferredRegister<Item> ITEMS
-            = DeferredRegister.create(ForgeRegistries.ITEMS, ExactFeather.MOD_ID);
+    public static final RegistryMap<Item> ITEMS
+            = new RegistryMap<Item>(DeferredRegister.create(ForgeRegistries.ITEMS, ExactFeather.MOD_ID));
 
     // Items
     public static final RegistryObject<Item> RUBY = ITEMS.register("ruby",
