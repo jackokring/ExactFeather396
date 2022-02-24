@@ -13,6 +13,7 @@ import java.util.function.Supplier;
 public class RegistryMap<T extends IForgeRegistryEntry<T>> extends PriorityHashMap<String, T> {
 
     private final DeferredRegister<T> register;
+    private Collection<RegistryObject<T>> cache;
 
     public RegistryMap(DeferredRegister<T> register) {
         this.register = register;
@@ -31,16 +32,18 @@ public class RegistryMap<T extends IForgeRegistryEntry<T>> extends PriorityHashM
     }
 
     public Collection<RegistryObject<T>> getEntries() {
-        //lazy defer
-        var entries = register.getEntries();
-        entries.forEach(
-                registryObject -> {
-                    T object = registryObject.get();
-                    String key = registryObject.getId().toString();
-                    super.put(key, object);
-                }
-        );
-        return entries;
+        if(cache == null) {//prepare to use cache on first getEntries()
+            //lazy defer
+            cache = register.getEntries();
+            cache.forEach(
+                    registryObject -> {
+                        T object = registryObject.get();
+                        String key = registryObject.getId().toString();
+                        super.put(key, object);
+                    }
+            );
+        }
+        return cache;
     }
 
     @Override
