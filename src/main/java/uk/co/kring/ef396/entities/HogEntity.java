@@ -18,7 +18,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import uk.co.kring.ef396.ExactFeather;
-import uk.co.kring.ef396.init.EntityInit;
+import uk.co.kring.ef396.initializers.EntityInit;
 import net.minecraft.world.entity.EntityType;
 
 public class HogEntity extends Animal {

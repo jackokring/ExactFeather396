@@ -1,4 +1,4 @@
-package uk.co.kring.ef396.init;
+package uk.co.kring.ef396.initializers;
 
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.*;
@@ -6,8 +6,8 @@ import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.registries.RegistryObject;
 import uk.co.kring.ef396.ExactFeather;
 import uk.co.kring.ef396.items.PoisonAppleItem;
-import uk.co.kring.ef396.util.enums.ModArmorMaterial;
-import uk.co.kring.ef396.util.enums.ModItemTier;
+import uk.co.kring.ef396.items.enums.ModArmorMaterial;
+import uk.co.kring.ef396.items.enums.ModItemTier;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 

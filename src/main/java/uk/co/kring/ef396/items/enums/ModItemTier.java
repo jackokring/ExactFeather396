@@ -1,7 +1,7 @@
-package uk.co.kring.ef396.util.enums;
+package uk.co.kring.ef396.items.enums;
 
 import net.minecraft.world.item.crafting.Ingredient;
-import uk.co.kring.ef396.init.ItemsInit;
+import uk.co.kring.ef396.initializers.ItemsInit;
 import net.minecraft.world.item.Tier;
 
 import java.util.function.Supplier;

@@ -1,9 +1,9 @@
-package uk.co.kring.ef396.entities.render;
+package uk.co.kring.ef396.entities.renderers;
 
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import uk.co.kring.ef396.ExactFeather;
-import uk.co.kring.ef396.entities.model.HogModel;
+import uk.co.kring.ef396.entities.models.HogModel;
 import uk.co.kring.ef396.entities.HogEntity;
 import net.minecraft.client.renderer.entity.MobRenderer;
 

@@ -1,4 +1,4 @@
-package uk.co.kring.ef396.util;
+package uk.co.kring.ef396.utilities;
 
 import java.util.HashMap;
 

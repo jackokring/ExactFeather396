@@ -1,4 +1,4 @@
-package uk.co.kring.ef396.init;
+package uk.co.kring.ef396.initializers;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;

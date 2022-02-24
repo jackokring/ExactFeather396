@@ -1,4 +1,4 @@
-package uk.co.kring.ef396.init;
+package uk.co.kring.ef396.initializers;
 
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.registries.RegistryObject;

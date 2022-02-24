@@ -1,16 +1,15 @@
-package uk.co.kring.ef396.entities;
+package uk.co.kring.ef396.initializers;
 
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import uk.co.kring.ef396.ExactFeather;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.common.Mod;
-import uk.co.kring.ef396.entities.model.HogModel;
-import uk.co.kring.ef396.entities.render.HogRenderer;
-import uk.co.kring.ef396.init.EntityInit;
+import uk.co.kring.ef396.entities.models.HogModel;
+import uk.co.kring.ef396.entities.renderers.HogRenderer;
 
 @Mod.EventBusSubscriber(modid = ExactFeather.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
-public class ForgeFrontendEvents {
+public class RendererInit {
 
     @SubscribeEvent
     private void registerLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {

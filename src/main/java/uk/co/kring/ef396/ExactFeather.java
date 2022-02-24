@@ -3,9 +3,9 @@ package uk.co.kring.ef396;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.eventbus.api.IEventBus;
-import uk.co.kring.ef396.init.BlocksInit;
-import uk.co.kring.ef396.init.EntityInit;
-import uk.co.kring.ef396.init.ItemsInit;
+import uk.co.kring.ef396.initializers.BlocksInit;
+import uk.co.kring.ef396.initializers.EntityInit;
+import uk.co.kring.ef396.initializers.ItemsInit;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -13,7 +13,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import uk.co.kring.ef396.init.SoundInit;
+import uk.co.kring.ef396.initializers.SoundInit;
 
 @Mod("ef396")
 public class ExactFeather {

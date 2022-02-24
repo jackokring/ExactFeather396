@@ -1,11 +1,11 @@
-package uk.co.kring.ef396.util.enums;
+package uk.co.kring.ef396.items.enums;
 
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.crafting.Ingredient;
 import uk.co.kring.ef396.ExactFeather;
-import uk.co.kring.ef396.init.ItemsInit;
+import uk.co.kring.ef396.initializers.ItemsInit;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
