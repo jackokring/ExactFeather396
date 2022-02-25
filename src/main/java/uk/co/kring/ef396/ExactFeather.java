@@ -48,7 +48,7 @@ public class ExactFeather {
     public static final CreativeModeTab TAB = new CreativeModeTab("ef396") {
         @Override
         public ItemStack makeIcon() {
-            return new ItemStack(ItemInit.RUBY.get());
+            return new ItemStack(ItemInit.HOG_SPAWN_EGG.get());
         }
     };
 }
