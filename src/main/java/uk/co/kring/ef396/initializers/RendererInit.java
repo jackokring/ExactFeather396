@@ -13,7 +13,7 @@ public class RendererInit {
 
     @SubscribeEvent
     private void registerLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
-        event.registerLayerDefinition(HogModel.LAYER_LOCATION, HogModel::createBodyLayer);
+        event.registerLayerDefinition(HogModel.getLayerLocation(), HogModel::createBodyLayer);
     }
 
     @SubscribeEvent

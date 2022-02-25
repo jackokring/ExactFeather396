@@ -35,7 +35,7 @@ public class RegistryMap<T extends IForgeRegistryEntry<T>> extends PriorityHashM
         register.register(bus);
     }
 
-    public Collection<RegistryObject<T>> getEntries() {
+    public synchronized Collection<RegistryObject<T>> getEntries() {
         if(cache == null) {//prepare to use cache on first getEntries()
             //lazy defer
             cache = register.getEntries();
