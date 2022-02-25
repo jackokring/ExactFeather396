@@ -1,8 +1,8 @@
 {
-  "sound_name": {
+  "error": {
     "sounds": [
-      "ef396:filename_prefix"
+      "ef396:error"
     ],
-    "subtitle": "displays as"
+    "subtitle": "subtitles.ef396.error"
   }
 }

@@ -9,7 +9,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import uk.co.kring.ef396.utilities.RegistryMap;
 
-public class BlocksInit {
+public class BlockInit {
 
     public static final RegistryMap<Block> BLOCKS
             = new RegistryMap<Block>(DeferredRegister.create(ForgeRegistries.BLOCKS, ExactFeather.MOD_ID));

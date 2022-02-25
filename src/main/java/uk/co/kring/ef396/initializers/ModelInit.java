@@ -12,6 +12,7 @@ public class ModelInit {
 
     @SubscribeEvent
     public static void onCreateAttributes(EntityAttributeCreationEvent event) {
+        //This event is fired after registration and before common setup.
         event.put(EntityInit.HOG.get(), HogEntity.createAttributes().build());
     }
 }

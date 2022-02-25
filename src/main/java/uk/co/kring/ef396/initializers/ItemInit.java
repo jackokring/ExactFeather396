@@ -12,7 +12,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import uk.co.kring.ef396.utilities.RegistryMap;
 
-public class ItemsInit {
+public class ItemInit {
 
     public static final RegistryMap<Item> ITEMS
             = new RegistryMap<Item>(DeferredRegister.create(ForgeRegistries.ITEMS, ExactFeather.MOD_ID));
@@ -31,10 +31,10 @@ public class ItemsInit {
 
     // Block Items
     public static final RegistryObject<Item> RUBY_BLOCK_ITEM = ITEMS.register("ruby_block",
-            () -> new BlockItem(BlocksInit.RUBY_BLOCK.get(), new Item.Properties().tab(ExactFeather.TAB)));
+            () -> new BlockItem(BlockInit.RUBY_BLOCK.get(), new Item.Properties().tab(ExactFeather.TAB)));
 
     public static final RegistryObject<Item> RUBY_ORE_ITEM = ITEMS.register("ruby_ore",
-            () -> new BlockItem(BlocksInit.RUBY_ORE.get(), new Item.Properties().tab(ExactFeather.TAB)));
+            () -> new BlockItem(BlockInit.RUBY_ORE.get(), new Item.Properties().tab(ExactFeather.TAB)));
 
     // Tools
     public static final RegistryObject<SwordItem> RUBY_SWORD = ITEMS.register("ruby_sword",

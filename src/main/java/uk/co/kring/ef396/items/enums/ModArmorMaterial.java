@@ -5,7 +5,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.crafting.Ingredient;
 import uk.co.kring.ef396.ExactFeather;
-import uk.co.kring.ef396.initializers.ItemsInit;
+import uk.co.kring.ef396.initializers.ItemInit;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -14,8 +14,8 @@ import java.util.function.Supplier;
 
 public enum ModArmorMaterial implements ArmorMaterial {
 
-    RUBY(ExactFeather.MOD_ID + ":ruby", 25, new int[] { 2, 5, 6, 2 }, 18,
-            SoundEvents.ARMOR_EQUIP_GENERIC, 0, () -> { return Ingredient.of(ItemsInit.RUBY.get()); },0);
+    RUBY(ExactFeather.MOD_ID + ":ruby", 25, new int[] { 2, 5, 6, 2 }, 27,
+            SoundEvents.ARMOR_EQUIP_GENERIC, 0, () -> { return Ingredient.of(ItemInit.RUBY.get()); },0);
 
     private static final int[] MAX_DAMAGE_ARRAY = new int[] { 11, 16, 15, 13 };
     private final String name;

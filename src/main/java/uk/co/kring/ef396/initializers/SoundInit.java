@@ -13,8 +13,7 @@ public class SoundInit {
     public static final RegistryMap<SoundEvent> SOUNDS
             = new RegistryMap<SoundEvent>(DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, ExactFeather.MOD_ID));
 
-    public static final RegistryObject<SoundEvent> NAME
-            = SOUNDS.register("name", () -> new SoundEvent(new ResourceLocation(ExactFeather.MOD_ID, "name")));
-
+    public static final RegistryObject<SoundEvent> ERROR
+            = SOUNDS.register("error", () -> new SoundEvent(new ResourceLocation(ExactFeather.MOD_ID, "error")));
 
 }

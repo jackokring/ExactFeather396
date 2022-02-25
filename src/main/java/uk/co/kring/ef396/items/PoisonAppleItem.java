@@ -15,9 +15,9 @@ public class PoisonAppleItem extends Item implements IForgeRegistryEntry<Item> {
                 .food((new FoodProperties.Builder())
                         .nutrition(4)
                         .saturationMod(1.2f)
-                        .effect(new MobEffectInstance(MobEffects.WITHER, 300, 0), 1)
-                        .effect(new MobEffectInstance(MobEffects.POISON, 300, 1), 1)
-                        .effect(new MobEffectInstance(MobEffects.HUNGER, 300, 0), 0.3f)
+                        .effect(() -> new MobEffectInstance(MobEffects.WITHER, 300, 0), 1)
+                        .effect(() -> new MobEffectInstance(MobEffects.POISON, 300, 1), 1)
+                        .effect(() -> new MobEffectInstance(MobEffects.HUNGER, 300, 0), 0.3f)
                         .alwaysEat()
                         .build())
         );

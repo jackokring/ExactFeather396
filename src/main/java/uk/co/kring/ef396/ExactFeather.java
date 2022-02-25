@@ -3,9 +3,9 @@ package uk.co.kring.ef396;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.eventbus.api.IEventBus;
-import uk.co.kring.ef396.initializers.BlocksInit;
+import uk.co.kring.ef396.initializers.BlockInit;
 import uk.co.kring.ef396.initializers.EntityInit;
-import uk.co.kring.ef396.initializers.ItemsInit;
+import uk.co.kring.ef396.initializers.ItemInit;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -28,8 +28,8 @@ public class ExactFeather {
         bus.addListener(this::setup);
         bus.addListener(this::doClientStuff);
 
-        BlocksInit.BLOCKS.register(bus);
-        ItemsInit.ITEMS.register(bus);
+        BlockInit.BLOCKS.register(bus);
+        ItemInit.ITEMS.register(bus);
         EntityInit.ENTITIES.register(bus);
         SoundInit.SOUNDS.register(bus);
 
@@ -48,7 +48,7 @@ public class ExactFeather {
     public static final CreativeModeTab TAB = new CreativeModeTab("ef396") {
         @Override
         public ItemStack makeIcon() {
-            return new ItemStack(ItemsInit.RUBY.get());
+            return new ItemStack(ItemInit.RUBY.get());
         }
     };
 }

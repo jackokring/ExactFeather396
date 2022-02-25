@@ -50,6 +50,16 @@ public class RegistryMap<T extends IForgeRegistryEntry<T>> extends PriorityHashM
     }
 
     @Override
+    public Supplier<? extends T> overwrite(String key, Supplier<? extends T> value) {
+        exception();
+        return null;
+    }
+
+    public T getInstance(String key) {
+        return get(key).get();
+    }
+
+    @Override
     public int size() {
         getEntries();
         return super.size();

@@ -21,7 +21,7 @@ import uk.co.kring.ef396.ExactFeather;
 import uk.co.kring.ef396.initializers.EntityInit;
 import net.minecraft.world.entity.EntityType;
 
-public class HogEntity extends Animal {
+public class HogEntity extends Animal implements AttributeCreator {
 
     private static final Ingredient TEMPTATION_ITEMS
             = Ingredient.of(Items.CARROT, Items.POTATO, Items.BEETROOT);
