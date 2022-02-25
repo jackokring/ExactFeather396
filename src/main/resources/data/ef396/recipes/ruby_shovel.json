@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern":
+  [
+    " x ",
+    " w ",
+    " w "
+  ],
+  "key":
+  {
+    "x":
+    {
+      "tag": "ef396:ruby"
+    },
+    "w":
+    {
+      "tag": "minecraft:stick"
+    }
+  },
+  "result":
+  {
+    "item": "ef396:ruby_shovel",
+    "count": 1
+  }
+}

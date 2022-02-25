@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern":
+  [
+    "xxx",
+    " w ",
+    " w "
+  ],
+  "key":
+  {
+    "x":
+    {
+      "tag": "ef396:ruby"
+    },
+    "w":
+    {
+      "tag": "minecraft:stick"
+    }
+  },
+  "result":
+  {
+    "item": "ef396:ruby_pickaxe",
+    "count": 1
+  }
+}

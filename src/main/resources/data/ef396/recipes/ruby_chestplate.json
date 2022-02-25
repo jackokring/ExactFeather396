@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern":
+  [
+    "x x",
+    "xxx",
+    "xxx"
+  ],
+  "key":
+  {
+    "x":
+    {
+      "tag": "ef396:ruby"
+    }
+  },
+  "result":
+  {
+    "item": "ef396:ruby_chestplate",
+    "count": 1
+  }
+}

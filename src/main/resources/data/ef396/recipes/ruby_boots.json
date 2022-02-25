@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern":
+  [
+    "   ",
+    "x x",
+    "x x"
+  ],
+  "key":
+  {
+    "x":
+    {
+      "tag": "ef396:ruby"
+    }
+  },
+  "result":
+  {
+    "item": "ef396:ruby_boots",
+    "count": 1
+  }
+}

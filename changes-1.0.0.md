@@ -11,6 +11,9 @@
 * Added `RegistryMap` for index hashing.
 * Added `PriorityHashMap` for first entry priority. Includes `overwrite()` for `super.put()` behaviour.
 * `PoisonAppleItem` replaces unmapped items.
+* `RubyBlock` replaces unmapped blocks.
+* `HogEntity` replaces unmapped mobs.
+* `error` replaces unmapped sounds.
 
 ### TODO
 
