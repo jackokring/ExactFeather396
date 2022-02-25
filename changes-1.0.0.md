@@ -14,8 +14,10 @@
 * `RubyBlock` replaces unmapped blocks.
 * `HogEntity` replaces unmapped mobs.
 * `error` replaces unmapped sounds.
+* Added tree view of data directory.
 
 ### TODO
 
 * Created workarounds when current code not possible due to version bump.
 * Fixed the `Hog` to the latest code examples.
+* Implement some AI.

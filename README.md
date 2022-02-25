@@ -7,3 +7,5 @@ Licence is [**MIT**](https://en.wikipedia.org/wiki/MIT_License) for easy use.
 ### Releases when Available
 [Release Page](https://github.com/jackokring/ExactFeather396/releases) for the latest binary `*.jar` releases.
 The automatic module update notification files are supplied where possible.
+
+[Tree view of data directory](https://github.com/jackokring/ExactFeather396/blob/main/datatree.md) for understanding where to locate resources.
