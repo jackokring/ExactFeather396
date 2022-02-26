@@ -10,6 +10,7 @@ import uk.co.kring.ef396.items.enums.ModArmorMaterial;
 import uk.co.kring.ef396.items.enums.ModItemTier;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import uk.co.kring.ef396.utilities.Configurator;
 import uk.co.kring.ef396.utilities.RegistryMap;
 
 public class ItemInit {
@@ -22,7 +23,8 @@ public class ItemInit {
             () -> new Item(new Item.Properties().tab(ExactFeather.TAB)));
 
     public static final RegistryObject<PoisonAppleItem> POISON_APPLE
-            = ITEMS.register("poison_apple", PoisonAppleItem::new);
+            = ITEMS.register("poison_apple", PoisonAppleItem::new,
+            Configurator.SERVER, (builder) -> PoisonAppleItem.loadConfig(builder));
 
     public static final RegistryObject<ForgeSpawnEggItem> HOG_SPAWN_EGG
             = ITEMS.register("hog_spawn_egg",

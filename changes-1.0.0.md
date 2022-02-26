@@ -15,6 +15,7 @@
 * `HogEntity` replaces unmapped mobs.
 * `error` replaces unmapped sounds.
 * Added tree view of data directory.
+* `Configurator` class easy implements a lot of the boilerplate for configuration files in a reduced number of classes.
 
 ### TODO
 

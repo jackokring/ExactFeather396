@@ -21,7 +21,7 @@ import uk.co.kring.ef396.ExactFeather;
 import uk.co.kring.ef396.initializers.EntityInit;
 import net.minecraft.world.entity.EntityType;
 
-public class HogEntity extends Animal implements AttributeCreator {
+public class HogEntity extends Animal {
 
     private static final Ingredient TEMPTATION_ITEMS
             = Ingredient.of(Items.CARROT, Items.POTATO, Items.BEETROOT);
@@ -30,12 +30,6 @@ public class HogEntity extends Animal implements AttributeCreator {
 
     public HogEntity(EntityType<? extends Animal> type, Level worldIn) {
         super(type, worldIn);
-    }
-
-    public static AttributeSupplier.Builder createAttributes() {//TODO
-        return Mob.createMobAttributes()
-                .add(Attributes.MAX_HEALTH, 10.0D)
-                .add(Attributes.MOVEMENT_SPEED, 0.25D);
     }
 
     @Override

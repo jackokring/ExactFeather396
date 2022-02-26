@@ -14,6 +14,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.co.kring.ef396.initializers.SoundInit;
+import uk.co.kring.ef396.utilities.Configurator;
 
 @Mod("ef396")
 public class ExactFeather {
@@ -28,12 +29,23 @@ public class ExactFeather {
         bus.addListener(this::setup);
         bus.addListener(this::doClientStuff);
 
+        // a configuration handler
+        // names field etc.
+        // look at PoisonAppleItem
+        // and its ItemInit entry
+        // labelling done so flat for config entries
+        // in handler method
+        Configurator config = new Configurator();
+
         BlockInit.BLOCKS.register(bus);
         ItemInit.ITEMS.register(bus);
         EntityInit.ENTITIES.register(bus);
         SoundInit.SOUNDS.register(bus);
 
         MinecraftForge.EVENT_BUS.register(this);
+
+        // build configuration
+        config.build();
     }
 
     private void setup(final FMLCommonSetupEvent event) {

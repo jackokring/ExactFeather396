@@ -1,14 +1,12 @@
 package uk.co.kring.ef396.utilities;
 
+import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.*;
 
 import java.util.Collection;
 import java.util.Set;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.Function;
-import java.util.function.Supplier;
+import java.util.function.*;
 
 public class RegistryMap<T extends IForgeRegistryEntry<T>> extends PriorityHashMap<String, Supplier<? extends T>> {
 
@@ -17,6 +15,15 @@ public class RegistryMap<T extends IForgeRegistryEntry<T>> extends PriorityHashM
 
     public RegistryMap(DeferredRegister<T> register) {
         this.register = register;
+    }
+
+    public <I extends T> RegistryObject<I> register(String name, Supplier<? extends I> sup,
+                                                    ForgeConfigSpec.Builder builder,
+                                                    Consumer<ForgeConfigSpec.Builder> user) {
+        builder.push(name).comment("In registry " + register.toString());//name of registry
+        user.accept(builder);
+        builder.pop();
+        return register.register(name, sup);
     }
 
     // TODO put name manglers here??

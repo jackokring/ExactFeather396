@@ -4,6 +4,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
+import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import uk.co.kring.ef396.ExactFeather;
 
@@ -21,5 +22,9 @@ public class PoisonAppleItem extends Item implements IForgeRegistryEntry<Item> {
                         .alwaysEat()
                         .build())
         );
+    }
+
+    public static void loadConfig(ForgeConfigSpec.Builder builder) {
+
     }
 }
