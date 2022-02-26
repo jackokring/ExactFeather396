@@ -25,7 +25,10 @@ public class HogModel<T extends HogEntity> extends EntityModel<T> implements Lay
         throw new UnsupportedOperationException("LayerHandler.createBodyLayer() not implemented!");
     }
 
-    public static AttributeSupplier.Builder createAttributes() {//TODO
+    public static AttributeSupplier.Builder createAttributes() {
+        // most attributes seem to be supplied animator parameters
+        // I think it allows typing based on simple model differentiation
+        // freeing the entity to process and not be involved with simple variants
         return Mob.createMobAttributes()
                 .add(Attributes.MAX_HEALTH, 10.0D)
                 .add(Attributes.MOVEMENT_SPEED, 0.25D);
