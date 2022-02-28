@@ -2,6 +2,7 @@ package uk.co.kring.ef396;
 
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.IEventBus;
 import uk.co.kring.ef396.initializers.BlockInit;
 import uk.co.kring.ef396.initializers.EntityInit;
@@ -14,6 +15,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.co.kring.ef396.initializers.SoundInit;
+import uk.co.kring.ef396.items.enums.ModArmorMaterial;
 import uk.co.kring.ef396.utilities.Configurator;
 
 @Mod("ef396")
@@ -21,6 +23,8 @@ public class ExactFeather {
 
     public static final Logger LOGGER = LogManager.getLogger();
     public static final String MOD_ID = "ef396";
+
+    public static ForgeConfigSpec.BooleanValue DEBUG;
 
     public ExactFeather() {
 
@@ -35,7 +39,8 @@ public class ExactFeather {
         // and its ItemInit entry
         // labelling done so flat for config entries
         // in handler method
-        Configurator config = new Configurator();
+        Configurator.section("module_global", Configurator.COMMON,
+                (builder) -> setConfig(builder));
 
         BlockInit.BLOCKS.register(bus);
         ItemInit.ITEMS.register(bus);
@@ -45,7 +50,12 @@ public class ExactFeather {
         MinecraftForge.EVENT_BUS.register(this);
 
         // build configuration
-        config.build();
+        Configurator.build();
+    }
+
+    private void setConfig(ForgeConfigSpec.Builder builder) {
+        builder.comment("Module debug flag");
+        DEBUG = builder.define("debug", false);
     }
 
     private void setup(final FMLCommonSetupEvent event) {

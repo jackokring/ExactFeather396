@@ -11,7 +11,9 @@ import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import uk.co.kring.ef396.ExactFeather;
@@ -21,7 +23,8 @@ import net.minecraft.world.entity.EntityType;
 public class HogEntity extends Animal {
 
     private static final Ingredient TEMPTATION_ITEMS
-            = Ingredient.of(Items.CARROT, Items.POTATO, Items.BEETROOT);
+            = Ingredient.of((ItemLike) Potions.THICK);
+    // At last a booze for an Entity
     private static final ResourceLocation LOOT_TABLE
             = new ResourceLocation(ExactFeather.MOD_ID, "entities/hog");
 

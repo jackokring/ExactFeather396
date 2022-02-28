@@ -18,17 +18,24 @@ public class ItemInit {
     public static final RegistryMap<Item> ITEMS
             = new RegistryMap<Item>(DeferredRegister.create(ForgeRegistries.ITEMS, ExactFeather.MOD_ID));
 
+    static {
+        Configurator.section("armor", Configurator.COMMON,
+                (builder) -> ModArmorMaterial.setConfig(builder));
+        Configurator.section("tools", Configurator.COMMON,
+                (builder) -> ModItemTier.setConfig(builder));
+    }
+
     // Items
     public static final RegistryObject<Item> RUBY = ITEMS.register("ruby",
             () -> new Item(new Item.Properties().tab(ExactFeather.TAB)));
 
     public static final RegistryObject<PoisonAppleItem> POISON_APPLE
             = ITEMS.register("poison_apple", PoisonAppleItem::new,
-            Configurator.SERVER, (builder) -> PoisonAppleItem.loadConfig(builder));
+            Configurator.COMMON, (builder) -> PoisonAppleItem.loadConfig(builder));
 
     public static final RegistryObject<ForgeSpawnEggItem> HOG_SPAWN_EGG
             = ITEMS.register("hog_spawn_egg",
-            () -> new ForgeSpawnEggItem(EntityInit.HOG, 0xffff00, 0x000000,
+            () -> new ForgeSpawnEggItem(EntityInit.HOG, 0x808080, 0x000000,
                     new Item.Properties().tab(ExactFeather.TAB).stacksTo(16)));
 
     // Block Items

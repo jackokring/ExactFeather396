@@ -12,7 +12,7 @@
 * Added `PriorityHashMap` for first entry priority. Includes `overwrite()` for `super.put()` behaviour.
 * `PoisonAppleItem` replaces unmapped items.
 * `RubyBlock` replaces unmapped blocks.
-* `HogEntity` replaces unmapped mobs.
+* `HogEntity` replaces unmapped mobs. Temptation via `THICK_POTION`.
 * `error` replaces unmapped sounds.
 * Added tree view of data directory.
 * `Configurator` class easy implements a lot of the boilerplate for configuration files in a reduced number of classes.

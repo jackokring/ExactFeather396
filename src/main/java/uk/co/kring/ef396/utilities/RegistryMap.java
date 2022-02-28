@@ -5,6 +5,7 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.*;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.*;
 
@@ -62,8 +63,11 @@ public class RegistryMap<T extends IForgeRegistryEntry<T>> extends PriorityHashM
         return null;
     }
 
-    public T getInstance(String key) {
-        return get(key).get();
+    public Optional<T> getOptional(String key) {
+        Supplier<? extends T> value = get(key);
+        T recalled = null;
+        if(value != null) recalled = value.get();
+        return Optional.ofNullable(recalled);//easier to use one of these
     }
 
     @Override

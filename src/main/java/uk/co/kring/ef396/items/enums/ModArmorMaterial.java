@@ -4,6 +4,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraftforge.common.ForgeConfigSpec;
 import uk.co.kring.ef396.ExactFeather;
 import uk.co.kring.ef396.initializers.ItemInit;
 import net.minecraft.world.item.ArmorMaterial;
@@ -14,9 +15,10 @@ import java.util.function.Supplier;
 
 public enum ModArmorMaterial implements ArmorMaterial {
 
-    RUBY(ExactFeather.MOD_ID + ":ruby", 25, new int[] { 2, 5, 6, 2 }, 27,
+    RUBY("ruby", 25, new int[] { 2, 5, 6, 2 }, 27,
             SoundEvents.ARMOR_EQUIP_GENERIC, 0, () -> { return Ingredient.of(ItemInit.RUBY.get()); },0);
 
+    private static ForgeConfigSpec.DoubleValue enchantScale;
     private static final int[] MAX_DAMAGE_ARRAY = new int[] { 11, 16, 15, 13 };
     private final String name;
     private final int maxDamageFactor; //Durability, Iron=15, Diamond=33, Gold=7, Leather=5
@@ -29,7 +31,7 @@ public enum ModArmorMaterial implements ArmorMaterial {
 
     ModArmorMaterial(String name, int maxDamageFactor, int[] damageReductionAmountArray, int enchantability,
                      SoundEvent soundEvent, float toughness, Supplier<Ingredient> repairMaterial, float knockbackResistance) {
-        this.name = name;
+        this.name = ExactFeather.MOD_ID + name;
         this.maxDamageFactor = maxDamageFactor;
         this.damageReductionAmountArray = damageReductionAmountArray;
         this.enchantability = enchantability;
@@ -37,6 +39,10 @@ public enum ModArmorMaterial implements ArmorMaterial {
         this.toughness = toughness;
         this.repairMaterial = repairMaterial;
         this.knockbackResistance = knockbackResistance;
+    }
+
+    public static void setConfig(ForgeConfigSpec.Builder builder) {
+        enchantScale = builder.defineInRange("enchantScale", 1.0f, 0.0f, 3.0f);
     }
 
     @Override
@@ -51,7 +57,7 @@ public enum ModArmorMaterial implements ArmorMaterial {
 
     @Override
     public int getEnchantmentValue() {
-        return this.enchantability;
+        return (int)(this.enchantability * enchantScale.get());
     }
 
     @Override

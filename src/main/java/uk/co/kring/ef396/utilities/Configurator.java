@@ -5,7 +5,9 @@ import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
 import uk.co.kring.ef396.ExactFeather;
 
-public class Configurator {
+import java.util.function.Consumer;
+
+public final class Configurator {
 
     public static final ForgeConfigSpec.Builder CLIENT = new ForgeConfigSpec.Builder();
     public static final ForgeConfigSpec.Builder COMMON = new ForgeConfigSpec.Builder();
@@ -16,5 +18,12 @@ public class Configurator {
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, COMMON.build());
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, SERVER.build());
         ExactFeather.LOGGER.warn("Configuration built.");
+    }
+
+    public static void section(String name, ForgeConfigSpec.Builder builder,
+                               Consumer<ForgeConfigSpec.Builder> user) {
+        builder.push(name).comment("Global configurator setting");
+        user.accept(builder);
+        builder.pop();
     }
 }
