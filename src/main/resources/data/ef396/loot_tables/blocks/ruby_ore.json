@@ -3,12 +3,14 @@
   "pools": [
     {
       "rolls": 1,
+      "bonus_rolls": 0,
       "entries": [
         {
           "type": "minecraft:alternatives",
           "children": [
             {
               "type": "minecraft:item",
+              "name": "ef396:ruby_ore",
               "conditions": [
                 {
                   "condition": "minecraft:match_tool",
@@ -23,30 +25,21 @@
                     ]
                   }
                 }
-              ],
-              "name": "ef396:ruby_ore"
+              ]
             },
             {
               "type": "minecraft:item",
+              "name": "ef396:ruby",
               "functions": [
-                {
-                  "function": "minecraft:set_count",
-                  "count": {
-                    "min": 1,
-                    "max": 2,
-                    "type": "minecraft:uniform"
-                  }
-                },
                 {
                   "function": "minecraft:apply_bonus",
                   "enchantment": "minecraft:fortune",
-                  "formula": "minecraft:uniform_bonus_count",
-                  "parameters": {
-                    "bonusMultiplier": 1
-                  }
+                  "formula": "minecraft:ore_drops"
+                },
+                {
+                  "function": "minecraft:explosion_decay"
                 }
-              ],
-              "name": "ef396:ruby"
+              ]
             }
           ]
         }
