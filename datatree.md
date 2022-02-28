@@ -7,8 +7,10 @@ data
 │   │   ├── blocks
 │   │   │   ├── ruby_block.json
 │   │   │   └── ruby_ore.json
-│   │   └── entities
-│   │       └── hog.json
+│   │   ├── chests
+│   │   ├── entities
+│   │   │   └── hog.json
+│   │   └── gameplay
 │   ├── recipes
 │   │   ├── ruby_axe.json
 │   │   ├── ruby_block.json
@@ -45,5 +47,4 @@ data
             ├── mineable
             │   └── pickaxe.json
             └── needs_stone_tool.json
-
 ```

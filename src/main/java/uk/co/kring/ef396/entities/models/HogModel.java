@@ -34,6 +34,14 @@ public class HogModel<T extends HogEntity> extends EntityModel<T> implements Lay
                 .add(Attributes.MOVEMENT_SPEED, 0.25D);
     }
 
+    public static float hitX() {
+        return 1.0f;
+    }
+
+    public static float hitY() {
+        return 1.0f;
+    }
+
     @Override
     public void renderToBuffer(PoseStack PoseStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha){
 

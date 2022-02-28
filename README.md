@@ -9,3 +9,5 @@ Licence is [**MIT**](https://en.wikipedia.org/wiki/MIT_License) for easy use.
 The automatic module update notification files are supplied where possible.
 
 [Tree view of data directory](https://github.com/jackokring/ExactFeather396/blob/main/datatree.md) for understanding where to locate resources.
+
+[Tree view of assets directory](https://github.com/jackokring/ExactFeather396/blob/main/assettree.md) for understanding where to locate resources.

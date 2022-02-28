@@ -30,4 +30,12 @@ public interface LayerHandler {
     public static AttributeSupplier.Builder createAttributes() {
         throw new UnsupportedOperationException("LayerHandler.createAttributes() not implemented!");
     }
+
+    public static float hitX() {
+        return 1.0f;
+    }
+
+    public static float hitY() {
+        return 1.0f;
+    }
 }
