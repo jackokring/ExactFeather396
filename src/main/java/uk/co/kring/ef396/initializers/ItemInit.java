@@ -2,6 +2,7 @@ package uk.co.kring.ef396.initializers;
 
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.*;
+import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.registries.RegistryObject;
 import uk.co.kring.ef396.ExactFeather;
@@ -44,6 +45,10 @@ public class ItemInit {
 
     public static final RegistryObject<Item> RUBY_ORE_ITEM = ITEMS.register("ruby_ore",
             () -> new BlockItem(BlockInit.RUBY_ORE.get(), new Item.Properties().tab(ExactFeather.TAB)));
+
+    // Potion Items
+    public static final RegistryObject<Item> POTION_1_ITEM = ITEMS.register("p1",
+            () -> new PotionItem.Properties().tab(ExactFeather.TAB));//TODO
 
     // Tools
     public static final RegistryObject<SwordItem> RUBY_SWORD = ITEMS.register("ruby_sword",

@@ -4,9 +4,7 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.IEventBus;
-import uk.co.kring.ef396.initializers.BlockInit;
-import uk.co.kring.ef396.initializers.EntityInit;
-import uk.co.kring.ef396.initializers.ItemInit;
+import uk.co.kring.ef396.initializers.*;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -14,7 +12,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import uk.co.kring.ef396.initializers.SoundInit;
 import uk.co.kring.ef396.items.enums.ModArmorMaterial;
 import uk.co.kring.ef396.utilities.Configurator;
 
@@ -43,6 +40,7 @@ public class ExactFeather {
                 (builder) -> setConfig(builder));
 
         BlockInit.BLOCKS.register(bus);
+        BrewInit.POTIONS.register(bus);
         ItemInit.ITEMS.register(bus);
         EntityInit.ENTITIES.register(bus);
         SoundInit.SOUNDS.register(bus);

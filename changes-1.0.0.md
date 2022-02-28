@@ -18,7 +18,5 @@
 * `Configurator` class easy implements a lot of the boilerplate for configuration files in a reduced number of classes.
 
 ### TODO
-
-* Created workarounds when current code not possible due to version bump.
-* Fixed the `Hog` to the latest code examples.
 * Implement some AI.
+* Add some `Potion` mechanic.
