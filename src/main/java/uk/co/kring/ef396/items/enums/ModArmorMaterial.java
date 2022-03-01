@@ -18,7 +18,7 @@ public enum ModArmorMaterial implements ArmorMaterial {
     RUBY("ruby", 25, new int[] { 2, 5, 6, 2 }, 27,
             SoundEvents.ARMOR_EQUIP_GENERIC, 0, () -> { return Ingredient.of(ItemInit.RUBY.get()); },0);
 
-    private static ForgeConfigSpec.DoubleValue enchantScale;
+    private static float enchantScale;
     private static final int[] MAX_DAMAGE_ARRAY = new int[] { 11, 16, 15, 13 };
     private final String name;
     private final int maxDamageFactor; //Durability, Iron=15, Diamond=33, Gold=7, Leather=5
@@ -42,7 +42,8 @@ public enum ModArmorMaterial implements ArmorMaterial {
     }
 
     public static void setConfig(ForgeConfigSpec.Builder builder) {
-        enchantScale = builder.defineInRange("enchantScale", 1.0f, 0.0f, 3.0f);
+        enchantScale = builder.defineInRange("enchantScale", 1.0f, 0.0f, 3.0f)
+                .get().floatValue();
     }
 
     @Override
@@ -57,7 +58,7 @@ public enum ModArmorMaterial implements ArmorMaterial {
 
     @Override
     public int getEnchantmentValue() {
-        return (int)(this.enchantability * enchantScale.get());
+        return (int)(this.enchantability * enchantScale);
     }
 
     @Override

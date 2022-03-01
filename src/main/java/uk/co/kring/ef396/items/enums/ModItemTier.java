@@ -13,7 +13,7 @@ public enum ModItemTier implements Tier {
         return Ingredient.of(ItemInit.RUBY.get());
     });
 
-    private static ForgeConfigSpec.DoubleValue enchantScale;
+    private static float enchantScale;
     private final int harvestLevel;
     private final int maxUses;
     private final float efficiency;
@@ -31,7 +31,8 @@ public enum ModItemTier implements Tier {
     }
 
     public static void setConfig(ForgeConfigSpec.Builder builder) {
-        enchantScale = builder.defineInRange("enchantScale", 1.0f, 0.0f, 3.0f);
+        enchantScale = builder.defineInRange("enchantScale", 1.0f, 0.0f, 3.0f)
+                .get().floatValue();
     }
 
     @Override
@@ -56,7 +57,7 @@ public enum ModItemTier implements Tier {
 
     @Override
     public int getEnchantmentValue() {
-        return (int)(this.enchantability * enchantScale.get());
+        return (int)(this.enchantability * enchantScale);
     }
 
     @Override

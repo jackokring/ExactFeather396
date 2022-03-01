@@ -20,7 +20,7 @@ public class ExactFeather {
     public static final String MOD_ID = "ef396";
     public static final ThisLogger LOGGER = new ThisLogger(MOD_ID);
 
-    public static ForgeConfigSpec.BooleanValue DEBUG;
+    public static boolean DEBUG;
 
     public ExactFeather() {
 
@@ -46,7 +46,7 @@ public class ExactFeather {
 
     private void setConfig(ForgeConfigSpec.Builder builder) {
         builder.comment("Module debug flag");
-        DEBUG = builder.define("debug", false);
+        DEBUG = builder.define("debug", false).get();
     }
 
     private void setup(final FMLCommonSetupEvent event) {
