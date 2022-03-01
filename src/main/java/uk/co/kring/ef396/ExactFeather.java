@@ -11,6 +11,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import uk.co.kring.ef396.utilities.Configurator;
+import uk.co.kring.ef396.utilities.Registries;
 import uk.co.kring.ef396.utilities.ThisLogger;
 
 @Mod("ef396")
@@ -36,12 +37,7 @@ public class ExactFeather {
         // in handler method
         Configurator.configNode("module_global", (builder) -> setConfig(builder));
 
-        BlockInit.BLOCKS.register(bus);
-        ItemInit.ITEMS.register(bus);
-        BrewInit.POTIONS.register(bus);
-        EntityInit.ENTITIES.register(bus);
-        SoundInit.SOUNDS.register(bus);
-
+        Registries.register(bus);
         MinecraftForge.EVENT_BUS.register(this);
 
         // build configuration

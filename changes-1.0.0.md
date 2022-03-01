@@ -16,6 +16,7 @@
 * `error.ogg` replaces unmapped sounds.
 * Added tree view of data directory.
 * `Configurator` class easy implements a lot of the boilerplate for configuration files in a reduced number of classes.
+* Added `Registries` for global access to all without having to use specific class name too.
 * `Potion` added.
 
 ### TODO
