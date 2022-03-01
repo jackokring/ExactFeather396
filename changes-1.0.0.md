@@ -9,14 +9,15 @@
 * Class refactoring when necessary or logical.
 * Removed `Oven` so need new container start. I'm likely to do some `Potion` thing.
 * Added `RegistryMap` for index hashing. The class is synchronized for read only with an entries cache. Can return a `Optional<T>` via `getOptional()` for better coding style.
-* Added `PriorityHashMap` for first entry priority. Includes `overwrite()` for `super.put()` behaviour.
-* `PoisonAppleItem` replaces unmapped items. Uses configuration.
+* Added `PriorityHashMap` for first entry priority. Includes `overwrite()` for `super.put()` behaviour. Also includes `getViolations()` for a `List` of the pretenders given a key.
+* `PoisonAppleItem` replaces unmapped items. Uses configuration. Stacks to 33 items.
 * `RubyBlock` replaces unmapped blocks.
-* `HogEntity` replaces unmapped mobs. Temptation via `(ItemLike)Potions.THICK`.
+* `HogEntity` replaces unmapped mobs. Temptation via `(ItemLike) Potions.THICK`.
 * `error.ogg` replaces unmapped sounds.
 * Added tree view of data directory.
 * `Configurator` class easy implements a lot of the boilerplate for configuration files in a reduced number of classes.
+* `Potion` added.
 
 ### TODO
 * Implement some AI.
-* Add some `Potion` mechanic.
+* Name potion. Decide effects.
