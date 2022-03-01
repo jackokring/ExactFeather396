@@ -22,3 +22,4 @@
 ### TODO
 * Implement some AI.
 * Name potion. Decide effects.
+* Maybe a custom effect.
