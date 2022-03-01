@@ -1,6 +1,5 @@
 package uk.co.kring.ef396.utilities;
 
-import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.*;
 
@@ -19,7 +18,7 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
     }
 
     public <I extends T> RegistryObject<I> register(String name, Supplier<? extends I> sup,
-                                                    Consumer<ForgeConfigSpec.Builder> user) {
+                                                    Consumer<Configurator.Builder> user) {
         Configurator.configRegistryEntry(register, name, user);
         return register.register(name, sup);
     }

@@ -1,9 +1,9 @@
 package uk.co.kring.ef396.items.enums;
 
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraftforge.common.ForgeConfigSpec;
 import uk.co.kring.ef396.initializers.ItemInit;
 import net.minecraft.world.item.Tier;
+import uk.co.kring.ef396.utilities.Configurator;
 
 import java.util.function.Supplier;
 
@@ -30,9 +30,8 @@ public enum ModItemTier implements Tier {
         this.repairMaterial = repairMaterial;
     }
 
-    public static void setConfig(ForgeConfigSpec.Builder builder) {
-        enchantScale = builder.defineInRange("enchantScale", 1.0f, 0.0f, 3.0f)
-                .get().floatValue();
+    public static void setConfig(Configurator.Builder builder) {
+        enchantScale = builder.readFloat("enchantScale", 1.0f, 0.0f, 3.0f);
     }
 
     @Override

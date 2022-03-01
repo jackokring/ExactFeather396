@@ -10,9 +10,24 @@ import java.util.function.Consumer;
 
 public final class Configurator {
 
-    private static final ForgeConfigSpec.Builder CLIENT = new ForgeConfigSpec.Builder();
-    private static final ForgeConfigSpec.Builder COMMON = new ForgeConfigSpec.Builder();
-    private static final ForgeConfigSpec.Builder SERVER = new ForgeConfigSpec.Builder();
+    public final static class Builder extends ForgeConfigSpec.Builder {
+
+        public float readFloat(String name, float def, float low, float hi) {
+            return this.defineInRange(name, def, low, hi).get().floatValue();
+        }
+
+        public boolean readBoolean(String name, boolean def) {
+            return this.define(name, def).get();
+        }
+
+        public int readInt(String name, int def, int low, int hi) {
+            return this.defineInRange(name, def, low, hi).get();
+        }
+    }
+
+    private static final Builder CLIENT = new Builder();
+    private static final Builder COMMON = new Builder();
+    private static final Builder SERVER = new Builder();
 
     public static void build() {
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, CLIENT.build());
@@ -21,27 +36,26 @@ public final class Configurator {
         ExactFeather.LOGGER.warn("Configuration built.");
     }
 
-    private static void section(String name, ForgeConfigSpec.Builder builder,
-                               Consumer<ForgeConfigSpec.Builder> user) {
+    private static void section(String name, Builder builder, Consumer<Builder> user) {
         builder.push(name);
         user.accept(builder);
         builder.pop();
     }
 
     public static void configRegistryEntry(DeferredRegister<?> register, String name,
-                                           Consumer<ForgeConfigSpec.Builder> user) {
+                                           Consumer<Builder> user) {
         section(register.toString() + "." + name, SERVER, user);
     }
 
-    public static void configGame(String name, Consumer<ForgeConfigSpec.Builder> user) {
+    public static void configGame(String name, Consumer<Builder> user) {
         section(name, SERVER, user);//single edit unified config (not player override)
     }
 
-    public static void configTart(String name, Consumer<ForgeConfigSpec.Builder> user) {
+    public static void configTart(String name, Consumer<Builder> user) {
         section(name, CLIENT, user);//per user edit config
     }
 
-    public static void configNode(String name, Consumer<ForgeConfigSpec.Builder> user) {
+    public static void configNode(String name, Consumer<Builder> user) {
         section(name, COMMON, user);//network node config
     }
 }

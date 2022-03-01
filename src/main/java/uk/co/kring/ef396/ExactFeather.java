@@ -2,7 +2,6 @@ package uk.co.kring.ef396;
 
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.IEventBus;
 import uk.co.kring.ef396.initializers.*;
 import net.minecraftforge.common.MinecraftForge;
@@ -44,9 +43,9 @@ public class ExactFeather {
         Configurator.build();
     }
 
-    private void setConfig(ForgeConfigSpec.Builder builder) {
+    private void setConfig(Configurator.Builder builder) {
         builder.comment("Module debug flag");
-        DEBUG = builder.define("debug", false).get();
+        DEBUG = builder.readBoolean("debug", false);
     }
 
     private void setup(final FMLCommonSetupEvent event) {

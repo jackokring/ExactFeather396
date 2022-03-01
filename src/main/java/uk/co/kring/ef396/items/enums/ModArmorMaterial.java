@@ -4,12 +4,12 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraftforge.common.ForgeConfigSpec;
 import uk.co.kring.ef396.ExactFeather;
 import uk.co.kring.ef396.initializers.ItemInit;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import uk.co.kring.ef396.utilities.Configurator;
 
 import java.util.function.Supplier;
 
@@ -41,9 +41,8 @@ public enum ModArmorMaterial implements ArmorMaterial {
         this.knockbackResistance = knockbackResistance;
     }
 
-    public static void setConfig(ForgeConfigSpec.Builder builder) {
-        enchantScale = builder.defineInRange("enchantScale", 1.0f, 0.0f, 3.0f)
-                .get().floatValue();
+    public static void setConfig(Configurator.Builder builder) {
+        enchantScale = builder.readFloat("enchantScale", 1.0f, 0.0f, 3.0f);
     }
 
     @Override

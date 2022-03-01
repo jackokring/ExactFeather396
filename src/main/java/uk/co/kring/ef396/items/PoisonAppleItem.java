@@ -4,9 +4,9 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
-import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import uk.co.kring.ef396.ExactFeather;
+import uk.co.kring.ef396.utilities.Configurator;
 
 public class PoisonAppleItem extends Item implements IForgeRegistryEntry<Item> {
 
@@ -32,13 +32,10 @@ public class PoisonAppleItem extends Item implements IForgeRegistryEntry<Item> {
         );
     }
 
-    public static void loadConfig(ForgeConfigSpec.Builder builder) {
+    public static void loadConfig(Configurator.Builder builder) {
         builder.comment("Control probability of effects");
-        probWither = builder.defineInRange("probWither", 0.1f, 0.f, 1.0f)
-                .get().floatValue();
-        probPoison = builder.defineInRange("probPoison", 1.0f, 0.f, 1.0f)
-                .get().floatValue();
-        probHunger = builder.defineInRange("probHunger", 0.3f, 0.f, 1.0f)
-                .get().floatValue();
+        probWither = builder.readFloat("probWither", 0.1f, 0.f, 1.0f);
+        probPoison = builder.readFloat("probPoison", 1.0f, 0.f, 1.0f);
+        probHunger = builder.readFloat("probHunger", 0.3f, 0.f, 1.0f);
     }
 }
