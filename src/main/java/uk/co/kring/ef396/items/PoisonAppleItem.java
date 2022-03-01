@@ -27,7 +27,8 @@ public class PoisonAppleItem extends Item implements IForgeRegistryEntry<Item> {
                         .effect(() -> new MobEffectInstance(MobEffects.HUNGER, 300, 0),
                                 probHunger.get().floatValue())
                         .alwaysEat()
-                        .build())
+                        .build()
+                ).stacksTo(33)
         );
     }
 

@@ -20,10 +20,9 @@ public class ItemInit {
             = new RegistryMap<Item>(DeferredRegister.create(ForgeRegistries.ITEMS, ExactFeather.MOD_ID));
 
     static {
-        Configurator.section("armor", Configurator.COMMON,
-                (builder) -> ModArmorMaterial.setConfig(builder));
-        Configurator.section("tools", Configurator.COMMON,
-                (builder) -> ModItemTier.setConfig(builder));
+        // static tier configurators
+        Configurator.configGame("armor", (builder) -> ModArmorMaterial.setConfig(builder));
+        Configurator.configGame("tools", (builder) -> ModItemTier.setConfig(builder));
     }
 
     // Items
@@ -32,7 +31,7 @@ public class ItemInit {
 
     public static final RegistryObject<PoisonAppleItem> POISON_APPLE
             = ITEMS.register("poison_apple", PoisonAppleItem::new,
-            Configurator.COMMON, (builder) -> PoisonAppleItem.loadConfig(builder));
+                (builder) -> PoisonAppleItem.loadConfig(builder));
 
     public static final RegistryObject<ForgeSpawnEggItem> HOG_SPAWN_EGG
             = ITEMS.register("hog_spawn_egg",
@@ -45,10 +44,6 @@ public class ItemInit {
 
     public static final RegistryObject<Item> RUBY_ORE_ITEM = ITEMS.register("ruby_ore",
             () -> new BlockItem(BlockInit.RUBY_ORE.get(), new Item.Properties().tab(ExactFeather.TAB)));
-
-    // Potion Items
-    public static final RegistryObject<Item> POTION_1_ITEM = ITEMS.register("p1",
-            () -> new PotionItem.Properties().tab(ExactFeather.TAB));//TODO
 
     // Tools
     public static final RegistryObject<SwordItem> RUBY_SWORD = ITEMS.register("ruby_sword",

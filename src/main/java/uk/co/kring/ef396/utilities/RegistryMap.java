@@ -9,7 +9,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.*;
 
-public class RegistryMap<T extends IForgeRegistryEntry<T>> extends PriorityHashMap<String, Supplier<? extends T>> {
+public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends PriorityHashMap<String, Supplier<? extends T>> {
 
     private final DeferredRegister<T> register;
     private Collection<RegistryObject<T>> cache;
@@ -19,11 +19,8 @@ public class RegistryMap<T extends IForgeRegistryEntry<T>> extends PriorityHashM
     }
 
     public <I extends T> RegistryObject<I> register(String name, Supplier<? extends I> sup,
-                                                    ForgeConfigSpec.Builder builder,
                                                     Consumer<ForgeConfigSpec.Builder> user) {
-        builder.push(name).comment("In registry " + register.toString());//name of registry
-        user.accept(builder);
-        builder.pop();
+        Configurator.configRegistryEntry(register, name, user);
         return register.register(name, sup);
     }
 
