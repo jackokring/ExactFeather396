@@ -72,4 +72,12 @@ public class HogEntity extends Zombie {
     protected void playStepSound(BlockPos pos, BlockState blockIn) {
         this.playSound(SoundEvents.PIG_STEP, 0.15F, 1.0F);
     }
+
+    public static float getSizeX() {
+        return 1.0f;
+    }
+
+    public static float getSizeY() {
+        return 1.0f;
+    }
 }

@@ -8,7 +8,6 @@ import uk.co.kring.ef396.ExactFeather;
 import uk.co.kring.ef396.entities.HogEntity;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-import uk.co.kring.ef396.entities.models.HogModel;
 import uk.co.kring.ef396.utilities.RegistryMap;
 
 public class EntityInit {
@@ -19,6 +18,6 @@ public class EntityInit {
     // Entity Types
     public static final RegistryObject<EntityType<HogEntity>> HOG = ENTITIES.register("hog",
             () -> EntityType.Builder.of(HogEntity::new, MobCategory.CREATURE)
-                    .sized(HogModel.hitX(), HogModel.hitY()) // Hit box Size
+                    .sized(HogEntity.getSizeX(), HogEntity.getSizeY()) // Hit box Size
                     .build(new ResourceLocation(ExactFeather.MOD_ID, "hog").toString()));
 }
