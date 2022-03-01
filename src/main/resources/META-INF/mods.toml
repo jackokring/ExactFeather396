@@ -2,11 +2,10 @@ modLoader="javafml"
 loaderVersion="[39,)" #mandatory This is typically bumped every Minecraft version by Forge. See our download page for lists of versions.
 license="MIT"
 # A URL to refer people to when problems occur with this mod
-#issueTrackerURL="https://change.me.to.your.issue.tracker.example.invalid/" #optional
 # A list of mods - how many allowed here is determined by the individual mod loader
 [[mods]]
 modId="ef396"
-version="1.0.0"
+version="${file.jarVersion}"
 displayName="ExactFeather396"
 # A URL to query for updates for this mod. See the JSON update specification https://mcforge.readthedocs.io/en/latest/gettingstarted/autoupdate/
 updateJSONURL="https://raw.githubusercontent.com/jackokring/ExactFeather396/main/update.json"
@@ -17,14 +16,10 @@ logoFile="ef396.png"
 credits="To the great Youtubed tutorials."
 authors="Jacko (ExactFeather396), TechnoVision (Tutorial)."
 description='''
-A mod with all the things I could add and found interesting. Started as a base tutorial and was expanded upon.
-
-I guess the Forge API evolving doesn't help as the pre-ender chest (teleport chest) mod I made so long ago wouldn't work with today's API.
-
-Have Fun!
+A mod with interesting things I found. Started from a tutorial and expanded on it. Have Fun!
 '''
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
-[[dependencies.examplemod]] #optional
+[[dependencies.ef396]] #optional
     # the modid of the dependency
     modId="forge" #mandatory
     # Does this dependency have to exist - if not, ordering below must be specified
@@ -36,7 +31,7 @@ Have Fun!
     # Side this dependency is applied on - BOTH, CLIENT or SERVER
     side="BOTH"
 # Here's another dependency
-[[dependencies.examplemod]]
+[[dependencies.ef396]]
     modId="minecraft"
     mandatory=true
 # This version range declares a minimum of the current minecraft version up to but not including the next major version
