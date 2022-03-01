@@ -2,25 +2,21 @@ package uk.co.kring.ef396.entities;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.ai.goal.*;
-import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import uk.co.kring.ef396.ExactFeather;
-import uk.co.kring.ef396.initializers.EntityInit;
 import net.minecraft.world.entity.EntityType;
 
-public class HogEntity extends Animal {
+public class HogEntity extends Zombie {
 
     private static final Ingredient TEMPTATION_ITEMS
             = Ingredient.of((ItemLike) Potions.THICK);
@@ -28,18 +24,23 @@ public class HogEntity extends Animal {
     private static final ResourceLocation LOOT_TABLE
             = new ResourceLocation(ExactFeather.MOD_ID, "entities/hog");
 
-    public HogEntity(EntityType<? extends Animal> type, Level worldIn) {
+    public HogEntity(EntityType<? extends Zombie> type, Level worldIn) {
         super(type, worldIn);
     }
 
     @Override
     protected void registerGoals() {
         super.registerGoals();
+        //breed and baby goals
+        //this.goalSelector.addGoal(2, new BreedGoal(this, 1.0D));
+        //this.goalSelector.addGoal(4, new FollowParentGoal(this, 1.1D));
+
+
         this.goalSelector.addGoal(0, new FloatGoal(this));
         this.goalSelector.addGoal(1, new PanicGoal(this, 1.25D));
-        this.goalSelector.addGoal(2, new BreedGoal(this, 1.0D));
+
         this.goalSelector.addGoal(3, new TemptGoal(this, 1.1D, TEMPTATION_ITEMS, false));
-        this.goalSelector.addGoal(4, new FollowParentGoal(this, 1.1D));
+
         this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 1.0D));
         this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 6.0F));
         this.goalSelector.addGoal(7, new RandomLookAroundGoal(this));
@@ -70,10 +71,5 @@ public class HogEntity extends Animal {
     @Override
     protected void playStepSound(BlockPos pos, BlockState blockIn) {
         this.playSound(SoundEvents.PIG_STEP, 0.15F, 1.0F);
-    }
-
-    @Override
-    public AgeableMob getBreedOffspring(ServerLevel level, AgeableMob mob) {
-        return EntityInit.HOG.get().create(level);
     }
 }

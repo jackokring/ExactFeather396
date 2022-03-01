@@ -1,8 +1,10 @@
 package uk.co.kring.ef396;
 
+import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.eventbus.api.IEventBus;
+import uk.co.kring.ef396.entities.renderers.HogRenderer;
 import uk.co.kring.ef396.initializers.*;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
@@ -53,7 +55,9 @@ public class ExactFeather {
     }
 
     private void doClientStuff(final FMLClientSetupEvent event) {
-
+        event.enqueueWork(() -> {
+            EntityRenderers.register(EntityInit.HOG.get(), HogRenderer::new);
+        });
     }
 
     // Custom CreativeModeTab TAB
