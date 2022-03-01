@@ -23,5 +23,9 @@
   "block.ef396.ruby_block": "Block of Ruby",
   "block.ef396.ruby_ore": "Ruby Ore",
 
-  "subtitles.ef396.error": "ERROR Sound"
+  "subtitles.ef396.error": "ERROR Sound",
+
+  "item.minecraft.potion.effect.p1": "Potion of 1",
+  "item.minecraft.splash_potion.effect.p1": "Splash Potion of 1",
+  "item.minecraft.lingering_potion.effect.p1": "Lingering Potion of 1"
 }

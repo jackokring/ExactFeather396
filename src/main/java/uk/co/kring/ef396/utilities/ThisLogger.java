@@ -12,6 +12,6 @@ public class ThisLogger {
     }
 
     public void warn(String say) {
-        LOGGER.warn(say);
+        LOGGER.warn(name + ": " + say);
     }
 }

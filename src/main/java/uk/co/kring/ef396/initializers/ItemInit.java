@@ -2,7 +2,6 @@ package uk.co.kring.ef396.initializers;
 
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.*;
-import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.registries.RegistryObject;
 import uk.co.kring.ef396.ExactFeather;

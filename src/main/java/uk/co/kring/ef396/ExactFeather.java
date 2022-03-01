@@ -54,7 +54,7 @@ public class ExactFeather {
     }
 
     private void setup(final FMLCommonSetupEvent event) {
-
+        event.enqueueWork(() -> BrewInit.createBrewing());//fix up brew recipes
     }
 
     private void doClientStuff(final FMLClientSetupEvent event) {
