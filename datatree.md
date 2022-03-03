@@ -38,13 +38,16 @@ data
 │       └── template_pool
 ├── forge
 │   └── tags
+│       ├── blocks
+│       │   └── ruby_ores.json
 │       └── items
-│           └── gems
-│               └── ruby.json
+│           └── gems.json
 └── minecraft
     └── tags
-        └── blocks
-            ├── mineable
-            │   └── pickaxe.json
-            └── needs_stone_tool.json
+        ├── blocks
+        │   ├── mineable
+        │   │   └── pickaxe.json
+        │   └── needs_stone_tool.json
+        └── items
+            └── piglin_loved.json
 ```
