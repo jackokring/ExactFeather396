@@ -1,4 +1,4 @@
-package uk.co.kring.ef396.utilities;
+package uk.co.kring.ef396.utilities.exceptions;
 
 public abstract class BaseCodeException extends Exception  {
 
@@ -14,8 +14,9 @@ public abstract class BaseCodeException extends Exception  {
         }
     }
 
-    public static final void throwAssist(BaseCodeException e) {
-        throw new RuntimeException(e);
+    public static final void throwAssist(String why, BaseCodeException e) {
+
+        throw new RuntimeException(why, e);
     }
 
     protected abstract void actionTry() throws BaseCodeException;

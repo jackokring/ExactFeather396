@@ -7,6 +7,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.ServerChatEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import uk.co.kring.ef396.ExactFeather;
@@ -21,6 +23,12 @@ public class LevelController {
     @SubscribeEvent
     public static void onCraftingTableOpen(ServerChatEvent event) {
         // Your Code Here
+    }
+
+    @SubscribeEvent
+    public static void onPlayerMade(PlayerSleepInBedEvent event) {
+        // TODO a night time tag attach?
+        //event.getPlayer();
     }
 
     @SubscribeEvent

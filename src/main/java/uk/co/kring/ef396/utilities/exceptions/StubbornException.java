@@ -1,4 +1,6 @@
-package uk.co.kring.ef396.utilities;
+package uk.co.kring.ef396.utilities.exceptions;
+
+import uk.co.kring.ef396.utilities.exceptions.BaseCodeException;
 
 public class StubbornException extends BaseCodeException {
 

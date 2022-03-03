@@ -1,14 +1,15 @@
 package uk.co.kring.ef396.utilities;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import uk.co.kring.ef396.utilities.exceptions.BaseCodeException;
+import uk.co.kring.ef396.utilities.exceptions.StubbornException;
+
+import java.util.*;
 
 public class PriorityHashMap<K, V> extends HashMap<K, V> {
 
-    private HashMap<K, List<V>> violations = new HashMap<>();
+    private final HashMap<K, List<V>> violations = new HashMap<>();
     private boolean closed = false;
+    private static final String msg = "Closed PriorityMap";
 
     @Override
     public V put(K key, V value) {
@@ -22,9 +23,21 @@ public class PriorityHashMap<K, V> extends HashMap<K, V> {
                 return super.put(key, value);
             }
         } else {
-            BaseCodeException.throwAssist(new StubbornException());//as it is difficult sometimes
+            BaseCodeException.throwAssist(msg, new StubbornException());//as it is difficult sometimes
             return null;
         }
+    }
+
+    public Optional<V> progress(K key) {
+        List<V> vi;
+        V val = null;
+        if((vi = violations.get(key)) != null) {
+            if((val = vi.get(0)) != null) {
+                overwrite(key, val);
+                vi.remove(0);
+            }
+        }
+        return Optional.ofNullable(val);
     }
 
     public void close() {
@@ -32,7 +45,12 @@ public class PriorityHashMap<K, V> extends HashMap<K, V> {
     }
 
     public V overwrite(K key, V value) {
-        return super.put(key, value);
+        if(!closed) {
+            return super.put(key, value);
+        } else {
+            BaseCodeException.throwAssist(msg, new StubbornException());
+            return null;
+        }
     }
 
     public List<V> getViolations(K key) {
