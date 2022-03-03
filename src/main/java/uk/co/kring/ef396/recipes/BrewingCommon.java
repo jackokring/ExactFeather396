@@ -12,9 +12,9 @@ import net.minecraftforge.registries.RegistryObject;
 
 public class BrewingCommon extends BrewingRecipe {
 
-    public BrewingCommon(ItemLike input, Item ingredient,
+    public BrewingCommon(Potion input, Item ingredient,
                          RegistryObject<Potion> potion) {
-        super(Ingredient.of(new ItemStack(input)),
+        super(Ingredient.of(new ItemStack((ItemLike) input)),
                 Ingredient.of(new ItemStack(ingredient)),
                 PotionUtils.setPotion(new ItemStack(Items.POTION), potion.get()));
     }

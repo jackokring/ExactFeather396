@@ -33,7 +33,7 @@ public final class Configurator {
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, CLIENT.build());
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, COMMON.build());
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, SERVER.build());
-        ExactFeather.LOGGER.warn("Configuration built.");
+        ExactFeather.LOGGER.info("Configuration built.");
     }
 
     private static void section(String name, Builder builder, Consumer<Builder> user) {

@@ -2,6 +2,7 @@ package uk.co.kring.ef396.utilities;
 
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.*;
+import uk.co.kring.ef396.ExactFeather;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -49,6 +50,7 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
                         super.put(key, registryObject);
                     }
             );
+            close();
         }
         return cache;
     }
