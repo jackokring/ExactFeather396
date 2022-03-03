@@ -26,9 +26,10 @@ public abstract class BaseCodeException extends Exception  {
         try {
              f = (BaseCodeException) e.getCause();
         } catch(ClassCastException g) {
-            ExactFeather.LOGGER.info("Not a BaseCodeException, " + because);
+            ExactFeather.LOGGER.info("Not a BaseCodeException, ");
+            throw e;//continue with throw
         }
-        ExactFeather.LOGGER.info(why + ", " + because);//log
+        ExactFeather.LOGGER.info(why + ", " + because);//log Runtime throwing
         return f;
     }
 
