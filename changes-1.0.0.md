@@ -18,8 +18,10 @@
 * `Configurator` class easy implements a lot of the boilerplate for configuration files in a reduced number of classes.
 * Added `Registries` for global access to all without having to use specific class name too.
 * `Potion` added.
+* Started on a `BaseCodeException` system for AI processing.
 
 ### TODO
 * Implement some AI.
 * Name potion. Decide effects.
 * Maybe a custom effect.
+* Tags for classification.
