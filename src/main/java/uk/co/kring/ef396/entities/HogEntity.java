@@ -73,11 +73,11 @@ public class HogEntity extends Zombie {
         this.playSound(SoundEvents.PIG_STEP, 0.15F, 1.0F);
     }
 
-    public static float getSizeX() {
+    public static float getSizeXZ() {
         return 1.0f;
     }
 
     public static float getSizeY() {
-        return 1.0f;
+        return 2.0f;
     }
 }

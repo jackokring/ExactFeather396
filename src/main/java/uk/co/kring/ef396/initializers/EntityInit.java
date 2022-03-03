@@ -18,6 +18,6 @@ public class EntityInit {
     // Entity Types
     public static final RegistryObject<EntityType<HogEntity>> HOG = ENTITIES.register("hog",
             () -> EntityType.Builder.of(HogEntity::new, MobCategory.CREATURE)
-                    .sized(HogEntity.getSizeX(), HogEntity.getSizeY()) // Hit box Size
+                    .sized(HogEntity.getSizeXZ(), HogEntity.getSizeY()) // Hit box Size
                     .build(new ResourceLocation(ExactFeather.MOD_ID, "hog").toString()));
 }

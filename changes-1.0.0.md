@@ -24,4 +24,7 @@
 * Implement some AI.
 * Name potion. Decide effects.
 * Maybe a custom effect.
-* Tags for classification.
+* Tags for classification, and generable in world?
+* Does `Potions.MUNDANE` have a field from whence it was made?
+* An `Exporter` class loading a chain from a config string?
+* 
