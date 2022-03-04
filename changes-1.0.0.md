@@ -19,6 +19,7 @@
 * Added `Registries` for global access to all without having to use specific class name too.
 * `Potion` added.
 * Started on a `BaseCodeException` system for AI processing.
+* Added a `BedtimeBook` idea.
 
 ### TODO
 * Implement some AI.

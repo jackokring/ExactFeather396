@@ -5,6 +5,7 @@ import net.minecraft.world.item.*;
 import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.registries.RegistryObject;
 import uk.co.kring.ef396.ExactFeather;
+import uk.co.kring.ef396.items.BedtimeBook;
 import uk.co.kring.ef396.items.PoisonAppleItem;
 import uk.co.kring.ef396.items.enums.ModArmorMaterial;
 import uk.co.kring.ef396.items.enums.ModItemTier;
@@ -36,6 +37,8 @@ public class ItemInit {
             = ITEMS.register("hog_spawn_egg",
             () -> new ForgeSpawnEggItem(EntityInit.HOG, 0x808080, 0x000000,
                     new Item.Properties().tab(ExactFeather.TAB).stacksTo(16)));
+
+    public static final RegistryObject<Item> BOOK_1 = BedtimeBook.register("book_1");
 
     // Block Items
     public static final RegistryObject<Item> RUBY_BLOCK_ITEM = ITEMS.register("ruby_block",
