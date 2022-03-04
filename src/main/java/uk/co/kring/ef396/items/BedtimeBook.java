@@ -32,7 +32,7 @@ public class BedtimeBook extends WrittenBookItem implements IForgeRegistryEntry<
         super(properties);
         CompoundTag tag = new CompoundTag();
         this.name = name;
-        loadChapter(name, tag);
+        loadChapter(tag);
         chapters.put(name, () -> new ItemStack(this, 1, tag));
     }
 
@@ -45,7 +45,7 @@ public class BedtimeBook extends WrittenBookItem implements IForgeRegistryEntry<
 
     public static HashMap<String, Supplier<ItemStack>> chapters = new HashMap<>();
 
-    public void loadChapter(String name, CompoundTag tag) {
+    public void loadChapter(CompoundTag tag) {
         InputStream in = getAsset();
         //TODO
 
