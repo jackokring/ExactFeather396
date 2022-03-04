@@ -10,8 +10,15 @@ public abstract class BaseCodeException extends Exception  {
         } catch(BaseCodeException e) {
             try {
                 actionCatch(e);
-            } catch(BaseCodeException f) {
+            } catch(Exception f) {
                 //null as not relevant to handle.
+            }
+        } catch(RuntimeException e) {
+            BaseCodeException f = catchAssist(e);
+            try {
+                f.actionCatch(f);
+            } catch(Exception g) {
+                //null as not relevant to handle
             }
         }
     }
@@ -20,16 +27,15 @@ public abstract class BaseCodeException extends Exception  {
         throw new RuntimeException(why, e);
     }
 
-    public static final BaseCodeException catchAssist(String because, RuntimeException e) {
+    public static final BaseCodeException catchAssist(RuntimeException e) {
         String why = e.getMessage();
         BaseCodeException f = null;
         try {
              f = (BaseCodeException) e.getCause();
         } catch(ClassCastException g) {
-            ExactFeather.LOGGER.info("Not a BaseCodeException, ");
             throw e;//continue with throw
         }
-        ExactFeather.LOGGER.info(why + ", " + because);//log Runtime throwing
+        ExactFeather.LOGGER.info(why);//log Runtime throwing
         return f;
     }
 

@@ -28,7 +28,22 @@ public class PriorityHashMap<K, V> extends HashMap<K, V> {
         }
     }
 
-    public Optional<V> progress(K key) {
+    public V get(Object key) {
+        if(containsKey(key) && super.get(key) == null) {
+            return super.get(null);//template blank
+        } else {
+            return super.get(key);//so null empty
+        }
+    }
+
+    public V put(K key) {
+        // lock entry to null
+        V g = get(key);
+        put(key, null);
+        return g;
+    }
+
+    public V progress(K key) {
         List<V> vi;
         V val = null;
         if((vi = violations.get(key)) != null) {
@@ -37,7 +52,7 @@ public class PriorityHashMap<K, V> extends HashMap<K, V> {
                 vi.remove(0);
             }
         }
-        return Optional.ofNullable(val);
+        return val;
     }
 
     public void close() {
@@ -55,7 +70,7 @@ public class PriorityHashMap<K, V> extends HashMap<K, V> {
 
     public List<V> getViolations(K key) {
         List<V> vi = violations.get(key);
-        if(closed && vi instanceof LinkedList<V>) {
+        if(closed && vi != null && vi instanceof LinkedList<V>) {
             vi = Collections.unmodifiableList(vi);
             violations.put(key, vi);
         }

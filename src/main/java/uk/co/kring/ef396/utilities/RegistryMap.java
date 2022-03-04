@@ -24,10 +24,6 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
         return register.register(name, sup);
     }
 
-    // TODO put name manglers here??
-    // minecraft:diamond -> item.minecraft.diamond
-    // as full index accessed via type before namespace
-
     public <I extends T> RegistryObject<I> register(String name, Supplier<? extends I> sup) {
         return register.register(name, sup);
     }
