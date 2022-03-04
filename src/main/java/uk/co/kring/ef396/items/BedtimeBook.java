@@ -12,6 +12,7 @@ import net.minecraftforge.registries.RegistryObject;
 import uk.co.kring.ef396.ExactFeather;
 import uk.co.kring.ef396.initializers.ItemInit;
 
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.function.Supplier;
 
@@ -45,7 +46,19 @@ public class BedtimeBook extends WrittenBookItem implements IForgeRegistryEntry<
     public static HashMap<String, Supplier<ItemStack>> chapters = new HashMap<>();
 
     public void loadChapter(String name, CompoundTag tag) {
+        InputStream in = getAsset();
         //TODO
+
+        try {
+            in.close();
+        } catch(Exception e) {
+            // unlikely
+        }
+    }
+
+    public InputStream getAsset() {
+        return getClass().getResourceAsStream("/assets/" +
+                ExactFeather.MOD_ID + "/books/" + name + ".txt");
     }
 
     public static ItemStack random(Player player) {
