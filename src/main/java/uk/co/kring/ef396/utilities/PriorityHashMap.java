@@ -44,15 +44,20 @@ public class PriorityHashMap<K, V> extends HashMap<K, V> {
     }
 
     public V progress(K key) {
-        List<V> vi;
-        V val = null;
-        if((vi = violations.get(key)) != null) {
-            if((val = vi.get(0)) != null) {
-                overwrite(key, val);
-                vi.remove(0);
+        if(!closed) {
+            List<V> vi;
+            V val = null;
+            if ((vi = violations.get(key)) != null) {
+                if ((val = vi.get(0)) != null) {
+                    overwrite(key, val);
+                    vi.remove(0);
+                }
             }
+            return val;
+        } else {
+            BaseCodeException.throwAssist(msg, new StubbornException());
+            return null;
         }
-        return val;
     }
 
     public void close() {
