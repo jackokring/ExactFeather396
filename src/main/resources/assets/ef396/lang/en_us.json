@@ -1,5 +1,5 @@
 {
-  "itemGroup.ef396": "Exact Feather",
+  "itemGroup.ef396.ef396": "Exact Feather",
 
   "item.ef396.ruby": "Ruby",
   "item.ef396.poison_apple": "Poison Apple",
@@ -17,6 +17,8 @@
   "item.ef396.ruby_boots": "Ruby Boots",
 
   "item.ef396.hog_spawn_egg": "H.O.G. Spawn Egg",
+
+  "item.ef396.book_1": "Book at Bedtime",
 
   "entity.ef396.hog": "Humanoid Overseer Gollum",
 

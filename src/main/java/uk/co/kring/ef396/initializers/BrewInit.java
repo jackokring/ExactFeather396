@@ -20,7 +20,7 @@ public class BrewInit {
     // Potions
     public static final RegistryObject<Potion> POTION_1 = POTIONS.register("p1",
             () -> new Potion(
-                    new MobEffectCommon(MobEffects.WITHER, 100, 1)
+                    new MobEffectCommon(MobEffects.WITHER, 1)
             ));
 
     // Recipes

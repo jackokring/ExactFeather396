@@ -15,6 +15,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import uk.co.kring.ef396.ExactFeather;
 import net.minecraft.world.entity.EntityType;
+import uk.co.kring.ef396.initializers.SoundInit;
 
 public class HogEntity extends Zombie {
 
@@ -65,7 +66,7 @@ public class HogEntity extends Zombie {
 
     @Override
     protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-        return SoundEvents.PIG_HURT;
+        return SoundInit.ERROR.get();
     }
 
     @Override
@@ -78,6 +79,6 @@ public class HogEntity extends Zombie {
     }
 
     public static float getSizeY() {
-        return 2.0f;
+        return 1.975f;
     }
 }
