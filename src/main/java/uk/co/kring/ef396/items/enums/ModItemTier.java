@@ -13,6 +13,11 @@ public enum ModItemTier implements Tier {
         return Ingredient.of(ItemInit.RUBY.get());
     });
 
+    static {
+        // static tier configurators
+        Configurator.configGame("tools", (builder) -> setConfig(builder));
+    }
+
     private static float enchantScale;
     private final int harvestLevel;
     private final int maxUses;

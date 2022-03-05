@@ -28,15 +28,13 @@ public abstract class BaseCodeException extends Exception  {
     }
 
     public static final BaseCodeException catchAssist(RuntimeException e) {
-        String why = e.getMessage();
-        BaseCodeException f = null;
-        try {
-             f = (BaseCodeException) e.getCause();
-        } catch(ClassCastException g) {
+        Throwable f = e.getCause();
+        if(f instanceof BaseCodeException) {
+            ExactFeather.LOGGER.info(e.getMessage());//log Runtime throwing
+            return (BaseCodeException) f;
+        } else {
             throw e;//continue with throw
         }
-        ExactFeather.LOGGER.info(why);//log Runtime throwing
-        return f;
     }
 
     protected abstract void actionTry() throws BaseCodeException;

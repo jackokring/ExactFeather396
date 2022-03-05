@@ -45,12 +45,12 @@ public class PriorityHashMap<K, V> extends HashMap<K, V> {
 
     public V progress(K key) {
         if(!closed) {
-            List<V> vi;
+            LinkedList<V> vi;
             V val = null;
-            if ((vi = violations.get(key)) != null) {
-                if ((val = vi.get(0)) != null) {
+            if ((vi = (LinkedList<V>) violations.get(key)) != null) {
+                if ((val = vi.getFirst()) != null) {
                     overwrite(key, val);
-                    vi.remove(0);
+                    vi.removeFirst();//better as cast in closed safe
                 }
             }
             return val;

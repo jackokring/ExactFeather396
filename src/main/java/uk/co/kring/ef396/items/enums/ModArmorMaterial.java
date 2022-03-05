@@ -18,6 +18,11 @@ public enum ModArmorMaterial implements ArmorMaterial {
     RUBY("ruby", 25, new int[] { 2, 5, 6, 2 }, 27,
             SoundEvents.ARMOR_EQUIP_GENERIC, 0, () -> { return Ingredient.of(ItemInit.RUBY.get()); },0);
 
+    static {
+        // static tier configurators
+        Configurator.configGame("armor", (builder) -> setConfig(builder));
+    }
+
     private static float enchantScale;
     private static final int[] MAX_DAMAGE_ARRAY = new int[] { 11, 16, 15, 13 };
     private final String name;
