@@ -1,8 +1,13 @@
 package uk.co.kring.ef396.utilities.exceptions;
 
+import net.minecraft.world.entity.Entity;
 import uk.co.kring.ef396.ExactFeather;
 
+import java.util.HashMap;
+
 public abstract class BaseCodeException extends Exception  {
+
+    private static HashMap<Thread, Entity> actionEntity = new HashMap<>();//TODO ??
 
     public final void emote() {
         try {

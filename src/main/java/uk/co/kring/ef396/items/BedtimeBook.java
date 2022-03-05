@@ -67,7 +67,7 @@ public class BedtimeBook extends WrittenBookItem implements IForgeRegistryEntry<
             in.close();
         } catch(Exception e) {
             // unlikely
-            // pages:[{"text":"The Book of Void","color":"red"}],title:Void,author:ExactFeather,generation:3
+            // pages:[{"text":"The Book of Void","color":"red"}],title:Void,author:ef396,generation:3
 
             // placement default E.G.
             tag.putString("name", "Void");
