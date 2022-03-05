@@ -1,27 +1,28 @@
 package uk.co.kring.ef396.utilities.exceptions;
 
-import net.minecraft.world.entity.Entity;
 import uk.co.kring.ef396.ExactFeather;
+import uk.co.kring.ef396.entities.goals.AICommon;
 
 import java.util.HashMap;
 
 public abstract class BaseCodeException extends Exception  {
 
-    private static HashMap<Thread, Entity> actionEntity = new HashMap<>();//TODO ??
+    private static HashMap<Thread, AICommon> actionEntity = new HashMap<>();//TODO ??
 
     public final void emote() {
+        AICommon c = actionEntity.get(Thread.currentThread());
         try {
-            actionTry();
+            actionTry(c);
         } catch(BaseCodeException e) {
             try {
-                actionCatch(e);
+                actionCatch(e, c);
             } catch(Exception f) {
                 //null as not relevant to handle.
             }
         } catch(RuntimeException e) {
             BaseCodeException f = catchAssist(e);
             try {
-                f.actionCatch(f);
+                f.actionCatch(f, c);
             } catch(Exception g) {
                 //null as not relevant to handle
             }
@@ -42,7 +43,7 @@ public abstract class BaseCodeException extends Exception  {
         }
     }
 
-    protected abstract void actionTry() throws BaseCodeException;
-    protected abstract void actionCatch(BaseCodeException exception)
+    protected abstract void actionTry(AICommon ai) throws BaseCodeException;
+    protected abstract void actionCatch(BaseCodeException exception, AICommon ai)
             throws BaseCodeException;
 }

@@ -5,6 +5,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.monster.Husk;
 import net.minecraft.world.entity.player.Player;
@@ -13,11 +14,14 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
 import uk.co.kring.ef396.ExactFeather;
 import net.minecraft.world.entity.EntityType;
 import uk.co.kring.ef396.initializers.SoundInit;
 
-public class HogEntity extends Husk {
+import java.util.UUID;
+
+public class HogEntity extends Husk implements NeutralMob {
 
     private static final Ingredient TEMPTATION_ITEMS
             = Ingredient.of((ItemLike) Potions.THICK);
@@ -80,5 +84,31 @@ public class HogEntity extends Husk {
 
     public static float getSizeY() {
         return 1.975f;
+    }
+
+    @Override
+    public int getRemainingPersistentAngerTime() {
+        return 0;
+    }
+
+    @Override
+    public void setRemainingPersistentAngerTime(int i) {
+
+    }
+
+    @Nullable
+    @Override
+    public UUID getPersistentAngerTarget() {
+        return null;
+    }
+
+    @Override
+    public void setPersistentAngerTarget(@Nullable UUID uuid) {
+
+    }
+
+    @Override
+    public void startPersistentAngerTimer() {
+
     }
 }
