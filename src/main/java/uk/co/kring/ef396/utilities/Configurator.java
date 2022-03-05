@@ -23,6 +23,10 @@ public final class Configurator {
         public int readInt(String name, int def, int low, int hi) {
             return this.defineInRange(name, def, low, hi).get();
         }
+
+        public String readString(String name) {
+            return this.define(name, name).get();
+        }
     }
 
     private static final Builder CLIENT = new Builder();

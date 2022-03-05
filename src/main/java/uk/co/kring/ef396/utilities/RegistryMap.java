@@ -36,6 +36,10 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
         register.register(bus);
     }
 
+    public DeferredRegister<T> getRegisterPreConfiguration() {
+        return register;
+    }
+
     public synchronized Collection<RegistryObject<T>> getEntries() {
         if(cache == null) {//prepare to use cache on first getEntries()
             //lazy defer

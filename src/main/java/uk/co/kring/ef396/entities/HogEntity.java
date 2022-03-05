@@ -6,7 +6,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.ai.goal.*;
-import net.minecraft.world.entity.monster.Zombie;
+import net.minecraft.world.entity.monster.Husk;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -17,7 +17,7 @@ import uk.co.kring.ef396.ExactFeather;
 import net.minecraft.world.entity.EntityType;
 import uk.co.kring.ef396.initializers.SoundInit;
 
-public class HogEntity extends Zombie {
+public class HogEntity extends Husk {
 
     private static final Ingredient TEMPTATION_ITEMS
             = Ingredient.of((ItemLike) Potions.THICK);
@@ -25,7 +25,7 @@ public class HogEntity extends Zombie {
     private static final ResourceLocation LOOT_TABLE
             = new ResourceLocation(ExactFeather.MOD_ID, "entities/hog");
 
-    public HogEntity(EntityType<? extends Zombie> type, Level worldIn) {
+    public HogEntity(EntityType<? extends Husk> type, Level worldIn) {
         super(type, worldIn);
     }
 

@@ -2,6 +2,7 @@ package uk.co.kring.ef396.items;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -11,8 +12,10 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.minecraftforge.registries.RegistryObject;
 import uk.co.kring.ef396.ExactFeather;
 import uk.co.kring.ef396.initializers.ItemInit;
+import uk.co.kring.ef396.utilities.Configurator;
 
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.function.Supplier;
 
@@ -20,20 +23,33 @@ public class BedtimeBook extends WrittenBookItem implements IForgeRegistryEntry<
 
     //"item.ef396.book_1": "Book at Bedtime",
     private final String name;
+    private static HashMap<String, Supplier<ItemStack>> chapters = new HashMap<>();
+    private static HashMap<String, String> chapterNames = new HashMap<>();
 
     public static RegistryObject<Item> register(String name) {
+        Configurator.configRegistryEntry(ItemInit.ITEMS.getRegisterPreConfiguration(),
+                name, // the builder of the config has to build first so that
+                // the correct keying is used
+                (builder) -> {
+                    chapterNames.put(name, builder.readString(name));
+                }
+        );
         return ItemInit.ITEMS.register(name, () -> new BedtimeBook(
                 new Item.Properties().stacksTo(1)
                         .tab(ExactFeather.TAB),
-                name));
+                chapterNames.get(name)));// this name should be different for file by config
     }
 
-    public BedtimeBook(Properties properties, String name) {
+    private BedtimeBook(Properties properties, String name) {
         super(properties);
         CompoundTag tag = new CompoundTag();
         this.name = name;
         loadChapter(tag);
         chapters.put(name, () -> new ItemStack(this, 1, tag));
+    }
+
+    private void fillTagWith(CompoundTag tag, String with) {
+        //TODO
     }
 
     @Override
@@ -43,22 +59,34 @@ public class BedtimeBook extends WrittenBookItem implements IForgeRegistryEntry<
         //super.fillItemCategory(tab, stacks);
     }
 
-    public static HashMap<String, Supplier<ItemStack>> chapters = new HashMap<>();
-
-    public void loadChapter(CompoundTag tag) {
+    private void loadChapter(CompoundTag tag) {
+        // needs caching?
         InputStream in = getAsset();
-        //TODO
-
         try {
+            fillTagWith(tag, new String(in.readAllBytes(), StandardCharsets.UTF_8));
             in.close();
         } catch(Exception e) {
             // unlikely
+            // pages:[{"text":"The Book of Void","color":"red"}],title:Void,author:ExactFeather,generation:3
+
+            // placement default E.G.
+            tag.putString("name", "Void");
+            tag.putString("title", "Void");
+            tag.putString("author", ExactFeather.MOD_ID);
+            tag.putInt("generation", 3);
+
+            ListTag lt = new ListTag();
+            tag.put("pages", lt);
+            CompoundTag page = new CompoundTag();
+            lt.add(page);
+            page.putString("text", "The Book of Void");
+            page.putString("color", "red");
         }
     }
 
-    public InputStream getAsset() {
+    private InputStream getAsset() {
         return getClass().getResourceAsStream("/assets/" +
-                ExactFeather.MOD_ID + "/books/" + name + ".txt");
+                ExactFeather.MOD_ID + "/books/" + name + ".txt");//mappable
     }
 
     public static ItemStack random(Player player) {
