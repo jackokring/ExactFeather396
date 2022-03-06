@@ -7,7 +7,7 @@ import java.util.HashMap;
 
 public abstract class BaseCodeException extends Exception  {
 
-    private static HashMap<Thread, AICommon> actionEntity = new HashMap<>();//TODO ??
+    private static HashMap<Thread, AICommon> actionEntity = new HashMap<>();
 
     public final void emote() {
         AICommon c = actionEntity.get(Thread.currentThread());
@@ -28,6 +28,21 @@ public abstract class BaseCodeException extends Exception  {
                     //null as not relevant to handle
                 }
             }
+        }
+    }
+
+    public static final Thread threadAssist(AICommon ai) {
+        Thread t = new Thread();
+        actionEntity.put(t, ai);
+        return t;//TODO
+    }
+
+    public static final void joinAssist() {
+        actionEntity.remove(Thread.currentThread());
+        try {
+            Thread.currentThread().join();
+        } catch(InterruptedException e) {
+            //TODO
         }
     }
 
