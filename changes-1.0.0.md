@@ -27,5 +27,5 @@
 * Maybe a custom effect.
 * Tags for classification, and generable in world?
 * Does `Potions.MUNDANE` have a field from whence it was made?
-* An `Exporter` class loading a chain from a config string?
+* An `Loader` class loading a chain from a config string?
 * 

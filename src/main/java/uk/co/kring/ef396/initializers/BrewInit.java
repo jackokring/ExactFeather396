@@ -18,5 +18,5 @@ public class BrewInit {
 
     // Recipes
     public static final RegistryObject<Potion> POISON_1 = BrewingCommon.register("p1",
-        Potions.WATER, ItemInit.POISON_APPLE.get(), new MobEffectCommon(MobEffects.WITHER, 1));
+        Potions.WATER, ItemInit.POISON_APPLE, new MobEffectCommon(MobEffects.WITHER, 1));
 }

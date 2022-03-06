@@ -26,32 +26,35 @@ public class BedtimeBook extends WrittenBookItem implements IForgeRegistryEntry<
     private static class Entry {
         Supplier<ItemStack> sup;
         String altName;
-        String loaded;
         CompoundTag tag = new CompoundTag();
+        String[] paras;
 
         Entry(String altName) {;
             this.altName = altName;
+            String loaded;
             try {
                 loaded = new String(getClass().getResourceAsStream("/assets/" +
                     ExactFeather.MOD_ID + "/books/" + altName + ".txt")
-                    .readAllBytes(), StandardCharsets.UTF_8);
+                    .readAllBytes(), StandardCharsets.UTF_8).trim();
             } catch(IOException e) {
                 loaded = "Failed load of /assets/" + ExactFeather.MOD_ID + "/books/" + altName + ".txt";
             }
+            paras = loaded.split("\n\n");
             loadChapter();
         }
 
         void loadChapter() {
-            // needs caching?
-
-            // TODO
             // pages:[{"text":"The Book of Void","color":"red"}],title:Void,author:ef396,generation:3
 
-            // placement default E.G.
-            tag.putString("name", "Void");
-            tag.putString("title", "Void");
-            tag.putString("author", ExactFeather.MOD_ID);
-            tag.putInt("generation", 3);
+            // placement of basics signed at bottom titled book
+            if(paras.length < 1) return;
+            tag.putString("name", paras[0]);
+            tag.putString("title", paras[0]);
+            tag.putString("author", paras[paras.length - 1]);
+            tag.putInt("generation", 3);//it's an oldie but a goody
+
+            // process pages
+            // TODO
 
             ListTag lt = new ListTag();
             tag.put("pages", lt);
