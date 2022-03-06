@@ -27,17 +27,13 @@ public class BedtimeBook extends WrittenBookItem implements IForgeRegistryEntry<
     private static HashMap<String, String> chapterNames = new HashMap<>();
 
     public static RegistryObject<Item> register(String name) {
-        Configurator.configRegistryEntry(ItemInit.ITEMS.getRegisterPreConfiguration(),
-                name, // the builder of the config has to build first so that
-                // the correct keying is used
-                (builder) -> {
-                    chapterNames.put(name, builder.readString(name));
-                }
-        );
         return ItemInit.ITEMS.register(name, () -> new BedtimeBook(
                 new Item.Properties().stacksTo(1)
                         .tab(ExactFeather.TAB),
-                chapterNames.get(name)));// this name should be different for file by config
+                chapterNames.get(name)),
+                (builder) -> {
+                    chapterNames.put(name, builder.readString(name));
+                });// this name should be different for file by config
     }
 
     private BedtimeBook(Properties properties, String name) {

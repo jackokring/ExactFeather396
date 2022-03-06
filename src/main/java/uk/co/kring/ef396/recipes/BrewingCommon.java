@@ -14,14 +14,14 @@ import uk.co.kring.ef396.initializers.BrewInit;
 
 public class BrewingCommon extends BrewingRecipe {
 
-    private BrewingCommon(Potion input, Item ingredient,
+    private BrewingCommon(Potion input, RegistryObject<Item> ingredient,
                          RegistryObject<Potion> potion) {
         super(Ingredient.of(new ItemStack((ItemLike) input)),
-                Ingredient.of(new ItemStack(ingredient)),
+                Ingredient.of(new ItemStack(ingredient.get())),
                 PotionUtils.setPotion(new ItemStack(Items.POTION), potion.get()));
     }
 
-    public static RegistryObject<Potion> register(String name, Potion in, Item add,
+    public static RegistryObject<Potion> register(String name, Potion in, RegistryObject<Item> add,
                                                   MobEffectCommon does) {
 
         RegistryObject<Potion> potion = BrewInit.POTIONS.register(name,

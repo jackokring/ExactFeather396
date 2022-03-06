@@ -1,10 +1,8 @@
 package uk.co.kring.ef396;
 
-import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.eventbus.api.IEventBus;
-import uk.co.kring.ef396.entities.renderers.HogRenderer;
 import uk.co.kring.ef396.initializers.*;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
@@ -15,13 +13,22 @@ import uk.co.kring.ef396.utilities.Configurator;
 import uk.co.kring.ef396.utilities.Registries;
 import uk.co.kring.ef396.utilities.ThisLogger;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.function.Consumer;
+
 @Mod("ef396")
 public class ExactFeather {
 
     public static final String MOD_ID = "ef396";
     public static final ThisLogger LOGGER = new ThisLogger(MOD_ID);
 
+    //static hook avoiding GC
+    public static final ClassLoader LOADER = ClassLoader.getSystemClassLoader();
+
     public static boolean DEBUG;
+
+    private static List<Consumer<FMLClientSetupEvent>> renderers = new LinkedList<>();
 
     public ExactFeather() {
 
@@ -36,7 +43,8 @@ public class ExactFeather {
         // and its ItemInit entry
         // labelling done so flat for config entries
         // in handler method
-        Configurator.configNode("module_global", (builder) -> setConfig(builder));
+        Configurator.configNode("module_global",
+                (builder) -> setConfig(builder));
 
         Registries.register(bus);
         MinecraftForge.EVENT_BUS.register(this);
@@ -56,8 +64,14 @@ public class ExactFeather {
 
     private void doClientStuff(final FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
-            EntityRenderers.register(EntityInit.HOG.get(), HogRenderer::new);
+            renderers.forEach((render) -> {
+                render.accept(event);
+            });
         });
+    }
+
+    public static void registerRender(Consumer<FMLClientSetupEvent> event) {
+        renderers.add(event);
     }
 
     // Custom CreativeModeTab TAB

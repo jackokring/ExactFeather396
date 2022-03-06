@@ -3,7 +3,6 @@ package uk.co.kring.ef396.utilities;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.registries.DeferredRegister;
 import uk.co.kring.ef396.ExactFeather;
 
 import java.util.function.Consumer;
@@ -33,6 +32,8 @@ public final class Configurator {
     private static final Builder COMMON = new Builder();
     private static final Builder SERVER = new Builder();
 
+    private static RegistryMap<?> pushedServer = null;
+
     public static void build() {
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, CLIENT.build());
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, COMMON.build());
@@ -40,15 +41,19 @@ public final class Configurator {
         ExactFeather.LOGGER.info("Configuration built.");
     }
 
+    public static void pushGame(RegistryMap<?> registry) {
+        if(registry != pushedServer) {
+            SERVER.pop();//close section
+            SERVER.push(registry.toString());
+        }
+        SERVER.comment("Registry entry:");
+        pushedServer = registry;
+    }
+
     private static void section(String name, Builder builder, Consumer<Builder> user) {
         builder.push(name);
         user.accept(builder);
         builder.pop();
-    }
-
-    public static void configRegistryEntry(DeferredRegister<?> register, String name,
-                                           Consumer<Builder> user) {
-        section(register.toString() + "." + name, SERVER, user);
     }
 
     public static void configGame(String name, Consumer<Builder> user) {

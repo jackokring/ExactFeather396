@@ -20,7 +20,8 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
 
     public <I extends T> RegistryObject<I> register(String name, Supplier<? extends I> sup,
                                                     Consumer<Configurator.Builder> user) {
-        Configurator.configRegistryEntry(register, name, user);
+        Configurator.pushGame(this);
+        Configurator.configGame(name, user);
         return register.register(name, sup);
     }
 

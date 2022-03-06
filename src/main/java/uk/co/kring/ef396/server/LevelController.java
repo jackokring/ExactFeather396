@@ -29,7 +29,7 @@ public class LevelController {
     @SubscribeEvent
     public static void onPlayerMade(PlayerSleepInBedEvent event) {
         if(event.getPlayer().getInventory().add(BedtimeBook.random(event.getPlayer()))) {
-            ThisLogger.LOGGER.info("A nice book to read?");
+            ThisLogger.LOGGER.info("A nice book for " + event.getPlayer().getScoreboardName() + " to read?");
         }
     }
 

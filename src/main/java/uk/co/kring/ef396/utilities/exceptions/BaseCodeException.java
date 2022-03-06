@@ -11,20 +11,22 @@ public abstract class BaseCodeException extends Exception  {
 
     public final void emote() {
         AICommon c = actionEntity.get(Thread.currentThread());
-        try {
-            actionTry(c);
-        } catch(BaseCodeException e) {
+        synchronized(c) {
             try {
-                actionCatch(e, c);
-            } catch(Exception f) {
-                //null as not relevant to handle.
-            }
-        } catch(RuntimeException e) {
-            BaseCodeException f = catchAssist(e);
-            try {
-                f.actionCatch(f, c);
-            } catch(Exception g) {
-                //null as not relevant to handle
+                actionTry(c);
+            } catch (BaseCodeException e) {
+                try {
+                    actionCatch(e, c);
+                } catch (Exception f) {
+                    //null as not relevant to handle.
+                }
+            } catch (RuntimeException e) {
+                BaseCodeException f = catchAssist(e);
+                try {
+                    f.actionCatch(f, c);
+                } catch (Exception g) {
+                    //null as not relevant to handle
+                }
             }
         }
     }
