@@ -43,6 +43,24 @@ public class BedtimeBook extends WrittenBookItem implements IForgeRegistryEntry<
             loadChapter();
         }
 
+        String processPara(String para) {
+            return null;//TODO substitutes
+        }
+
+        String[] paginate(String[] paras) {
+            return null;//TODO fits on page
+        }
+
+        void jsonify(String[] pages) {
+            //TODO tag like
+            ListTag lt = new ListTag();
+            tag.put("pages", lt);
+            CompoundTag page = new CompoundTag();
+            lt.add(page);
+            page.putString("text", "The Book of Void");
+            page.putString("color", "red");
+        }
+
         void loadChapter() {
             // pages:[{"text":"The Book of Void","color":"red"}],title:Void,author:ef396,generation:3
 
@@ -52,16 +70,12 @@ public class BedtimeBook extends WrittenBookItem implements IForgeRegistryEntry<
             tag.putString("title", paras[0]);
             tag.putString("author", paras[paras.length - 1]);
             tag.putInt("generation", 3);//it's an oldie but a goody
-
+            if(paras.length < 3) return;
+            for(int i = 0; i < paras.length - 2; i++) {
+                paras[i] = processPara(paras[i + 1]);//leave last two empty
+            }
             // process pages
-            // TODO
-
-            ListTag lt = new ListTag();
-            tag.put("pages", lt);
-            CompoundTag page = new CompoundTag();
-            lt.add(page);
-            page.putString("text", "The Book of Void");
-            page.putString("color", "red");
+            jsonify(paginate(paras));
         }
 
         void addSupplier(Supplier<ItemStack> sup) {
