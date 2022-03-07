@@ -28,7 +28,10 @@ public class Loader {
                 .map((string) -> Loader.class.getPackageName() + "." + string.trim())
                 .map((clazz) -> {
                     try {
-                        return Optional.of(classLoader.loadClass(clazz));//loaded classes
+                        var c = classLoader.loadClass(clazz);
+                        var m = c.getMethod("init");
+                        m.invoke(null);//static action
+                        return Optional.of(c);//loaded classes
                     } catch(Exception e) {
                         return Optional.empty();
                     }
