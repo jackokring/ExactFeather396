@@ -95,6 +95,7 @@ public class Loaded {
                 () -> EntityType.Builder.of(HogEntity::new, MobCategory.CREATURE)
                         .sized(HogEntity.getSizeXZ(), HogEntity.getSizeY()) // Hit box Size
                         .build(new ResourceLocation(ExactFeather.MOD_ID, "hog").toString())),
+                // this also does all renderer and attribute registration indirectly
                 0, 0, "textures/entity/hog.png");
     }
 

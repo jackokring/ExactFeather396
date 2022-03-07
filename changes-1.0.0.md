@@ -8,7 +8,7 @@
 * Internal `ForgeSpawnEggItem` automation.
 * Class refactoring when necessary or logical.
 * Removed `Oven` so need new container start. I'm likely to do some `Potion` thing.
-* Added `RegistryMap` for index hashing. The class is synchronized for read only with an entries cache.e.
+* Added `RegistryMap` for index hashing. The class is synchronized for read only with an entries cached. Utility functions for `BlockItem` and such.
 * Added `PriorityHashMap` for first entry priority. Includes `overwrite()` for `super.put()` behaviour. Also includes `getViolations()` for a `List` of the pretenders given a key.
 * `PoisonAppleItem` replaces unmapped items. Uses configuration. Stacks to 33 items.
 * `RubyBlock` replaces unmapped blocks.
@@ -20,6 +20,7 @@
 * `Loaded.psydare` potion added.
 * Started on a `BaseCodeException` system for AI processing.
 * Added a `BedtimeBook` idea.
+* Experimental `Loaded` by `Loader` for modularization of the source tree to reduce merge conflicts on pull requests.
 
 ### TODO
 * Implement some AI.
@@ -27,3 +28,5 @@
 * Maybe a custom effect.
 * Tags for classification, and generable in world?
 * Does `Potions.MUNDANE` have a field from whence it was made?
+* Hog drops alterations e.g. spawn egg.
+* 

@@ -1,2 +1,8 @@
-# load the following Loaded
+# Load the following `Loaded` classes.
+# Comments by # as first line character.
+# Main module `Loader` load all classes in the list
+# and so instantiates the `static` fields.
+# BASIC ExactFeather factorized content.
 Loaded
+# Add your loader class name here, and place it
+# in the same directory as `Loader`.

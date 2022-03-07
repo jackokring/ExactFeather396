@@ -1,6 +1,5 @@
 package uk.co.kring.ef396.utilities;
 
-import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.client.renderer.entity.HuskRenderer;
 import net.minecraft.resources.ResourceLocation;
@@ -16,7 +15,6 @@ import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.*;
 import uk.co.kring.ef396.ExactFeather;
-import uk.co.kring.ef396.Loaded;
 import uk.co.kring.ef396.entities.HogEntity;
 import uk.co.kring.ef396.recipes.BrewingCommon;
 import uk.co.kring.ef396.recipes.MobEffectCommon;
@@ -57,7 +55,7 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
         });
         return Registries.items.register(entity.getId().getPath() + "_spawn_egg",
                 () -> new ForgeSpawnEggItem(entity, bg, fg,
-                        new Item.Properties().tab(ExactFeather.TAB).stacksTo(16)));
+                        new Item.Properties().tab(ExactFeather.TAB).stacksTo(64)));
     }
 
     public static RegistryObject<Potion> register(String name, Potion in, RegistryObject<? extends Item> add,
