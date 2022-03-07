@@ -96,7 +96,7 @@ public class Loaded {
                         .sized(HogEntity.getSizeXZ(), HogEntity.getSizeY()) // Hit box Size
                         .build(new ResourceLocation(ExactFeather.MOD_ID, "hog").toString())),
                 // this also does all renderer and attribute registration indirectly
-                0, 0, "textures/entity/hog.png");
+                0, 0x8888, "textures/entity/hog.png");
     }
 
     public static void sounds(RegistryMap<SoundEvent> reg) {
