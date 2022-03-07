@@ -1,7 +1,5 @@
-# The `data` Directory
-
 ```
-data
+src/main/resources/data
 ├── ef396
 │   ├── loot_tables
 │   │   ├── blocks
@@ -39,9 +37,13 @@ data
 ├── forge
 │   └── tags
 │       ├── blocks
-│       │   └── ruby_ores.json
+│       │   ├── ores
+│       │   └── ruby.json
 │       └── items
-│           └── gems.json
+│           ├── gems
+│           │   └── ruby.json
+│           └── ores
+│               └── ruby.json
 └── minecraft
     └── tags
         ├── blocks
@@ -50,4 +52,6 @@ data
         │   └── needs_stone_tool.json
         └── items
             └── piglin_loved.json
+
+30 directories, 22 files
 ```

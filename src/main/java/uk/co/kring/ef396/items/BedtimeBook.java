@@ -11,7 +11,7 @@ import net.minecraft.world.item.WrittenBookItem;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.minecraftforge.registries.RegistryObject;
 import uk.co.kring.ef396.ExactFeather;
-import uk.co.kring.ef396.initializers.ItemInit;
+import uk.co.kring.ef396.utilities.Registries;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -72,7 +72,7 @@ public class BedtimeBook extends WrittenBookItem implements IForgeRegistryEntry<
     private static HashMap<String, Entry> chapters = new HashMap<>();
 
     public static RegistryObject<Item> register(String name) {
-        return ItemInit.ITEMS.register(name, () -> new BedtimeBook(
+        return Registries.items.register(name, () -> new BedtimeBook(
                 new Item.Properties().stacksTo(1)
                         .tab(ExactFeather.TAB),
                 name),//using name

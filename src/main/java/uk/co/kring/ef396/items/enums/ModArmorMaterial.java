@@ -5,7 +5,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.crafting.Ingredient;
 import uk.co.kring.ef396.ExactFeather;
-import uk.co.kring.ef396.initializers.ItemInit;
+import uk.co.kring.ef396.Loaded;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -16,7 +16,8 @@ import java.util.function.Supplier;
 public enum ModArmorMaterial implements ArmorMaterial {
 
     RUBY("ruby", 25, new int[] { 2, 5, 6, 2 }, 27,
-            SoundEvents.ARMOR_EQUIP_GENERIC, 0, () -> { return Ingredient.of(ItemInit.RUBY.get()); },0);
+            SoundEvents.ARMOR_EQUIP_GENERIC, 0, () -> {
+            return Ingredient.of(Loaded.ruby.get()); },0);
 
     static {
         // static tier configurators

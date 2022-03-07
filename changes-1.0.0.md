@@ -8,16 +8,16 @@
 * Internal `ForgeSpawnEggItem` automation.
 * Class refactoring when necessary or logical.
 * Removed `Oven` so need new container start. I'm likely to do some `Potion` thing.
-* Added `RegistryMap` for index hashing. The class is synchronized for read only with an entries cache. Can return a `Optional<T>` via `getOptional()` for better coding style.
+* Added `RegistryMap` for index hashing. The class is synchronized for read only with an entries cache.e.
 * Added `PriorityHashMap` for first entry priority. Includes `overwrite()` for `super.put()` behaviour. Also includes `getViolations()` for a `List` of the pretenders given a key.
 * `PoisonAppleItem` replaces unmapped items. Uses configuration. Stacks to 33 items.
 * `RubyBlock` replaces unmapped blocks.
 * `HogEntity` replaces unmapped mobs. Temptation via `(ItemLike) Potions.THICK`. Basic texture replace on a `Zombie` as this was easier to engineer as the `Animal` renderer seems more complex. Perhaps this is for the best as the mechanic of reproduction is then open for differentiation.
 * `error.ogg` replaces unmapped sounds.
-* Added tree view of data directory.
+* Added tree view of data and asset directories.
 * `Configurator` class easy implements a lot of the boilerplate for configuration files in a reduced number of classes.
 * Added `Registries` for global access to all without having to use specific class name too.
-* `Potion` added.
+* `Loaded.psydare` potion added.
 * Started on a `BaseCodeException` system for AI processing.
 * Added a `BedtimeBook` idea.
 
@@ -27,5 +27,3 @@
 * Maybe a custom effect.
 * Tags for classification, and generable in world?
 * Does `Potions.MUNDANE` have a field from whence it was made?
-* An `Loader` class loading a chain from a config string?
-* 

@@ -35,6 +35,7 @@ public final class Configurator {
     private static RegistryMap<?> pushedServer = null;
 
     public static void build() {
+        if(pushedServer != null) SERVER.pop();
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, CLIENT.build());
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, COMMON.build());
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, SERVER.build());
@@ -43,7 +44,7 @@ public final class Configurator {
 
     public static void pushGame(RegistryMap<?> registry) {
         if(registry != pushedServer) {
-            SERVER.pop();//close section
+            if(pushedServer != null) SERVER.pop();//close section
             SERVER.push(registry.toString());
         }
         SERVER.comment("Registry entry:");

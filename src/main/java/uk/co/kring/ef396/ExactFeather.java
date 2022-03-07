@@ -2,8 +2,8 @@ package uk.co.kring.ef396;
 
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
-import uk.co.kring.ef396.initializers.*;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -29,6 +29,7 @@ public class ExactFeather {
     public static boolean DEBUG;
 
     private static List<Consumer<FMLClientSetupEvent>> renderers = new LinkedList<>();
+    private static List<Consumer<EntityAttributeCreationEvent>> attrib = new LinkedList<>();
 
     public ExactFeather() {
 
@@ -36,6 +37,7 @@ public class ExactFeather {
 
         bus.addListener(this::setup);
         bus.addListener(this::doClientStuff);
+        bus.addListener(this::doAttributes);
 
         // a configuration handler
         // names field etc.
@@ -47,6 +49,7 @@ public class ExactFeather {
                 (builder) -> setConfig(builder));
 
         Registries.register(bus);
+        Loader.init(LOADER);
         MinecraftForge.EVENT_BUS.register(this);
 
         // build configuration
@@ -70,15 +73,24 @@ public class ExactFeather {
         });
     }
 
+    private void doAttributes(EntityAttributeCreationEvent event) {
+        attrib.forEach((att) -> {
+            att.accept(event);
+        });
+    }
+
     public static void registerRender(Consumer<FMLClientSetupEvent> event) {
         renderers.add(event);
+    }
+    public static void registerAttrib(Consumer<EntityAttributeCreationEvent> event) {
+        attrib.add(event);
     }
 
     // Custom CreativeModeTab TAB
     public static final CreativeModeTab TAB = new CreativeModeTab("ef396") {
         @Override
         public ItemStack makeIcon() {
-            return new ItemStack(ItemInit.HOG_SPAWN_EGG.get());
+            return new ItemStack(Loaded.hogSpawnEgg.get());
         }
     };
 }

@@ -1,11 +1,14 @@
 ```
-assets
+src/main/resources/assets
 └── ef396
     ├── blockstates
     │   ├── ruby_block.json
     │   └── ruby_ore.json
+    ├── books
+    │   └── book_1.txt
     ├── lang
     │   └── en_us.json
+    ├── loaded_load.txt
     ├── models
     │   ├── block
     │   │   ├── ruby_block.json
@@ -50,4 +53,6 @@ assets
             └── armor
                 ├── ruby_layer_1.png
                 └── ruby_layer_2.png
+
+14 directories, 39 files
 ```

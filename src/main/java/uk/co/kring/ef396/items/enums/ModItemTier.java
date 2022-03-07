@@ -1,8 +1,8 @@
 package uk.co.kring.ef396.items.enums;
 
-import net.minecraft.world.item.crafting.Ingredient;
-import uk.co.kring.ef396.initializers.ItemInit;
+import net.minecraft.world.item.crafting.Ingredient;;
 import net.minecraft.world.item.Tier;
+import uk.co.kring.ef396.Loaded;
 import uk.co.kring.ef396.utilities.Configurator;
 
 import java.util.function.Supplier;
@@ -10,7 +10,7 @@ import java.util.function.Supplier;
 public enum ModItemTier implements Tier {
 
     RUBY(3, 800, 7.0F, 3.0F, 18, () -> {
-        return Ingredient.of(ItemInit.RUBY.get());
+        return Ingredient.of(Loaded.ruby.get());
     });
 
     static {

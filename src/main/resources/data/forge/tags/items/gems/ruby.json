@@ -1,8 +1,6 @@
 {
   "replace": false,
   "values": [
-    "minecraft:emerald",
-    "minecraft:diamond",
     "ef396:ruby"
   ]
 }

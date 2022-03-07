@@ -1,8 +1,25 @@
 package uk.co.kring.ef396.utilities;
 
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.EntityRenderers;
+import net.minecraft.client.renderer.entity.HuskRenderer;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.monster.Zombie;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.level.block.Block;
+import net.minecraftforge.common.ForgeSpawnEggItem;
+import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.*;
 import uk.co.kring.ef396.ExactFeather;
+import uk.co.kring.ef396.Loaded;
+import uk.co.kring.ef396.entities.HogEntity;
+import uk.co.kring.ef396.recipes.BrewingCommon;
+import uk.co.kring.ef396.recipes.MobEffectCommon;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -18,11 +35,52 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
         this.register = register;
     }
 
+    public RegistryObject<Item> regBlockItem(RegistryObject<Block> block) {
+        return Registries.items.register(block.getId().getPath(),
+                () -> new BlockItem(block.get(), new Item.Properties().tab(ExactFeather.TAB).stacksTo(64)));
+    }
+
+    public RegistryObject<ForgeSpawnEggItem> regEggItem(
+            RegistryObject<? extends EntityType<? extends Mob>> entity,
+            int bg, int fg, String texture) {
+        ExactFeather.registerRender((event) -> {
+            EntityRenderers.register((EntityType<? extends Zombie>) entity.get(),
+                    (context) -> new HuskRenderer(context) {//default husk
+                        @Override
+                        public ResourceLocation getTextureLocation(Zombie p_113771_) {
+                            return new ResourceLocation(ExactFeather.MOD_ID, texture);
+                        }
+                    });
+        });
+        ExactFeather.registerAttrib((event) -> {
+            event.put(entity.get(), ((HogEntity)entity.get()).makeAttributes());
+        });
+        return Registries.items.register(entity.getId().getPath() + "_spawn_egg",
+                () -> new ForgeSpawnEggItem(entity, bg, fg,
+                        new Item.Properties().tab(ExactFeather.TAB).stacksTo(16)));
+    }
+
+    public static RegistryObject<Potion> register(String name, Potion in, RegistryObject<? extends Item> add,
+                                                  MobEffectCommon... does) {
+        RegistryObject<Potion> potion;
+        if(does != null) {
+             potion = Registries.potions.register(name,
+                    () -> new Potion(does));
+        } else {
+            potion = Registries.potions.register(name,
+                    () -> new Potion());
+        }
+        BrewingRecipeRegistry.addRecipe(new BrewingCommon(
+                in, (RegistryObject<Item>) add, potion
+        ));
+        return potion;
+    }
+
     public <I extends T> RegistryObject<I> register(String name, Supplier<? extends I> sup,
                                                     Consumer<Configurator.Builder> user) {
         Configurator.pushGame(this);
         Configurator.configGame(name, user);
-        return register.register(name, sup);
+        return register(name, sup);
     }
 
     public <I extends T> RegistryObject<I> register(String name, Supplier<? extends I> sup) {

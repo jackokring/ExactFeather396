@@ -7,7 +7,7 @@ public class Loader {
 
     // for loading the Loaded things
 
-    public static final void init() {
+    public static final void init(ClassLoader classLoader) {
         String loaded;
         try {
             loaded = new String(Loader.class.getResourceAsStream("/assets/" +

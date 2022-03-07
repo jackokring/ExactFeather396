@@ -6,6 +6,8 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.NeutralMob;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.monster.Husk;
 import net.minecraft.world.entity.player.Player;
@@ -17,7 +19,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 import uk.co.kring.ef396.ExactFeather;
 import net.minecraft.world.entity.EntityType;
-import uk.co.kring.ef396.initializers.SoundInit;
+import uk.co.kring.ef396.Loaded;
 
 import java.util.UUID;
 
@@ -31,6 +33,12 @@ public class HogEntity extends Husk implements NeutralMob {
 
     public HogEntity(EntityType<? extends Husk> type, Level worldIn) {
         super(type, worldIn);
+    }
+
+    public static AttributeSupplier makeAttributes() {
+        return AttributeSupplier.builder()
+                .add(Attributes.ATTACK_SPEED, 2.0f).build();
+        //TODO
     }
 
     @Override
@@ -70,7 +78,7 @@ public class HogEntity extends Husk implements NeutralMob {
 
     @Override
     protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-        return SoundInit.ERROR.get();
+        return Loaded.error.get();
     }
 
     @Override
@@ -79,11 +87,11 @@ public class HogEntity extends Husk implements NeutralMob {
     }
 
     public static float getSizeXZ() {
-        return 1.0f;
+        return 0.6f;
     }
 
     public static float getSizeY() {
-        return 1.975f;
+        return 1.95f;
     }
 
     @Override
