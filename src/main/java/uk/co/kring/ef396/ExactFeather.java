@@ -87,7 +87,7 @@ public class ExactFeather {
     }
 
     // Custom CreativeModeTab TAB
-    public static final CreativeModeTab TAB = new CreativeModeTab("ef396") {
+    public static final CreativeModeTab TAB = new CreativeModeTab(MOD_ID) {
         @Override
         public ItemStack makeIcon() {
             return new ItemStack(Loaded.hogSpawnEgg.get());
