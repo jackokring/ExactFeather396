@@ -27,5 +27,34 @@
 
   "item.minecraft.potion.effect.psydare": "Potion of Psydare",
   "item.minecraft.splash_potion.effect.psydare": "Splash Potion of Psydare",
-  "item.minecraft.lingering_potion.effect.psydare": "Lingering Potion of Psydare"
+  "item.minecraft.lingering_potion.effect.psydare": "Lingering Potion of Psydare",
+
+  "item.minecraft.potion.effect.sugar": "Mundane Potion ()",
+  "item.minecraft.splash_potion.effect.sugar": "Splash Mundane Potion ()",
+  "item.minecraft.lingering_potion.effect.sugar": "Lingering Mundane Potion ()",
+
+  "item.minecraft.potion.effect.magma_cream": "Mundane Potion ()",
+  "item.minecraft.splash_potion.effect.magma_cream": "Splash Mundane Potion ()",
+  "item.minecraft.lingering_potion.effect.magma_cream": "Lingering Mundane Potion ()",
+
+  "item.minecraft.potion.effect.rabbit_foot": "Mundane Potion ()",
+  "item.minecraft.splash_potion.effect.rabbit_foot": "Splash Mundane Potion ()",
+  "item.minecraft.lingering_potion.effect.rabbit_foot": "Lingering Mundane Potion ()",
+
+  "item.minecraft.potion.effect.glistering_melon_slice": "Mundane Potion ()e",
+  "item.minecraft.splash_potion.effect.glistering_melon_slice": "Splash Mundane Potion ()",
+  "item.minecraft.lingering_potion.effect.glistering_melon_slice": "Lingering Mundane Potion ()",
+
+  "item.minecraft.potion.effect.blaze_powder": "Mundane Potion ()",
+  "item.minecraft.splash_potion.effect.blaze_powder": "Splash Mundane Potion ()",
+  "item.minecraft.lingering_potion.effect.blaze_powder": "Lingering Mundane Potion ()",
+
+  "item.minecraft.potion.effect.ghast_tear": "Mundane Potion ()e",
+  "item.minecraft.splash_potion.effect.ghast_tear": "Splash Mundane Potion ()",
+  "item.minecraft.lingering_potion.effect.ghast_tear": "Lingering Mundane Potion ()",
+
+  "item.minecraft.potion.effect.spider_eye": "Mundane Potion ()",
+  "item.minecraft.splash_potion.effect.spider_eye": "Splash Mundane Potion ()",
+  "item.minecraft.lingering_potion.effect.spider_eye": "Lingering Mundane Potion ()"
+
 }

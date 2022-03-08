@@ -87,6 +87,15 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
         return potion;
     }
 
+    public static RegistryObject<Potion> register(String name, Item item) {
+        RegistryObject<Potion> potion = Registries.potions.register(name,
+                    () -> new Potion());
+        BrewingRecipeRegistry.addRecipe(new BrewingCommon(
+                item, potion
+        ));
+        return potion;
+    }
+
     public <I extends T> RegistryObject<I> register(String name, Supplier<? extends I> sup,
                                                     Consumer<Configurator.Builder> user) {
         Configurator.pushGame(this);

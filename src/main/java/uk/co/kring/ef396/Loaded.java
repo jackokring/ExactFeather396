@@ -19,9 +19,12 @@ import uk.co.kring.ef396.items.BedtimeBook;
 import uk.co.kring.ef396.items.PoisonAppleItem;
 import uk.co.kring.ef396.items.enums.ModArmorMaterial;
 import uk.co.kring.ef396.items.enums.ModItemTier;
+import uk.co.kring.ef396.recipes.BrewingCommon;
 import uk.co.kring.ef396.recipes.MobEffectCommon;
 import uk.co.kring.ef396.utilities.Registries;
 import uk.co.kring.ef396.utilities.RegistryMap;
+
+import java.util.Map;
 
 public class Loaded {
 
@@ -38,6 +41,7 @@ public class Loaded {
     public static RegistryObject<? extends Item> ruby, poison_apple, hogSpawnEgg;
     public static RegistryObject<Block> rubyBlock;
     public static RegistryObject<Potion> psydare;
+    public static Map<Item, RegistryObject<Potion>> mundane;
     public static RegistryObject<EntityType<? extends Mob>> hog;
     public static RegistryObject<SoundEvent> error;
 
@@ -87,6 +91,7 @@ public class Loaded {
     protected void potions(RegistryMap<Potion> reg) {
         psydare = reg.register("psydare",
                 Potions.WATER, poison_apple, new MobEffectCommon(MobEffects.WITHER, 1));
+        mundane = BrewingCommon.mundaneFix();
     }
 
     protected void entities(RegistryMap<EntityType<?>> reg) {
