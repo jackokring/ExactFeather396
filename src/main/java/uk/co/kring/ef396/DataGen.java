@@ -7,14 +7,12 @@ import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.tags.BlockTagsProvider;
 import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSet;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
-import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.LanguageProvider;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -25,8 +23,6 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-
-import static net.minecraft.tags.Tag.Builder.tag;
 
 @Mod.EventBusSubscriber(modid = "ef396", bus = Mod.EventBusSubscriber.Bus.MOD)
 public class DataGen {
@@ -56,12 +52,12 @@ public class DataGen {
                         Block b = block.get();
                         // more complex block types
                         if (b instanceof Block) {
-                            tag(BlockTags.MINEABLE_WITH_PICKAXE)
+                            /* BlockTags.MINEABLE_WITH_PICKAXE.
                                     .add(b);
                             tag(BlockTags.NEEDS_IRON_TOOL)
                                     .add(b);
                             tag(Tags.Blocks.ORES)
-                                    .add(b);
+                                    .add(b); */
                             return;
 
                         }
@@ -78,8 +74,8 @@ public class DataGen {
                         // more complex block types
                         if (b instanceof Item) {
                             //Tags.Blocks.class.
-                            tag(b, Tags.Items.ORES)
-                                    .add(b);
+                            /* tag(Tags.Items.ORES)
+                                    .add(b); */
                             return;
 
                         }
