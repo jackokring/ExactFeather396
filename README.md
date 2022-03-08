@@ -1,4 +1,4 @@
-# MC Version `1.18.1`
+# MC Version `1.18.2`
 
 ### Licence and Tools
 The current version of minecraft the mod compiles against. [**MC Forge**](https://files.minecraftforge.net/net/minecraftforge/forge/) is used to make the module with [**IntelliJ**](https://www.jetbrains.com/idea/download/) and the help of many [**Youtube**](https://youtube.com) videos.

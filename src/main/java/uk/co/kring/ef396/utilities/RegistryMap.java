@@ -63,7 +63,7 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
                     });
         });
         ExactFeather.registerAttrib((event) -> {
-            event.put(entity.get(), ((HogEntity)entity.get()).makeAttributes());
+            event.put(entity.get(), HogEntity.makeAttributes());
         });
         return Registries.items.register(entity.getId().getPath() + "_spawn_egg",
                 () -> new ForgeSpawnEggItem(entity, colors(entity, false),
