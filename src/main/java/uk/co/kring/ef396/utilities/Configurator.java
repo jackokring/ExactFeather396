@@ -10,6 +10,7 @@ import java.util.function.Consumer;
 public final class Configurator {
 
     public final static class Builder extends ForgeConfigSpec.Builder {
+        // TODO needs fixing such that uses ForgeConfigSpec or does later assign chain
 
         public float readFloat(String name, float def, float low, float hi) {
             return this.defineInRange(name, def, low, hi).get().floatValue();
