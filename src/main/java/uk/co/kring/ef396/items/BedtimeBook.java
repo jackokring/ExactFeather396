@@ -13,7 +13,6 @@ import net.minecraftforge.registries.RegistryObject;
 import uk.co.kring.ef396.ExactFeather;
 import uk.co.kring.ef396.utilities.Registries;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.function.Supplier;
@@ -28,19 +27,22 @@ public class BedtimeBook extends WrittenBookItem implements IForgeRegistryEntry<
         String altName;
         CompoundTag tag = new CompoundTag();
         String[] paras;
+        String serverDisclaimer;
 
-        Entry(String altName) {;
+        Entry(String altName, String serverDisclaimer) {;
             this.altName = altName;
+            this.serverDisclaimer = serverDisclaimer;
             String loaded;
             try {
                 loaded = new String(getClass().getResourceAsStream("/assets/" +
                     ExactFeather.MOD_ID + "/books/" + altName + ".txt")
                     .readAllBytes(), StandardCharsets.UTF_8).trim();
-            } catch(IOException e) {
+            } catch(Exception e) {
                 loaded = "Failed load of /assets/" + ExactFeather.MOD_ID + "/books/" + altName + ".txt";
             }
             paras = loaded.split("\n\n");
             loadChapter();
+            jsonify(paginate(paras));
         }
 
         String processPara(String para) {
@@ -72,10 +74,11 @@ public class BedtimeBook extends WrittenBookItem implements IForgeRegistryEntry<
             tag.putInt("generation", 3);//it's an oldie but a goody
             if(paras.length < 3) return;
             for(int i = 0; i < paras.length - 2; i++) {
-                paras[i] = processPara(paras[i + 1]);//leave last two empty
+                paras[i] = processPara(paras[i + 1]);//leave last two empty?
             }
-            // process pages
-            jsonify(paginate(paras));
+            //as title reproduction time waste removed
+            //an injection of a disclaimer?
+            paras[paras.length - 2] = serverDisclaimer;
         }
 
         void addSupplier(Supplier<ItemStack> sup) {
@@ -91,7 +94,9 @@ public class BedtimeBook extends WrittenBookItem implements IForgeRegistryEntry<
                         .tab(ExactFeather.TAB),
                 name),//using name
                 (builder) -> {
-                    chapters.put(name, new Entry(builder.readString(name)));
+                    chapters.put(name, new Entry(builder.readString(name),
+                            builder.readStringOpt(name + ".serverInjection",
+                                    "And they all lived happily ever after.")));
                 });// this name should be different for file by config
     }
 

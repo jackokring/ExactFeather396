@@ -26,14 +26,13 @@ import uk.co.kring.ef396.utilities.RegistryMap;
 public class Loaded {
 
     // for loading up things
-    // use static class fields for any references etc
 
-    public static final void init() {
-        items(Registries.items);
-        blocks(Registries.blocks);
-        potions(Registries.potions);
-        entities(Registries.entities);
-        sounds(Registries.sounds);
+    public static final void init(Loaded ref) {
+        ref.items(Registries.items);
+        ref.blocks(Registries.blocks);
+        ref.potions(Registries.potions);
+        ref.entities(Registries.entities);
+        ref.sounds(Registries.sounds);
     }
 
     public static RegistryObject<? extends Item> ruby, poison_apple, hogSpawnEgg;
@@ -42,7 +41,7 @@ public class Loaded {
     public static RegistryObject<EntityType<? extends Mob>> hog;
     public static RegistryObject<SoundEvent> error;
 
-    public static void items(RegistryMap<Item> reg) {
+    protected void items(RegistryMap<Item> reg) {
         ruby = reg.register("ruby",
                 () -> new Item(new Item.Properties().tab(ExactFeather.TAB)));
         poison_apple = reg.register("poison_apple", PoisonAppleItem::new,
@@ -80,26 +79,25 @@ public class Loaded {
         BedtimeBook.register("book_1");
     }
 
-    public static void blocks(RegistryMap<Block> reg) {
+    protected void blocks(RegistryMap<Block> reg) {
         reg.regBlockItem(rubyBlock = reg.register("ruby_block", RubyBlock::new));
         reg.regBlockItem(reg.register("ruby_ore", RubyOre::new));
     }
 
-    public static void potions(RegistryMap<Potion> reg) {
+    protected void potions(RegistryMap<Potion> reg) {
         psydare = reg.register("psydare",
                 Potions.WATER, poison_apple, new MobEffectCommon(MobEffects.WITHER, 1));
     }
 
-    public static void entities(RegistryMap<EntityType<?>> reg) {
+    protected void entities(RegistryMap<EntityType<?>> reg) {
         hogSpawnEgg = reg.regEggItem(hog = reg.register("hog",
                 () -> EntityType.Builder.of(HogEntity::new, MobCategory.CREATURE)
                         .sized(HogEntity.getSizeXZ(), HogEntity.getSizeY()) // Hit box Size
-                        .build(new ResourceLocation(ExactFeather.MOD_ID, "hog").toString())),
+                        .build(new ResourceLocation(ExactFeather.MOD_ID, "hog").toString())));
                 // this also does all renderer and attribute registration indirectly
-                0, 0x8888, "textures/entity/hog.png");
     }
 
-    public static void sounds(RegistryMap<SoundEvent> reg) {
+    protected void sounds(RegistryMap<SoundEvent> reg) {
         error = reg.register("error",
                 () -> new SoundEvent(new ResourceLocation(ExactFeather.MOD_ID, "error")));
     }

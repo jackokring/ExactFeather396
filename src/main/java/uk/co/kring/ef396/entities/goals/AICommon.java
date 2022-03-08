@@ -1,12 +1,20 @@
 package uk.co.kring.ef396.entities.goals;
 
 import net.minecraft.world.entity.ai.goal.Goal;
+import uk.co.kring.ef396.entities.HogEntity;
 
 import java.util.EnumSet;
 
 public class AICommon extends Goal {
 
-    public AICommon() {
+    private HogEntity entity;
+
+    public AICommon(HogEntity entity) {
+        this.entity = entity;
+    }
+
+    public final HogEntity getEntity() {
+        return entity;
     }
 
     @Override

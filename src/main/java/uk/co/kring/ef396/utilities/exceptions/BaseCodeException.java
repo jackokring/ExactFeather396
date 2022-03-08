@@ -2,15 +2,18 @@ package uk.co.kring.ef396.utilities.exceptions;
 
 import uk.co.kring.ef396.ExactFeather;
 import uk.co.kring.ef396.entities.goals.AICommon;
-
-import java.util.HashMap;
+import uk.co.kring.ef396.entities.goals.GoalThread;
 
 public abstract class BaseCodeException extends Exception  {
 
-    private static HashMap<Thread, AICommon> actionEntity = new HashMap<>();
-
     public final void emote() {
-        AICommon c = actionEntity.get(Thread.currentThread());
+        AICommon c;
+        try {
+            c = ((GoalThread)Thread.currentThread()).getAI();
+        } catch(Exception e) {
+            throw new UnsupportedOperationException(Thread.currentThread().toString()
+                    + " must be a GoalThread");
+        }
         synchronized(c) {
             try {
                 actionTry(c);
@@ -18,32 +21,25 @@ public abstract class BaseCodeException extends Exception  {
                 try {
                     actionCatch(e, c);
                 } catch (Exception f) {
-                    //null as not relevant to handle.
+                    explain(e, c);
                 }
             } catch (RuntimeException e) {
                 BaseCodeException f = catchAssist(e);
                 try {
                     f.actionCatch(f, c);
                 } catch (Exception g) {
-                    //null as not relevant to handle
+                    explain(e, c);
                 }
             }
         }
     }
 
-    public static final Thread threadAssist(AICommon ai) {
-        Thread t = new Thread();
-        actionEntity.put(t, ai);
-        return t;//TODO
-    }
-
-    public static final void joinAssist() {
-        actionEntity.remove(Thread.currentThread());
-        try {
-            Thread.currentThread().join();
-        } catch(InterruptedException e) {
-            //TODO
-        }
+    private void explain(Exception e, AICommon c) {
+        //null as not relevant to handle
+        ExactFeather.LOGGER.info(e.getClass().toString()
+                + " requests synchronized throw nest in "
+                + Thread.currentThread().toString()
+                + " doing " + c.toString() + " which is locked and needs release");
     }
 
     public static final void throwAssist(String why, BaseCodeException e) {

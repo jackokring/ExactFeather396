@@ -26,6 +26,10 @@ public final class Configurator {
         public String readString(String name) {
             return this.define(name, name).get();
         }
+
+        public String readStringOpt(String name, String opt) {
+            return this.define(name, opt).get();
+        }
     }
 
     private static final Builder CLIENT = new Builder();

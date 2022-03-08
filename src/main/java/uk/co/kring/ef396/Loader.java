@@ -3,6 +3,7 @@ package uk.co.kring.ef396;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -10,7 +11,11 @@ import java.util.stream.Collectors;
 public class Loader {
 
     // for loading the Loaded things
-    public static List<Optional> classes;
+    private static List<Optional<Class<Loaded>>> classes;
+
+    public static final List<Optional<Class<Loaded>>> getLoaded() {
+        return Collections.unmodifiableList(classes);
+    }
 
     public static final void init(ClassLoader classLoader) {
         String loaded;
@@ -27,14 +32,17 @@ public class Loader {
                 .filter((string) -> string.charAt(0) != '#')//not comment
                 .map((string) -> Loader.class.getPackageName() + "." + string.trim())
                 .map((clazz) -> {
+                    Class<Loaded> c = null;
                     try {
-                        var c = classLoader.loadClass(clazz);
-                        var m = c.getMethod("init");
-                        m.invoke(null);//static action
-                        return Optional.of(c);//loaded classes
+                        c = (Class<Loaded>)classLoader.loadClass(clazz);
+                        var i = c.getConstructor().newInstance();
+                        c.getMethod("init").invoke(i, i);//static action ... eye, eye cap'n!
+                        // uses instance for overrides
                     } catch(Exception e) {
-                        return Optional.empty();
+                        // didn't load
+                        ExactFeather.LOGGER.info("Class " + clazz + " didn't load.");
                     }
+                    return Optional.ofNullable(c);
                 }).collect(Collectors.toList());
     }
 }

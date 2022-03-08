@@ -6,3 +6,6 @@
 Loaded
 # Add your loader class name here, and place it
 # in the same directory as `Loader`.
+# You can use relative class paths such as `loaded.Class`.
+# You are advised to extend class `loaded.BlankLoaded`.
+loaded.BlankLoaded

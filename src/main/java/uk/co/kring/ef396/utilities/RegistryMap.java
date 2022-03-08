@@ -38,15 +38,27 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
                 () -> new BlockItem(block.get(), new Item.Properties().tab(ExactFeather.TAB).stacksTo(64)));
     }
 
+    public int colors(RegistryObject<? extends EntityType<? extends Mob>> entity,
+                      boolean highlight) {
+        // gen color inspirations
+        int h = entity.getId().toString().hashCode();//should be constant for mod and name
+        int bg = (h & 0xffff);
+        if(highlight) bg >>= 16;
+        bg *= bg;
+        bg &= 0xffffff;
+        return bg;
+    }
+
     public RegistryObject<ForgeSpawnEggItem> regEggItem(
-            RegistryObject<? extends EntityType<? extends Mob>> entity,
-            int bg, int fg, String texture) {
+            RegistryObject<? extends EntityType<? extends Mob>> entity
+            /* int bg, int fg, String texture */) {
         ExactFeather.registerRender((event) -> {
             EntityRenderers.register((EntityType<? extends Zombie>) entity.get(),
                     (context) -> new HuskRenderer(context) {//default husk
                         @Override
                         public ResourceLocation getTextureLocation(Zombie p_113771_) {
-                            return new ResourceLocation(ExactFeather.MOD_ID, texture);
+                            return new ResourceLocation(ExactFeather.MOD_ID,
+                                    "textures/entity/" + entity.getId().getPath() + ".png");
                         }
                     });
         });
@@ -54,7 +66,8 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
             event.put(entity.get(), ((HogEntity)entity.get()).makeAttributes());
         });
         return Registries.items.register(entity.getId().getPath() + "_spawn_egg",
-                () -> new ForgeSpawnEggItem(entity, bg, fg,
+                () -> new ForgeSpawnEggItem(entity, colors(entity, false),
+                        colors(entity, true),
                         new Item.Properties().tab(ExactFeather.TAB).stacksTo(64)));
     }
 
