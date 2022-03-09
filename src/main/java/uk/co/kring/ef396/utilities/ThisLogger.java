@@ -14,4 +14,12 @@ public class ThisLogger {
     public void info(String say) {
         LOGGER.info(name + ": " + say);
     }
+
+    public void warn(String say) {
+        LOGGER.info(name + ": " + say);
+    }
+
+    public void error(String say) {
+        LOGGER.info(name + ": " + say);
+    }
 }

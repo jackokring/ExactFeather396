@@ -54,6 +54,7 @@ public final class Configurator {
             SERVER.push(registry.toString());
         }
         SERVER.comment("Registry entry:");
+        ExactFeather.LOGGER.info("Entering registry section " + registry.toString() + ".");
         pushedServer = registry;
     }
 

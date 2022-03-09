@@ -25,7 +25,7 @@ public class Loader {
                     .readAllBytes(), StandardCharsets.UTF_8).trim();
         } catch(IOException e) {
             loaded =  "";
-            ExactFeather.LOGGER.info("No loaded_load.txt file");
+            ExactFeather.LOGGER.warn("No loaded_load.txt file. Loading skipped.");
         }
         classes = Arrays.stream(loaded.split("\n"))
                 .map((string) -> string.trim())
@@ -40,7 +40,8 @@ public class Loader {
                         // uses instance for overrides
                     } catch(Exception e) {
                         // didn't load
-                        ExactFeather.LOGGER.info("Class " + clazz + " didn't load.");
+                        ExactFeather.LOGGER.warn("Class " + clazz +
+                                " didn't load. I hope you like Exception messages.");
                     }
                     return Optional.ofNullable(c);
                 }).collect(Collectors.toList());

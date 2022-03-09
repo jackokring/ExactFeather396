@@ -36,7 +36,7 @@ public abstract class BaseCodeException extends Exception  {
 
     private void explain(Exception e, AICommon c) {
         //null as not relevant to handle
-        ExactFeather.LOGGER.info(e.getClass().toString()
+        ExactFeather.LOGGER.error(e.getClass().toString()
                 + " requests synchronized throw nest in "
                 + Thread.currentThread().toString()
                 + " doing " + c.toString() + " which is locked and needs release");
