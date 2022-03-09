@@ -9,6 +9,7 @@ import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
@@ -49,7 +50,7 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
         return bg;
     }
 
-    public RegistryObject<ForgeSpawnEggItem> regEggItem(
+    public RegistryObject<Item> regEggItem(
             RegistryObject<? extends EntityType<? extends Mob>> entity
             /* int bg, int fg, String texture */) {
         ExactFeather.registerRender((event) -> {
@@ -71,7 +72,27 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
                         new Item.Properties().tab(ExactFeather.TAB).stacksTo(64)));
     }
 
-    public static RegistryObject<Potion> register(String name, Potion in, RegistryObject<? extends Item> add,
+    public static RegistryObject<Potion> registerPotionImmediate(String name,
+                                                                 RegistryObject<Item> add,
+                                                                 MobEffectCommon... does) {
+        RegistryObject<Potion> potion;
+        if(does != null) {
+            potion = Registries.potions.register(name,
+                    () -> new Potion(does));
+        } else {
+            potion = Registries.potions.register(name,
+                    () -> new Potion());
+        }
+        ExactFeather.registerRecipe((event) -> {
+            BrewingRecipeRegistry.addRecipe(new BrewingCommon(
+                    Potions.WATER, add, potion
+            ));
+        });
+        return potion;
+    }
+
+    public static RegistryObject<Potion> registerPotionSecondary(String name, RegistryObject<Potion> in,
+                                                  Item add,
                                                   MobEffectCommon... does) {
         RegistryObject<Potion> potion;
         if(does != null) {
@@ -83,18 +104,18 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
         }
         ExactFeather.registerRecipe((event) -> {
             BrewingRecipeRegistry.addRecipe(new BrewingCommon(
-                    in, (RegistryObject<Item>) add, potion
+                    in.get(), add, potion
             ));
         });
         return potion;
     }
 
-    public static RegistryObject<Potion> registerPotion(String name, Item item) {
+    public static RegistryObject<Potion> registerPotionPrimary(String name, Item item) {
         RegistryObject<Potion> potion = Registries.potions.register(name,
                     () -> new Potion());
         ExactFeather.registerRecipe((event) -> {
             BrewingRecipeRegistry.addRecipe(new BrewingCommon(
-                    item, potion
+                    Potions.WATER, item, potion
             ));
         });
         return potion;
@@ -102,7 +123,6 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
 
     public <I extends T> RegistryObject<I> register(String name, Supplier<? extends I> sup,
                                                     Consumer<Configurator.Builder> user) {
-        Configurator.pushGame(this);
         Configurator.configGame(name, user);
         return register(name, sup);
     }

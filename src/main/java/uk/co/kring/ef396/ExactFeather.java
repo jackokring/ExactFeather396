@@ -2,6 +2,7 @@ package uk.co.kring.ef396;
 
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.common.MinecraftForge;
@@ -26,7 +27,7 @@ public class ExactFeather {
     //static hook avoiding GC
     public static final ClassLoader LOADER = ClassLoader.getSystemClassLoader();
 
-    public static boolean DEBUG;
+    public static ForgeConfigSpec.BooleanValue DEBUG;
 
     private static List<Consumer<FMLClientSetupEvent>> renderers = new LinkedList<>();
     private static List<Consumer<FMLCommonSetupEvent>> recipes = new LinkedList<>();

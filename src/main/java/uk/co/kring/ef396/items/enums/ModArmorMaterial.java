@@ -4,6 +4,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraftforge.common.ForgeConfigSpec;
 import uk.co.kring.ef396.ExactFeather;
 import uk.co.kring.ef396.Loaded;
 import net.minecraft.world.item.ArmorMaterial;
@@ -24,7 +25,7 @@ public enum ModArmorMaterial implements ArmorMaterial {
         Configurator.configGame("armor", (builder) -> setConfig(builder));
     }
 
-    private static float enchantScale;
+    private static ForgeConfigSpec.DoubleValue enchantScale;
     private static final int[] MAX_DAMAGE_ARRAY = new int[] { 11, 16, 15, 13 };
     private final String name;
     private final int maxDamageFactor; //Durability, Iron=15, Diamond=33, Gold=7, Leather=5
@@ -63,7 +64,7 @@ public enum ModArmorMaterial implements ArmorMaterial {
 
     @Override
     public int getEnchantmentValue() {
-        return (int)(this.enchantability * enchantScale);
+        return (int)(this.enchantability * enchantScale.get());
     }
 
     @Override

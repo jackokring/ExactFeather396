@@ -25,8 +25,8 @@ public class BrewingCommon extends BrewingRecipe {
                 PotionUtils.setPotion(new ItemStack(Items.POTION), potion.get()));
     }
 
-    public BrewingCommon(Item ingredient, RegistryObject<Potion> called) {
-        super(Ingredient.of(new ItemStack((ItemLike) Potions.WATER)),
+    public BrewingCommon(Potion input, Item ingredient, RegistryObject<Potion> called) {
+        super(Ingredient.of(new ItemStack((ItemLike) input)),
                 Ingredient.of(new ItemStack(ingredient)),
                 PotionUtils.setPotion(new ItemStack(Items.POTION), called.get()));
     }
@@ -50,7 +50,7 @@ public class BrewingCommon extends BrewingRecipe {
             Items.PHANTOM_MEMBRANE,         //Air
         };
         Arrays.stream(items).forEach((what) -> {
-            list.put(what, reg.registerPotion(what.getRegistryName().getPath(), what));
+            list.put(what, reg.registerPotionPrimary(what.getRegistryName().getPath(), what));
         });
         return Collections.unmodifiableMap(list);
     }

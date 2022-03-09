@@ -2,6 +2,7 @@ package uk.co.kring.ef396.items.enums;
 
 import net.minecraft.world.item.crafting.Ingredient;;
 import net.minecraft.world.item.Tier;
+import net.minecraftforge.common.ForgeConfigSpec;
 import uk.co.kring.ef396.Loaded;
 import uk.co.kring.ef396.utilities.Configurator;
 
@@ -18,7 +19,7 @@ public enum ModItemTier implements Tier {
         Configurator.configGame("tools", (builder) -> setConfig(builder));
     }
 
-    private static float enchantScale;
+    private static ForgeConfigSpec.DoubleValue enchantScale;
     private final int harvestLevel;
     private final int maxUses;
     private final float efficiency;
@@ -61,7 +62,7 @@ public enum ModItemTier implements Tier {
 
     @Override
     public int getEnchantmentValue() {
-        return (int)(this.enchantability * enchantScale);
+        return (int)(this.enchantability * enchantScale.get());
     }
 
     @Override

@@ -3,7 +3,7 @@
 
 [Release Page](https://github.com/jackokring/ExactFeather396/releases)
 
-* Fixed basic faults with `1.18.1` changes in the symbol set.
+* Fixed basic faults with `1.18.2` changes in the symbol set.
 * Removed `Ore` generation as `1.18.1` has `data` tags for doing this kind of thing like generating biomes. I assume this is to stop failure of vanilla biomes by block pollution. A `Biome` maybe added later to test this idea.
 * Internal `ForgeSpawnEggItem` automation.
 * Class refactoring when necessary or logical.
@@ -17,16 +17,23 @@
 * Added tree view of data and asset directories.
 * `Configurator` class easy implements a lot of the boilerplate for configuration files in a reduced number of classes.
 * Added `Registries` for global access to all without having to use specific class name too.
-* `Loaded.psydare` potion added.
+* `Loaded.psydare` potion added, and a few more too.
 * Started on a `BaseCodeException` system for AI processing.
 * Added a `BedtimeBook` idea.
 * Experimental `Loaded` by `Loader` for modularization of the source tree to reduce merge conflicts on pull requests.
 
 ### TODO
+* Finish basic book implementation.
 * Implement some AI.
-* Name potion. Decide effects.
 * Maybe a custom effect.
-* Tags for classification, and generable in world?
-* Does `Potions.MUNDANE` have a field from whence it was made?
+* Tags for classification, and generates in world.
 * Hog drops alterations e.g. spawn egg.
-* 
+* Custom `MobEffect` with `addAttributeModifier`, and it seems to have a few serialization IDs. Perhaps `396` is a good choice.
+* Custom `Attribute` to interact with the mind AI.
+* Mob spawning.
+* Perhaps a `BlockEntity` like a minimal `ItemStack` count of a variety, while auto running through the recipes to maximize fullness with build-ables.
+* Mob drops. And drops in general.
+* `TranslatableComponent` and other book ideas.
+* Distributed AI on the network.
+* Two more sounds for ambient and dead.
+* Texture for `Hog`.

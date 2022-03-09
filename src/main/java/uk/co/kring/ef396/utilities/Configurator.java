@@ -10,29 +10,30 @@ import java.util.function.Consumer;
 public final class Configurator {
 
     public final static class Builder extends ForgeConfigSpec.Builder {
-        // TODO needs fixing such that uses ForgeConfigSpec or does later assign chain
 
-        public float readFloat(String name, float def, float low, float hi) {
-            return this.defineInRange(name, def, low, hi).get().floatValue();
+        public ForgeConfigSpec.DoubleValue readFloat(String name, float def, float low, float hi) {
+            return this.defineInRange(name, def, low, hi);
         }
 
-        public boolean readBoolean(String name, boolean def) {
-            return this.define(name, def).get();
+        public ForgeConfigSpec.BooleanValue readBoolean(String name, boolean def) {
+            return this.define(name, def);
         }
 
-        public int readInt(String name, int def, int low, int hi) {
-            return this.defineInRange(name, def, low, hi).get();
+        public ForgeConfigSpec.IntValue readInt(String name, int def, int low, int hi) {
+            return this.defineInRange(name, def, low, hi);
         }
 
-        public String readString(String name) {
-            return this.define(name, name).get();
+        public ForgeConfigSpec.ConfigValue<String> readString(String name) {
+            return this.define(name, name);
         }
 
-        public String readStringOpt(String name, String opt) {
-            return this.define(name, opt).get();
+        public ForgeConfigSpec.ConfigValue<String> readStringOpt(String name, String opt) {
+            return this.define(name, opt);
         }
     }
 
+    // yes it does appear like opening files written a while ago is a bit assigned later
+    // perhaps this is to obvious config variables? Or just a slow loader
     private static final Builder CLIENT = new Builder();
     private static final Builder COMMON = new Builder();
     private static final Builder SERVER = new Builder();
@@ -47,7 +48,7 @@ public final class Configurator {
         ExactFeather.LOGGER.info("Configuration built.");
     }
 
-    public static void pushGame(RegistryMap<?> registry) {
+    public static void pushRegisterNest(RegistryMap<?> registry) {
         if(registry != pushedServer) {
             if(pushedServer != null) SERVER.pop();//close section
             SERVER.push(registry.toString());

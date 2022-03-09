@@ -8,6 +8,7 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.WrittenBookItem;
+import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.minecraftforge.registries.RegistryObject;
 import uk.co.kring.ef396.ExactFeather;
@@ -24,21 +25,22 @@ public class BedtimeBook extends WrittenBookItem implements IForgeRegistryEntry<
 
     private static class Entry {
         Supplier<ItemStack> sup;
-        String altName;
+        ForgeConfigSpec.ConfigValue<String> altName;
         CompoundTag tag = new CompoundTag();
         String[] paras;
-        String serverDisclaimer;
+        ForgeConfigSpec.ConfigValue<String> serverDisclaimer;
 
-        Entry(String altName, String serverDisclaimer) {;
+        Entry(ForgeConfigSpec.ConfigValue<String> altName,
+              ForgeConfigSpec.ConfigValue<String> serverDisclaimer) {;
             this.altName = altName;
             this.serverDisclaimer = serverDisclaimer;
             String loaded;
             try {
                 loaded = new String(getClass().getResourceAsStream("/assets/" +
-                    ExactFeather.MOD_ID + "/books/" + altName + ".txt")
+                    ExactFeather.MOD_ID + "/books/" + altName.get() + ".txt")
                     .readAllBytes(), StandardCharsets.UTF_8).trim();
             } catch(Exception e) {
-                loaded = "Failed load of /assets/" + ExactFeather.MOD_ID + "/books/" + altName + ".txt";
+                loaded = "Failed load of /assets/" + ExactFeather.MOD_ID + "/books/" + altName.get() + ".txt";
             }
             paras = loaded.split("\n\n");
             loadChapter();
@@ -78,7 +80,7 @@ public class BedtimeBook extends WrittenBookItem implements IForgeRegistryEntry<
             }
             //as title reproduction time waste removed
             //an injection of a disclaimer?
-            paras[paras.length - 2] = serverDisclaimer;
+            paras[paras.length - 2] = serverDisclaimer.get();
         }
 
         void addSupplier(Supplier<ItemStack> sup) {
@@ -95,7 +97,7 @@ public class BedtimeBook extends WrittenBookItem implements IForgeRegistryEntry<
                 name),//using name
                 (builder) -> {
                     chapters.put(name, new Entry(builder.readString(name),
-                            builder.readStringOpt(name + ".serverInjection",
+                            builder.readStringOpt(name + "serverInjection",
                                     "And they all lived happily ever after.")));
                 });// this name should be different for file by config
     }

@@ -1,5 +1,5 @@
 {
-  "itemGroup.ef396.ef396": "Exact Feather",
+  "itemGroup.ef396": "Exact Feather",
 
   "item.ef396.ruby": "Ruby",
   "item.ef396.poison_apple": "Poison Apple",
@@ -28,6 +28,10 @@
   "item.minecraft.potion.effect.psydare": "Potion of Psydare",
   "item.minecraft.splash_potion.effect.psydare": "Splash Potion of Psydare",
   "item.minecraft.lingering_potion.effect.psydare": "Lingering Potion of Psydare",
+
+  "item.minecraft.potion.effect.psydare_corrupt": "Potion of Psydone",
+  "item.minecraft.splash_potion.effect.psydare_corrupt": "Splash Potion of Psydone",
+  "item.minecraft.lingering_potion.effect.psydare_corrupt": "Lingering Potion of Psydone",
 
   "item.minecraft.potion.effect.sugar": "Mundane Potion Quickinder",
   "item.minecraft.splash_potion.effect.sugar": "Splash Mundane Potion Quickinder",
@@ -58,18 +62,18 @@
   "item.minecraft.lingering_potion.effect.spider_eye": "Lingering Mundane Potion Gaussinfion",
 
   "item.minecraft.potion.effect.golden_carrot": "Mundane Potion Fire",
-  "item.minecraft.splash_potion.effect.golden_carrot": "Splash Mundane Potion Gaussinfion",
-  "item.minecraft.lingering_potion.effect.golden_carrot": "Lingering Mundane Potion Gaussinfion",
+  "item.minecraft.splash_potion.effect.golden_carrot": "Splash Mundane Potion Fire",
+  "item.minecraft.lingering_potion.effect.golden_carrot": "Lingering Mundane Potion Fire",
 
   "item.minecraft.potion.effect.turtle_helmet": "Mundane Potion Earth",
-  "item.minecraft.splash_potion.effect.turtle_helmet": "Splash Mundane Potion Gaussinfion",
-  "item.minecraft.lingering_potion.effect.turtle_helmet": "Lingering Mundane Potion Gaussinfion",
+  "item.minecraft.splash_potion.effect.turtle_helmet": "Splash Mundane Potion Earth",
+  "item.minecraft.lingering_potion.effect.turtle_helmet": "Lingering Mundane Potion Earth",
 
   "item.minecraft.potion.effect.pufferfish": "Mundane Potion Water",
-  "item.minecraft.splash_potion.effect.pufferfish": "Splash Mundane Potion Gaussinfion",
-  "item.minecraft.lingering_potion.effect.pufferfish": "Lingering Mundane Potion Gaussinfion",
+  "item.minecraft.splash_potion.effect.pufferfish": "Splash Mundane Potion Water",
+  "item.minecraft.lingering_potion.effect.pufferfish": "Lingering Mundane Potion Water",
 
   "item.minecraft.potion.effect.phantom_membrane": "Mundane Potion Air",
-  "item.minecraft.splash_potion.effect.phantom_membrane": "Splash Mundane Potion Gaussinfion",
-  "item.minecraft.lingering_potion.effect.phantom_membrane": "Lingering Mundane Potion Gaussinfion"
+  "item.minecraft.splash_potion.effect.phantom_membrane": "Splash Mundane Potion Air",
+  "item.minecraft.lingering_potion.effect.phantom_membrane": "Lingering Mundane Potion Air"
 }
