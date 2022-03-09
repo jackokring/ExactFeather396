@@ -36,17 +36,21 @@ public class BrewingCommon extends BrewingRecipe {
         var reg = Registries.potions;
         HashMap<Item, RegistryObject<Potion>> list = new HashMap<>();
         Item[] items = {
-            Items.SUGAR,
-            Items.MAGMA_CREAM,
-            Items.RABBIT_FOOT,
-            Items.GLISTERING_MELON_SLICE,
-            Items.BLAZE_POWDER,
-            Items.GHAST_TEAR,
-            Items.SPIDER_EYE
-                //Items.REDSTONE_DUST -> leave as Mundane
+            Items.SUGAR,                    //p
+            Items.MAGMA_CREAM,              //T
+            Items.RABBIT_FOOT,              //x
+            Items.GLISTERING_MELON_SLICE,   //E
+            Items.BLAZE_POWDER,             //P
+            Items.GHAST_TEAR,               //t
+            Items.SPIDER_EYE,               //e
+            // Items.REDSTONE_DUST, -> leave as Mundane
+            Items.GOLDEN_CARROT,            //Fire
+            Items.TURTLE_HELMET,            //Earth
+            Items.PUFFERFISH,               //Water
+            Items.PHANTOM_MEMBRANE,         //Air
         };
         Arrays.stream(items).forEach((what) -> {
-            list.put(what, reg.register(what.getRegistryName().getPath(), what));
+            list.put(what, reg.registerPotion(what.getRegistryName().getPath(), what));
         });
         return Collections.unmodifiableMap(list);
     }

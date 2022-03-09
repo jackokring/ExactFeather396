@@ -36,7 +36,7 @@ public class Loader {
                     try {
                         c = (Class<Loaded>)classLoader.loadClass(clazz);
                         var i = c.getConstructor().newInstance();
-                        c.getMethod("init").invoke(i, i);//static action ... eye, eye cap'n!
+                        c.getMethod("init").invoke(null, i);//static action ... eye, eye cap'n!
                         // uses instance for overrides
                     } catch(Exception e) {
                         // didn't load

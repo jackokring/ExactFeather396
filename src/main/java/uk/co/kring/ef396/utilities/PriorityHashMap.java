@@ -1,7 +1,7 @@
 package uk.co.kring.ef396.utilities;
 
-import uk.co.kring.ef396.utilities.exceptions.BaseCodeException;
-import uk.co.kring.ef396.utilities.exceptions.StubbornException;
+import uk.co.kring.ef396.entities.goals.exceptions.BaseCodeException;
+import uk.co.kring.ef396.entities.goals.exceptions.StubbornException;
 
 import java.util.*;
 

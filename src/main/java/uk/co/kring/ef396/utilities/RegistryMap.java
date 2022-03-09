@@ -81,18 +81,22 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
             potion = Registries.potions.register(name,
                     () -> new Potion());
         }
-        BrewingRecipeRegistry.addRecipe(new BrewingCommon(
-                in, (RegistryObject<Item>) add, potion
-        ));
+        ExactFeather.registerRecipe((event) -> {
+            BrewingRecipeRegistry.addRecipe(new BrewingCommon(
+                    in, (RegistryObject<Item>) add, potion
+            ));
+        });
         return potion;
     }
 
-    public static RegistryObject<Potion> register(String name, Item item) {
+    public static RegistryObject<Potion> registerPotion(String name, Item item) {
         RegistryObject<Potion> potion = Registries.potions.register(name,
                     () -> new Potion());
-        BrewingRecipeRegistry.addRecipe(new BrewingCommon(
-                item, potion
-        ));
+        ExactFeather.registerRecipe((event) -> {
+            BrewingRecipeRegistry.addRecipe(new BrewingCommon(
+                    item, potion
+            ));
+        });
         return potion;
     }
 
@@ -107,16 +111,8 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
         return register.register(name, sup);
     }
 
-    public Supplier<IForgeRegistry<T>> makeRegistry(String name, Supplier<RegistryBuilder<T>> sup) {
-        return register.makeRegistry(name, sup);
-    }
-
     public void register(IEventBus bus) {
         register.register(bus);
-    }
-
-    public DeferredRegister<T> getRegisterPreConfiguration() {
-        return register;
     }
 
     public synchronized Collection<RegistryObject<T>> getEntries() {

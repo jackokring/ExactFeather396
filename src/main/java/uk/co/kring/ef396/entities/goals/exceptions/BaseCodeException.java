@@ -1,4 +1,4 @@
-package uk.co.kring.ef396.utilities.exceptions;
+package uk.co.kring.ef396.entities.goals.exceptions;
 
 import uk.co.kring.ef396.ExactFeather;
 import uk.co.kring.ef396.entities.goals.AICommon;
@@ -19,14 +19,14 @@ public abstract class BaseCodeException extends Exception  {
                 actionTry(c);
             } catch (BaseCodeException e) {
                 try {
-                    actionCatch(e, c);
+                    e.emote();
                 } catch (Exception f) {
                     explain(e, c);
                 }
             } catch (RuntimeException e) {
                 BaseCodeException f = catchAssist(e);
                 try {
-                    f.actionCatch(f, c);
+                    f.emote();
                 } catch (Exception g) {
                     explain(e, c);
                 }
@@ -57,6 +57,4 @@ public abstract class BaseCodeException extends Exception  {
     }
 
     protected abstract void actionTry(AICommon ai) throws BaseCodeException;
-    protected abstract void actionCatch(BaseCodeException exception, AICommon ai)
-            throws BaseCodeException;
 }

@@ -38,16 +38,16 @@ public class DataGen {
 
                 }
             });
-            gen.addProvider(new LootTableProvider(gen) {
+            /* gen.addProvider(new LootTableProvider(gen) {
                 @Override
                 protected List<Pair<Supplier<Consumer<BiConsumer<ResourceLocation, LootTable.Builder>>>, LootContextParamSet>> getTables() {
                     return super.getTables();
                 }
-            });
+            }); */
             var blockTags = new BlockTagsProvider(gen, ExactFeather.MOD_ID, file) {
                 @Override
                 protected void addTags() {
-                    var reg = Registries.blocks;
+                    /* var reg = Registries.blocks;
                     reg.getEntries().forEach((block) -> {
                         Block b = block.get();
                         // more complex block types
@@ -57,29 +57,29 @@ public class DataGen {
                             tag(BlockTags.NEEDS_IRON_TOOL)
                                     .add(b);
                             tag(Tags.Blocks.ORES)
-                                    .add(b); */
+                                    .add(b);
                             return;
 
                         }
-                    });
+                    }); */
                 }
             };
             gen.addProvider(blockTags);
             gen.addProvider(new ItemTagsProvider(gen, blockTags, ExactFeather.MOD_ID, file) {
                 @Override
                 protected void addTags() {
-                    var reg = Registries.items;
+                    /* var reg = Registries.items;
                     reg.getEntries().forEach((item) -> {
                         Item b = item.get();
                         // more complex block types
                         if (b instanceof Item) {
                             //Tags.Blocks.class.
                             /* tag(Tags.Items.ORES)
-                                    .add(b); */
+                                    .add(b);
                             return;
 
                         }
-                    });
+                    }); */
                 }
             });
         }
@@ -87,7 +87,7 @@ public class DataGen {
             gen.addProvider(new BlockStateProvider(gen, ExactFeather.MOD_ID, file) {
                 @Override
                 protected void registerStatesAndModels() {
-                    var reg = Registries.blocks;
+                    /* var reg = Registries.blocks;
                     reg.getEntries().forEach((block) -> {
                         Block b = block.get();
                         // more complex block types
@@ -95,13 +95,13 @@ public class DataGen {
                             simpleBlock(b);
                             return;
                         }
-                    });
+                    }); */
                 }
             });
             gen.addProvider(new ItemModelProvider(gen, ExactFeather.MOD_ID, file) {
                 @Override
                 protected void registerModels() {
-                    //Items TODO
+                    /* //Items TODO
 
                     var reg = Registries.blocks;
                     reg.getEntries().forEach((block) -> {
@@ -113,13 +113,13 @@ public class DataGen {
                                     modLoc("block/" + p));//TODO??
                             return;
                         }
-                    });
+                    }); */
                 }
             });
             gen.addProvider(new LanguageProvider(gen, ExactFeather.MOD_ID, "en_us") {
                 @Override
                 protected void addTranslations() {
-                    add("itemGroup." + ExactFeather.MOD_ID, "ExactFeather");
+                    //add("itemGroup." + ExactFeather.MOD_ID, "ExactFeather");
                 }
             });
         }

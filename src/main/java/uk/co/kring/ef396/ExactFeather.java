@@ -29,6 +29,7 @@ public class ExactFeather {
     public static boolean DEBUG;
 
     private static List<Consumer<FMLClientSetupEvent>> renderers = new LinkedList<>();
+    private static List<Consumer<FMLCommonSetupEvent>> recipes = new LinkedList<>();
     private static List<Consumer<EntityAttributeCreationEvent>> attrib = new LinkedList<>();
 
     public ExactFeather() {
@@ -62,7 +63,11 @@ public class ExactFeather {
     }
 
     private void setup(final FMLCommonSetupEvent event) {
-
+        event.enqueueWork(() -> {
+            recipes.forEach((recipe) -> {
+                recipe.accept(event);
+            });
+        });
     }
 
     private void doClientStuff(final FMLClientSetupEvent event) {
@@ -81,6 +86,9 @@ public class ExactFeather {
 
     public static void registerRender(Consumer<FMLClientSetupEvent> event) {
         renderers.add(event);
+    }
+    public static void registerRecipe(Consumer<FMLCommonSetupEvent> event) {
+        recipes.add(event);
     }
     public static void registerAttrib(Consumer<EntityAttributeCreationEvent> event) {
         attrib.add(event);
