@@ -36,12 +36,14 @@ public class Loader {
                     try {
                         c = (Class<Loaded>)classLoader.loadClass(clazz);
                         var i = c.getConstructor().newInstance();
-                        c.getMethod("init").invoke(null, i);//static action ... eye, eye cap'n!
+                        c.getMethod("init", Loaded.class).invoke(null, i);
+                        //static action ... eye, eye cap'n!
                         // uses instance for overrides
                     } catch(Exception e) {
                         // didn't load
                         ExactFeather.LOGGER.warn("Class " + clazz +
                                 " didn't load. I hope you like Exception messages.");
+                        throw new RuntimeException(e);
                     }
                     return Optional.ofNullable(c);
                 }).collect(Collectors.toList());
