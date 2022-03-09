@@ -1,7 +1,6 @@
 modLoader="javafml"
 loaderVersion="[40,)" #mandatory This is typically bumped every Minecraft version by Forge. See our download page for lists of versions.
 license="MIT"
-# A URL to refer people to when problems occur with this mod
 # A list of mods - how many allowed here is determined by the individual mod loader
 [[mods]]
 modId="ef396"
@@ -10,14 +9,14 @@ displayName="ExactFeather396"
 # A URL to query for updates for this mod. See the JSON update specification https://mcforge.readthedocs.io/en/latest/gettingstarted/autoupdate/
 updateJSONURL="https://raw.githubusercontent.com/jackokring/ExactFeather396/main/update.json"
 # A URL for the "homepage" for this mod, displayed in the mod UI
-displayURL="https://github.com/jackokring/ExactFeather396/blob/main/README.md"
+displayURL="https://jackokring.github.io/ExactFeather396/"
 # A file name (in the root of resources directory) containing a logo for display
 logoFile="ef396.png"
 credits="To the great Youtubed tutorials. TechnoVision, Cy4, TurtyWurty and more."
 authors="Jacko (ExactFeather396)."
 description='''
 A mod with interesting things I found and built upon. Mainly an AI experimental platform for me with some
-extras. Have Fun!
+extras, like an expanded play with the potion system. Have Fun!
 '''
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
 [[dependencies.ef396]] #optional

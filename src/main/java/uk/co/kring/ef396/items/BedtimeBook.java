@@ -97,7 +97,7 @@ public class BedtimeBook extends WrittenBookItem implements IForgeRegistryEntry<
                 name),//using name
                 (builder) -> {
                     chapters.put(name, new Entry(builder.readString(name),
-                            builder.readStringOpt(name + "serverInjection",
+                            builder.readStringOpt(name + ".serverInjection",
                                     "And they all lived happily ever after.")));
                 });// this name should be different for file by config
     }
