@@ -15,6 +15,7 @@ import uk.co.kring.ef396.ExactFeather;
 import uk.co.kring.ef396.utilities.Registries;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -52,7 +53,7 @@ public class BedtimeBook extends WrittenBookItem implements IForgeRegistryEntry<
         }
 
         String processPara(String para) {
-            return null;//TODO substitutes
+            return para;//TODO substitutes
         }
 
         void loadChapter() {
@@ -78,18 +79,107 @@ public class BedtimeBook extends WrittenBookItem implements IForgeRegistryEntry<
         }
     }
 
+    //char widths and an extra 1 pix space between
+    //so 14 lines, 57 pixels, 50 pages maximals
+    private final static byte[] sizes = {
+            0, 0, 0, 0,     0, 0, 0, 0,//CTRL
+            0, 0, 0, 0,     0, 0, 0, 0,
+            0, 0, 0, 0,     0, 0, 0, 0,
+            0, 0, 0, 0,     0, 0, 0, 0,
+
+            3, 1, 3, 5,     5, 5, 5, 1,//SYM
+            3, 3, 3, 5,     1, 5, 1, 5,
+            5, 5, 5, 5,     5, 5, 5, 5,
+            5, 5, 1, 1,     4, 5, 4, 5,
+
+            6, 5, 5, 5,     5, 5, 5, 5,//UPPER (64)
+            5, 3, 5, 5,     5, 5, 5, 5,//72
+            5, 5, 5, 5,     5, 5, 5, 5,//80
+            5, 5, 5, 3,     5, 3, 5, 5,//88
+
+            2, 5, 5, 5,     5, 5, 4, 5,//LOWER (96)
+            5, 1, 5, 4,     2, 5, 5, 5,//104
+            5, 5, 5, 5,     3, 5, 5, 5,//112
+            5, 5, 5, 3,     1, 3, 6, 5 //120
+    };
+
+    //a space is 3 + 1 = 4 wide
+    private static int sizeWord(String word) {
+        int count = 0;
+        for(int i = 0; i < word.length(); i++) {
+            char c = word.charAt(i);
+            if(c > 127) {
+                count += 6;//include extra
+            } else {
+                count += sizes[c] + 1;
+            }
+        }
+        if(count == 0) count = 1;//fixes next line
+        return count - 1;//last character extra not extra
+    }
+
     public static String[] paginate(String[] paras) {
-        return null;//TODO fits on page
+        //page size
+        ArrayList<String> pages = new ArrayList<>();
+        String current = "";//to output
+        int lineTotal = 0;
+        int pageHeight = 0;
+        for(int pa = 0; pa < paras.length; pa ++) {
+            String parse = paras[pa];//get paragraph
+            String[] words = parse.split(" ");
+            int[] lens = new int[words.length];
+            for(int c = 0; c < words.length; c++) {
+                lens[c] = sizeWord(words[c]);
+            }
+            int c = 0;//current count index
+            boolean exit = false;
+            while(c < words.length) {
+                while (pageHeight < 14) {//only 13 lines
+                    while (lineTotal < 57) {//57 px
+                        if (lineTotal + 4 + lens[c] < 57) {//with space
+                            lineTotal += lens[c] + 4;
+                            current += words[c] + " ";
+                            c++;
+                            if(c >= words.length) {
+                                // ran out of text
+                                exit = true;
+                                break;
+                            }
+                        }
+                    }
+                    lineTotal = 0;
+                    if(exit == true) {
+                        if(pageHeight >= 11) {
+                            pageHeight = -1;//new page
+                        } else {
+                            pageHeight += 2;
+                            current += "\n\n";//new page paragraph
+                        }
+                        break;
+                    }
+                    pageHeight++;
+                }
+                exit = false;
+                if(pageHeight == -1 || c >= words.length) {//needs new page
+                    pages.add(current);
+                    current = "";//new page
+                    pageHeight = 0;//fix up detected exit without blanks
+                }
+            }//loop next paragraph
+        }
+        return (String[])pages.stream().toArray();
     }
 
     public static void jsonify(String[] pages, CompoundTag tag) {
         //TODO tag like
         ListTag lt = new ListTag();
         tag.put("pages", lt);
-        CompoundTag page = new CompoundTag();
-        lt.add(page);
-        page.putString("text", "The Book of Void");
-        page.putString("color", "red");
+        for(int i = 0; i < pages.length; i++) {
+            CompoundTag page = new CompoundTag();
+            lt.add(page);
+            page.putString("text", pages[i]);//all black
+            //page.putString("color", "red");
+        }
     }
 
     private static HashMap<String, Entry> chapters = new HashMap<>();
