@@ -5,8 +5,10 @@ import net.minecraft.client.renderer.entity.HuskRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.Potions;
@@ -34,9 +36,9 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
         this.register = register;
     }
 
-    public RegistryObject<Item> regBlockItem(RegistryObject<Block> block) {
+    public RegistryObject<Item> regBlockItem(RegistryObject<Block> block, CreativeModeTab tab) {
         return Registries.items.register(block.getId().getPath(),
-                () -> new BlockItem(block.get(), new Item.Properties().tab(ExactFeather.TAB).stacksTo(64)));
+                () -> new BlockItem(block.get(), new Item.Properties().tab(tab).stacksTo(64)));
     }
 
     public int colors(RegistryObject<? extends EntityType<? extends Mob>> entity,
@@ -50,11 +52,21 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
         return bg;
     }
 
+    public RegistryObject<EntityType<HogEntity>> regMob(String name,
+                                                               EntityType.EntityFactory<HogEntity> entity,
+                                                               float xz, float y) {
+        EntityType.Builder builder = EntityType.Builder.of(
+                        entity, MobCategory.CREATURE)
+                .sized(xz, y); // Hit box Size
+        return Registries.entities.register(name,
+                () -> builder.build(new ResourceLocation(ExactFeather.MOD_ID, "hog").toString()));
+    }
+
     public RegistryObject<Item> regEggItem(
-            RegistryObject<? extends EntityType<? extends Mob>> entity
+            RegistryObject<EntityType<HogEntity>> entity, CreativeModeTab tab
             /* int bg, int fg, String texture */) {
         ExactFeather.registerRender((event) -> {
-            EntityRenderers.register((EntityType<? extends Zombie>) entity.get(),
+            EntityRenderers.register(entity.get(),
                     (context) -> new HuskRenderer(context) {//default husk
                         @Override
                         public ResourceLocation getTextureLocation(Zombie p_113771_) {
@@ -69,7 +81,7 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
         return Registries.items.register(entity.getId().getPath() + "_spawn_egg",
                 () -> new ForgeSpawnEggItem(entity, colors(entity, false),
                         colors(entity, true),
-                        new Item.Properties().tab(ExactFeather.TAB).stacksTo(64)));
+                        new Item.Properties().tab(tab).stacksTo(64)));
     }
 
     public static RegistryObject<Potion> registerPotionImmediate(String name,

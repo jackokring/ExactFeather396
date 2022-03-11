@@ -1,7 +1,5 @@
 package uk.co.kring.ef396;
 
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -37,6 +35,7 @@ public class ExactFeather {
 
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
 
+        // also check server.LevelController
         bus.addListener(this::setup);
         bus.addListener(this::doClientStuff);
         bus.addListener(this::doAttributes);
@@ -94,12 +93,4 @@ public class ExactFeather {
     public static void registerAttrib(Consumer<EntityAttributeCreationEvent> event) {
         attrib.add(event);
     }
-
-    // Custom CreativeModeTab TAB
-    public static final CreativeModeTab TAB = new CreativeModeTab(MOD_ID) {
-        @Override
-        public ItemStack makeIcon() {
-            return new ItemStack(Loaded.hogSpawnEgg.get());
-        }
-    };
 }

@@ -14,19 +14,19 @@ public class Registries {
 
     public final static RegistryMap<Item> items
             = new RegistryMap<Item>(DeferredRegister.create(ForgeRegistries.ITEMS, ExactFeather.MOD_ID));
-    public final static RegistryMap<Block> blocks
-            = new RegistryMap<Block>(DeferredRegister.create(ForgeRegistries.BLOCKS, ExactFeather.MOD_ID));;
     public final static RegistryMap<Potion> potions
             = new RegistryMap<Potion>(DeferredRegister.create(ForgeRegistries.POTIONS, ExactFeather.MOD_ID));
+    public final static RegistryMap<Block> blocks
+            = new RegistryMap<Block>(DeferredRegister.create(ForgeRegistries.BLOCKS, ExactFeather.MOD_ID));;
     public final static RegistryMap<EntityType<?>> entities
-            = new RegistryMap<>(DeferredRegister.create(ForgeRegistries.ENTITIES, ExactFeather.MOD_ID));
+            = new RegistryMap<EntityType<?>>(DeferredRegister.create(ForgeRegistries.ENTITIES, ExactFeather.MOD_ID));
     public final static RegistryMap<SoundEvent> sounds
             = new RegistryMap<SoundEvent>(DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, ExactFeather.MOD_ID));
 
     public static void register(IEventBus bus) {
         items.register(bus);
-        blocks.register(bus);
         potions.register(bus);
+        blocks.register(bus);
         entities.register(bus);
         sounds.register(bus);
     }

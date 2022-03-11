@@ -26,12 +26,12 @@ public class BlankLoaded extends Loaded {
     }
 
     @Override
-    protected void blocks(RegistryMap<Block> reg) {
+    protected void potions(RegistryMap<Potion> reg) {
 
     }
 
     @Override
-    protected void potions(RegistryMap<Potion> reg) {
+    protected void blocks(RegistryMap<Block> reg) {
 
     }
 

@@ -3,6 +3,7 @@ package uk.co.kring.ef396.items;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.registries.IForgeRegistryEntry;
@@ -16,9 +17,9 @@ public class PoisonAppleItem extends Item implements IForgeRegistryEntry<Item> {
     private static ForgeConfigSpec.DoubleValue probHunger;
     private static ForgeConfigSpec.IntValue time;
 
-    public PoisonAppleItem() {
+    public PoisonAppleItem(CreativeModeTab tab) {
         super(new Item.Properties()
-                .tab(ExactFeather.TAB)
+                .tab(tab)
                 .food((new FoodProperties.Builder())
                         .nutrition(4)
                         .saturationMod(1.2f)

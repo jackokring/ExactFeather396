@@ -1,6 +1,7 @@
 package uk.co.kring.ef396;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
@@ -11,9 +12,9 @@ import java.util.stream.Collectors;
 public class Loader {
 
     // for loading the Loaded things
-    private static List<Optional<Class<Loaded>>> classes;
+    private static List<Optional<?>> classes;
 
-    public static final List<Optional<Class<Loaded>>> getLoaded() {
+    public static final List<Optional<?>> getLoaded() {
         return Collections.unmodifiableList(classes);
     }
 
@@ -32,20 +33,35 @@ public class Loader {
                 .filter((string) -> string.charAt(0) != '#')//not comment
                 .map((string) -> Loader.class.getPackageName() + "." + string.trim())
                 .map((clazz) -> {
-                    Class<Loaded> c = null;
+                    Class<?> c = null;
                     try {
-                        c = (Class<Loaded>)classLoader.loadClass(clazz);
+                        c = classLoader.loadClass(clazz);
                         var i = c.getConstructor().newInstance();
-                        c.getMethod("init", Loaded.class).invoke(null, i);
+                        //c.getDeclaredMethod("init", Loaded.class).invoke(null, i);
                         //static action ... eye, eye cap'n!
                         // uses instance for overrides
-                    } catch(Exception e) {
+                    } catch(ClassNotFoundException e) {
                         // didn't load
-                        ExactFeather.LOGGER.warn("Class " + clazz +
-                                " didn't load. I hope you like Exception messages.");
-                        throw new RuntimeException(e);
+                        message(c, "Can't find");
+                    } catch(NoSuchMethodException e) {
+                        // didn't load
+                        message(c, "Can't find default constructor for");
+                    } catch(InvocationTargetException e) {
+                        // had problems
+                        message(c, "An error in");
+                        message(c, e.getCause().toString());//print exception
+                    } catch(InstantiationException e) {
+                        // didn't load
+                        message(c, "Couldn't make an instance of");
+                    } catch(IllegalAccessException e) {
+                        // didn't load
+                        message(c, "No public default constructor in");
                     }
                     return Optional.ofNullable(c);
                 }).collect(Collectors.toList());
+    }
+
+    private static void message(Class<?> from, String say) {
+        ExactFeather.LOGGER.error(say + " " + from.getCanonicalName());
     }
 }

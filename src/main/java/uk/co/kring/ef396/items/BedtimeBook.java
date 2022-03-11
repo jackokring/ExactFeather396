@@ -25,14 +25,17 @@ public class BedtimeBook extends WrittenBookItem implements IForgeRegistryEntry<
 
     private static class Entry {
         Supplier<ItemStack> sup;
+        CreativeModeTab tab;
         ForgeConfigSpec.ConfigValue<String> altName;
         CompoundTag tag = new CompoundTag();
         String[] paras;
         ForgeConfigSpec.ConfigValue<String> serverDisclaimer;
 
         Entry(ForgeConfigSpec.ConfigValue<String> altName,
-              ForgeConfigSpec.ConfigValue<String> serverDisclaimer) {;
+              ForgeConfigSpec.ConfigValue<String> serverDisclaimer,
+              CreativeModeTab tab) {;
             this.altName = altName;
+            this.tab = tab;
             this.serverDisclaimer = serverDisclaimer;
             String loaded;
             try {
@@ -90,15 +93,15 @@ public class BedtimeBook extends WrittenBookItem implements IForgeRegistryEntry<
 
     private static HashMap<String, Entry> chapters = new HashMap<>();
 
-    public static RegistryObject<Item> register(String name) {
+    public static RegistryObject<Item> register(String name, CreativeModeTab tab) {
         return Registries.items.register(name, () -> new BedtimeBook(
                 new Item.Properties().stacksTo(1)
-                        .tab(ExactFeather.TAB),
+                        .tab(tab),
                 name),//using name
                 (builder) -> {
                     chapters.put(name, new Entry(builder.readString(name),
                             builder.readStringOpt(name + ".serverInjection",
-                                    "And they all lived happily ever after.")));
+                                    "And they all lived happily ever after."), tab));
                 });// this name should be different for file by config
     }
 
@@ -111,7 +114,7 @@ public class BedtimeBook extends WrittenBookItem implements IForgeRegistryEntry<
 
     @Override
     public void fillItemCategory(CreativeModeTab tab, NonNullList<ItemStack> stacks) {
-        if(tab != null && !tab.equals(ExactFeather.TAB)) return;
+        if(tab != null && !tab.equals(chapters.get(name).tab)) return;
         stacks.add(chapters.get(name).sup.get());
         //super.fillItemCategory(tab, stacks);
     }
