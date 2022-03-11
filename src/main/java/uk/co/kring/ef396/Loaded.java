@@ -114,9 +114,8 @@ public class Loaded {
         //from a registered potion which has not been evaluated
         //and so the effect has the corruption handler and
         //adding must be manual
-        psydareCorrupt = reg.register("psydare_corrupt",
-                RegistryMap.registerPotionCorrupt("psydare_corrupt",
-                        psydare, me.corrupt(true, false, false)));
+        psydareCorrupt = reg.registerPotionCorrupt("psydare_corrupt",
+                        psydare, me.corrupt(true, false, false));
         //uses registerAlchemyBase to make inactive base potions
         mundane711 = BrewingCommon.mundaneFix();
         // maybe an alchemy table?
