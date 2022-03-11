@@ -1,9 +1,7 @@
 package uk.co.kring.ef396.entities;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -15,7 +13,6 @@ import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 import uk.co.kring.ef396.ExactFeather;
 import net.minecraft.world.entity.EntityType;
@@ -31,13 +28,22 @@ public class HogEntity extends Husk implements NeutralMob {
     private static final ResourceLocation LOOT_TABLE
             = new ResourceLocation(ExactFeather.MOD_ID, "entities/hog");
 
-    public HogEntity(EntityType<? extends Husk> type, Level worldIn) {
+    public HogEntity(EntityType<HogEntity> type, Level worldIn) {
         super(type, worldIn);
     }
 
     public static AttributeSupplier makeAttributes() {
+        //return the list of potion-able effected attributes
         return AttributeSupplier.builder()
-                .add(Attributes.ATTACK_SPEED, 2.0f).build();
+                .add(Attributes.ATTACK_SPEED, 2.0f)
+                .add(Attributes.ATTACK_DAMAGE, 2.0f)
+                .add(Attributes.MOVEMENT_SPEED, 2.0f)
+                .add(Attributes.SPAWN_REINFORCEMENTS_CHANCE, 0.25f)
+                .add(Attributes.MAX_HEALTH, 10.0f)
+                .add(Attributes.FOLLOW_RANGE, 8.0f)
+                .add(Attributes.ATTACK_KNOCKBACK, 3.0f)
+                .add(Attributes.JUMP_STRENGTH, 2.0f)
+                .build();
         //TODO
     }
 
@@ -70,6 +76,7 @@ public class HogEntity extends Husk implements NeutralMob {
         return 1 + this.getRandom().nextInt(4);
     }
 
+    // sound events
     @Override
     protected SoundEvent getAmbientSound() { return Loaded.wipple.get(); }
 
@@ -79,11 +86,6 @@ public class HogEntity extends Husk implements NeutralMob {
     @Override
     protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
         return Loaded.error.get();
-    }
-
-    @Override
-    protected void playStepSound(BlockPos pos, BlockState blockIn) {
-        this.playSound(SoundEvents.PIG_STEP, 0.15F, 1.0F);
     }
 
     // static collision box
@@ -100,6 +102,7 @@ public class HogEntity extends Husk implements NeutralMob {
         return null;
     }
 
+    // The neutral mob interface
     @Override
     public int getRemainingPersistentAngerTime() {
         return 0;
