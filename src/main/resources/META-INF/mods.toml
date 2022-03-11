@@ -15,8 +15,7 @@ logoFile="ef396.png"
 credits="To the great Youtubed tutorials. TechnoVision, Cy4, TurtyWurty and more."
 authors="Jacko (ExactFeather396)."
 description='''
-A mod with interesting things I found and built upon. Mainly an AI experimental platform for me with some
-extras, like an expanded play with the potion system. Have Fun!
+A mod with interesting things I found and built upon. Mainly an AI experimental platform for me with some extras, like an expanded play with the potion system. Have Fun!
 '''
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
 [[dependencies.ef396]] #optional

@@ -31,6 +31,13 @@ public class DataGen {
     public static void genData(GatherDataEvent event) {
         var gen = event.getGenerator();
         var file = event.getExistingFileHelper();
+        gen.addProvider(new LanguageProvider(gen, ExactFeather.MOD_ID, "en_us") {
+            //strangely the server needs these perhaps to make substitutions in books
+            @Override
+            protected void addTranslations() {
+                //add("itemGroup." + ExactFeather.MOD_ID, "ExactFeather");
+            }
+        });
         if (event.includeServer()) {
             gen.addProvider(new RecipeProvider(gen) {
                 @Override
@@ -114,12 +121,6 @@ public class DataGen {
                             return;
                         }
                     }); */
-                }
-            });
-            gen.addProvider(new LanguageProvider(gen, ExactFeather.MOD_ID, "en_us") {
-                @Override
-                protected void addTranslations() {
-                    //add("itemGroup." + ExactFeather.MOD_ID, "ExactFeather");
                 }
             });
         }

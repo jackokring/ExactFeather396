@@ -8,6 +8,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import uk.co.kring.ef396.server.LevelController;
 import uk.co.kring.ef396.utilities.Configurator;
 import uk.co.kring.ef396.utilities.Registries;
 import uk.co.kring.ef396.utilities.ThisLogger;
@@ -39,6 +40,7 @@ public class ExactFeather {
         bus.addListener(this::setup);
         bus.addListener(this::doClientStuff);
         bus.addListener(this::doAttributes);
+        MinecraftForge.EVENT_BUS.register(this);
 
         // a configuration handler
         // names field etc.
@@ -51,8 +53,7 @@ public class ExactFeather {
 
         Registries.register(bus);
         Loader.init(LOADER);
-        MinecraftForge.EVENT_BUS.register(this);
-
+        LevelController.init(bus);
         // build configuration
         Configurator.build();
     }

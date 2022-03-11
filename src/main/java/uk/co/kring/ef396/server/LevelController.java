@@ -7,6 +7,7 @@ import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import uk.co.kring.ef396.ExactFeather;
@@ -14,14 +15,21 @@ import uk.co.kring.ef396.Loaded;
 import uk.co.kring.ef396.items.BedtimeBook;
 import uk.co.kring.ef396.utilities.ThisLogger;
 
-@Mod.EventBusSubscriber(modid = ExactFeather.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
+@Mod.EventBusSubscriber(modid = ExactFeather.MOD_ID)//, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class LevelController {
+
+    public static void init(IEventBus modEventBus) {
+        //allows for mod events as this class bus subscriber is the forge bus??
+
+    }
 
     @SubscribeEvent
     public static void onPlayerMade(PlayerSleepInBedEvent event) {
-        if(event.getPlayer().getInventory().add(BedtimeBook.random(event.getPlayer()))) {
-            ThisLogger.LOGGER.info("A nice book for " + event.getPlayer().getName().getContents() + " to read?");
-        }
+        BedtimeBook.random(event.getPlayer()).ifPresent((stack) -> {
+            if (event.getPlayer().getInventory().add(stack)) {
+                ThisLogger.LOGGER.info("A nice book for " + event.getPlayer().getScoreboardName() + " to read?");
+            }
+        });
     }
 
     @SubscribeEvent

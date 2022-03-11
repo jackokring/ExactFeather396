@@ -29,7 +29,7 @@ public class Loaded {
 
     // for loading up things
     public Loaded() {
-        ExactFeather.LOGGER.info("Initialize static in Loaded.");
+        ExactFeather.LOGGER.info("Initialize statics in a Loaded in progress.");
         init();//bootstrap
     }
 
@@ -47,18 +47,20 @@ public class Loaded {
     public final void init() {
         Configurator.pushRegisterNest(Registries.items);
         items(Registries.items);
+        Configurator.pushRegisterNest(Registries.potions);
         potions(Registries.potions);
         Configurator.pushRegisterNest(Registries.blocks);
         blocks(Registries.blocks);
         Configurator.pushRegisterNest(Registries.entities);
         entities(Registries.entities);
+        Configurator.pushRegisterNest(Registries.sounds);
         sounds(Registries.sounds);
     }
 
     public static RegistryObject<Item> ruby, poison_apple, hogSpawnEgg;
-    public static RegistryObject<Block> rubyBlock;
     public static RegistryObject<Potion> psydare, psydareCorrupt;
-    public static Map<Item, RegistryObject<Potion>> mundane;
+    public static RegistryObject<Block> rubyBlock;
+    public static Map<Item, RegistryObject<Potion>> mundane711;
     public static RegistryObject<EntityType<HogEntity>> hog;
     public static RegistryObject<SoundEvent> error;
     public static CreativeModeTab tab;
@@ -111,7 +113,7 @@ public class Loaded {
                         psydare, Items.FERMENTED_SPIDER_EYE,
                         me.corrupt(MobEffects.WEAKNESS, false, false)));
         //an active potion made from primaries
-        mundane = BrewingCommon.mundaneFix();//uses registerPotionPrimary to make inactive base potions
+        mundane711 = BrewingCommon.mundaneFix();//uses registerPotionPrimary to make inactive base potions
     }
 
     protected void blocks(RegistryMap<Block> reg) {

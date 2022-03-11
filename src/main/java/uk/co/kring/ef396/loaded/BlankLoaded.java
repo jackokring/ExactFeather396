@@ -2,22 +2,22 @@ package uk.co.kring.ef396.loaded;
 
 import net.minecraft.sounds.SoundEvent;;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.registries.RegistryObject;
 import uk.co.kring.ef396.Loaded;
+import uk.co.kring.ef396.entities.HogEntity;
 import uk.co.kring.ef396.utilities.RegistryMap;
 
 public class BlankLoaded extends Loaded {
 
     // use public statics for easy access in other modules of data fields
-    public static RegistryObject<? extends Item> a;
-    public static RegistryObject<Block> b;
-    public static RegistryObject<Potion> c;
-    public static RegistryObject<EntityType<? extends Mob>> d;
-    public static RegistryObject<SoundEvent> e;
+    public static RegistryObject<? extends Item> defaultItem = Loaded.poison_apple;
+    public static RegistryObject<Potion> defaultPotion = Loaded.psydare;
+    public static RegistryObject<Block> defaultBlock = Loaded.rubyBlock;
+    public static RegistryObject<EntityType<HogEntity>> defaultEntity = Loaded.hog;
+    public static RegistryObject<SoundEvent> defaultSound = Loaded.error;
 
     // use dynamics
     @Override

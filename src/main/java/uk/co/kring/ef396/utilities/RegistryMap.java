@@ -4,7 +4,6 @@ import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.client.renderer.entity.HuskRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.item.BlockItem;
@@ -41,7 +40,7 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
                 () -> new BlockItem(block.get(), new Item.Properties().tab(tab).stacksTo(64)));
     }
 
-    public int colors(RegistryObject<? extends EntityType<? extends Mob>> entity,
+    public static int colors(RegistryObject<?> entity,
                       boolean highlight) {
         // gen color inspirations
         int h = entity.getId().toString().hashCode();//should be constant for mod and name
@@ -52,7 +51,23 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
         return bg;
     }
 
-    public RegistryObject<EntityType<HogEntity>> regMob(String name,
+    public RegistryObject<T> onBotch(RegistryObject<T> object, String name, Supplier<T> replace) {
+        if(object == null) {
+            return register(name, replace);
+        } else {
+            return object;
+        }
+    }
+
+    public RegistryObject<T> onBotch(RegistryObject<T> object, RegistryObject<T> replace) {
+        if(object == null) {
+            return replace;
+        } else {
+            return object;
+        }
+    }
+
+    public static RegistryObject<EntityType<HogEntity>> regMob(String name,
                                                                EntityType.EntityFactory<HogEntity> entity,
                                                                float xz, float y) {
         EntityType.Builder builder = EntityType.Builder.of(
@@ -62,7 +77,7 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
                 () -> builder.build(new ResourceLocation(ExactFeather.MOD_ID, "hog").toString()));
     }
 
-    public RegistryObject<Item> regEggItem(
+    public static RegistryObject<Item> regEggItem(
             RegistryObject<EntityType<HogEntity>> entity, CreativeModeTab tab
             /* int bg, int fg, String texture */) {
         ExactFeather.registerRender((event) -> {

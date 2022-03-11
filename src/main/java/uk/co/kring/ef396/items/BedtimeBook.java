@@ -16,6 +16,7 @@ import uk.co.kring.ef396.utilities.Registries;
 
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 public class BedtimeBook extends WrittenBookItem implements IForgeRegistryEntry<Item> {
@@ -47,25 +48,11 @@ public class BedtimeBook extends WrittenBookItem implements IForgeRegistryEntry<
             }
             paras = loaded.split("\n\n");
             loadChapter();
-            jsonify(paginate(paras));
+            jsonify(paginate(paras), tag);
         }
 
         String processPara(String para) {
             return null;//TODO substitutes
-        }
-
-        String[] paginate(String[] paras) {
-            return null;//TODO fits on page
-        }
-
-        void jsonify(String[] pages) {
-            //TODO tag like
-            ListTag lt = new ListTag();
-            tag.put("pages", lt);
-            CompoundTag page = new CompoundTag();
-            lt.add(page);
-            page.putString("text", "The Book of Void");
-            page.putString("color", "red");
         }
 
         void loadChapter() {
@@ -91,14 +78,30 @@ public class BedtimeBook extends WrittenBookItem implements IForgeRegistryEntry<
         }
     }
 
+    public static String[] paginate(String[] paras) {
+        return null;//TODO fits on page
+    }
+
+    public static void jsonify(String[] pages, CompoundTag tag) {
+        //TODO tag like
+        ListTag lt = new ListTag();
+        tag.put("pages", lt);
+        CompoundTag page = new CompoundTag();
+        lt.add(page);
+        page.putString("text", "The Book of Void");
+        page.putString("color", "red");
+    }
+
     private static HashMap<String, Entry> chapters = new HashMap<>();
 
     public static RegistryObject<Item> register(String name, CreativeModeTab tab) {
+        // delayed register with config settings
         return Registries.items.register(name, () -> new BedtimeBook(
                 new Item.Properties().stacksTo(1)
                         .tab(tab),
                 name),//using name
                 (builder) -> {
+                    //make an entry with config info
                     chapters.put(name, new Entry(builder.readString(name),
                             builder.readStringOpt(name + ".serverInjection",
                                     "And they all lived happily ever after."), tab));
@@ -106,6 +109,7 @@ public class BedtimeBook extends WrittenBookItem implements IForgeRegistryEntry<
     }
 
     private BedtimeBook(Properties properties, String name) {
+        // when instanced by registry make a new supplier of the item stacks
         super(properties);
         this.name = name;
         chapters.get(name).addSupplier(() -> new ItemStack(this, 1,
@@ -119,10 +123,13 @@ public class BedtimeBook extends WrittenBookItem implements IForgeRegistryEntry<
         //super.fillItemCategory(tab, stacks);
     }
 
-    public static ItemStack random(Player player) {
+    public static Optional<ItemStack> random(Player player) {
         int size = chapters.size();
         int rnd = player.getRandom().nextInt(size);
-        Supplier<ItemStack>[] is = (Supplier<ItemStack>[]) chapters.values().toArray();
-        return is[rnd].get();
+        Supplier<ItemStack>[] is
+                = (Supplier<ItemStack>[]) chapters.values().stream().map((entry) -> entry.sup).toArray();
+        if(is.length == 0) return Optional.empty();
+        ItemStack i = is[rnd].get();
+        return Optional.of(i);//allows for no values and sleep event no fail
     }
 }
