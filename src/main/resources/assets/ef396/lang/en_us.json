@@ -23,7 +23,9 @@
   "block.ef396.ruby_block": "Block of Ruby",
   "block.ef396.ruby_ore": "Ruby Ore",
 
-  "subtitles.ef396.error": "ERROR Sound",
+  "subtitles.ef396.error": "H.O.G. Error",
+  "subtitles.ef396.boom": "H.O.G. Died",
+  "subtitles.ef396.wipple": "H.O.G.",
 
   "item.minecraft.potion.effect.psydare": "Potion of Psydare",
   "item.minecraft.splash_potion.effect.psydare": "Splash Potion of Psydare",

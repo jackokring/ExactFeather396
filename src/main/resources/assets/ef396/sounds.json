@@ -4,5 +4,17 @@
       "ef396:error"
     ],
     "subtitle": "subtitles.ef396.error"
+  },
+  "boom": {
+    "sounds": [
+      "ef396:boom"
+    ],
+    "subtitle": "subtitles.ef396.boom"
+  },
+  "wipple": {
+    "sounds": [
+      "ef396:wipple"
+    ],
+    "subtitle": "subtitles.ef396.wipple"
   }
 }

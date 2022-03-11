@@ -76,10 +76,10 @@ public class MobEffectCommon extends MobEffectInstance {
 
             MobEffects.DAMAGE_BOOST,
             MobEffects.HARM,//
-            MobEffects.HARM,
+            null,
             MobEffects.MOVEMENT_SLOWDOWN,//
 
-            MobEffects.CONFUSION,
+            MobEffects.CONFUSION,//
             MobEffects.REGENERATION,
             MobEffects.DAMAGE_RESISTANCE,
             MobEffects.FIRE_RESISTANCE,
@@ -116,6 +116,16 @@ public class MobEffectCommon extends MobEffectInstance {
     static {
         for(int i = 0; i < keys.length; i++) {
             opposites.put(keys[i], values[i]);
+        }
+    }
+
+    @Override
+    public boolean equals(Object e) {
+        if(e instanceof MobEffectCommon) {
+            MobEffectCommon f = (MobEffectCommon) e;
+            return  f.effect == effect && f.level == level && f.time == time;
+        } else {
+            return false;
         }
     }
 

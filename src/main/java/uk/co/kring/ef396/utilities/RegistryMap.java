@@ -3,6 +3,7 @@ package uk.co.kring.ef396.utilities;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.client.renderer.entity.HuskRenderer;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.monster.Zombie;
@@ -152,6 +153,11 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
             ));
         });
         return potion;
+    }
+
+    public static RegistryObject<SoundEvent> regSound(String name) {
+        return Registries.sounds.register(name,
+                () -> new SoundEvent(new ResourceLocation(ExactFeather.MOD_ID, name)));
     }
 
     public <I extends T> RegistryObject<I> register(String name, Supplier<? extends I> sup,

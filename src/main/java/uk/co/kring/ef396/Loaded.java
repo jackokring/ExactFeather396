@@ -1,6 +1,5 @@
 package uk.co.kring.ef396;
 
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
@@ -63,7 +62,7 @@ public class Loaded {
     public static RegistryObject<Block> rubyBlock;
     public static Map<Item, RegistryObject<Potion>> mundane711;
     public static RegistryObject<EntityType<HogEntity>> hog;
-    public static RegistryObject<SoundEvent> error;
+    public static RegistryObject<SoundEvent> error, boom, wipple;
     public static CreativeModeTab tab;
 
     protected void items(RegistryMap<Item> reg) {
@@ -111,6 +110,10 @@ public class Loaded {
                 poison_apple, me);//an active potion 1st step
         //an active potion made from primaries
         //should corrupt but that depends on an opposite
+        //there is a problem with obtaining an inverse corruption
+        //from a registered potion which has not been evaluated
+        //and so the effect has the corruption handler and
+        //adding must be manual
         psydareCorrupt = reg.register("psydare_corrupt",
                 RegistryMap.registerPotionSecondary("psydare_corrupt",
                         psydare, Items.FERMENTED_SPIDER_EYE,
@@ -132,7 +135,8 @@ public class Loaded {
     }
 
     protected void sounds(RegistryMap<SoundEvent> reg) {
-        error = reg.register("error",
-                () -> new SoundEvent(new ResourceLocation(ExactFeather.MOD_ID, "error")));
+        error = reg.regSound("error");
+        boom = reg.regSound("boom");
+        wipple = reg.regSound("wipple");
     }
 }

@@ -71,10 +71,10 @@ public class HogEntity extends Husk implements NeutralMob {
     }
 
     @Override
-    protected SoundEvent getAmbientSound() { return SoundEvents.PIG_AMBIENT; }
+    protected SoundEvent getAmbientSound() { return Loaded.wipple.get(); }
 
     @Override
-    protected SoundEvent getDeathSound() { return SoundEvents.PIG_DEATH; }
+    protected SoundEvent getDeathSound() { return Loaded.boom.get(); }
 
     @Override
     protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
