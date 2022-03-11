@@ -5,7 +5,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
-import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.brewing.BrewingRecipe;
@@ -22,13 +21,17 @@ public class BrewingCommon extends BrewingRecipe {
                          RegistryObject<Potion> potion) {
         super(Ingredient.of(new ItemStack((ItemLike) input)),
                 Ingredient.of(new ItemStack(ingredient.get())),
-                PotionUtils.setPotion(new ItemStack(Items.POTION), potion.get()));
+                getPotionStack(potion));
     }
 
     public BrewingCommon(Potion input, Item ingredient, RegistryObject<Potion> called) {
         super(Ingredient.of(new ItemStack((ItemLike) input)),
                 Ingredient.of(new ItemStack(ingredient)),
-                PotionUtils.setPotion(new ItemStack(Items.POTION), called.get()));
+                getPotionStack(called));
+    }
+
+    public static ItemStack getPotionStack(RegistryObject<Potion> called) {
+        return PotionUtils.setPotion(new ItemStack(Items.POTION), called.get());
     }
 
     public static Map<Item, RegistryObject<Potion>> mundaneFix() {
@@ -36,6 +39,8 @@ public class BrewingCommon extends BrewingRecipe {
         var reg = Registries.potions;
         HashMap<Item, RegistryObject<Potion>> list = new HashMap<>();
         Item[] items = {
+                /* The Gang of 13 */
+
             Items.SUGAR,                    //p
             Items.MAGMA_CREAM,              //T
             Items.RABBIT_FOOT,              //x
@@ -48,9 +53,10 @@ public class BrewingCommon extends BrewingRecipe {
             Items.TURTLE_HELMET,            //Earth
             Items.PUFFERFISH,               //Water
             Items.PHANTOM_MEMBRANE,         //Air
+            // Items.FERMENTED_SPIDER_EYE, -> leave for corrupt, and usual
         };
         Arrays.stream(items).forEach((what) -> {
-            list.put(what, reg.registerPotionPrimary(what.getRegistryName().getPath(), what));
+            list.put(what, reg.registerAlchemyBase(what.getRegistryName().getPath(), what));
         });
         return Collections.unmodifiableMap(list);
     }

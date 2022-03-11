@@ -137,7 +137,7 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
         return potion;
     }
 
-    public static RegistryObject<Potion> registerPotionPrimary(String name, Item item) {
+    public static RegistryObject<Potion> registerAlchemyBase(String name, Item item) {
         RegistryObject<Potion> potion = Registries.potions.register(name,
                     () -> new Potion());
         ExactFeather.registerRecipe((event) -> {

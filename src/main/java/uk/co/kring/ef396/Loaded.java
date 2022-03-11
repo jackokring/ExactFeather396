@@ -29,12 +29,13 @@ public class Loaded {
 
     // for loading up things
     public Loaded() {
-        ExactFeather.LOGGER.info("Initialize statics in a Loaded in progress.");
+        ExactFeather.LOGGER.info("Initialization of statics in "
+                + getClass().getCanonicalName() + " in progress.");
         init();//bootstrap
     }
 
     // Custom CreativeModeTab TAB
-    public final CreativeModeTab tab(Supplier<RegistryObject<Item>> icon) {
+    public static final CreativeModeTab tab(Supplier<RegistryObject<Item>> icon) {
         return new CreativeModeTab(ExactFeather.MOD_ID) {
             @Override
             public ItemStack makeIcon() {
@@ -108,12 +109,15 @@ public class Loaded {
         MobEffectCommon me = new MobEffectCommon(MobEffects.CONFUSION);
         psydare = reg.registerPotionImmediate("psydare",
                 poison_apple, me);//an active potion 1st step
+        //an active potion made from primaries
+        //should corrupt but that depends on an opposite
         psydareCorrupt = reg.register("psydare_corrupt",
                 RegistryMap.registerPotionSecondary("psydare_corrupt",
                         psydare, Items.FERMENTED_SPIDER_EYE,
-                        me.corrupt(MobEffects.WEAKNESS, false, false)));
-        //an active potion made from primaries
-        mundane711 = BrewingCommon.mundaneFix();//uses registerPotionPrimary to make inactive base potions
+                        me.corrupt(true, false, false)));
+        //uses registerAlchemyBase to make inactive base potions
+        mundane711 = BrewingCommon.mundaneFix();
+        // maybe an alchemy table?
     }
 
     protected void blocks(RegistryMap<Block> reg) {
