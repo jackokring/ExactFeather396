@@ -129,9 +129,14 @@ public class MobEffectCommon extends MobEffectInstance {
         }
     }
 
+    public boolean hasCorrupt() {
+        if(opposites.get(effect) == null) return false;
+        return true;
+    }
+
     public MobEffectCommon corrupt(boolean effCorrupt, boolean redTime, boolean glowLevel) {
         return new MobEffectCommon(
-                effCorrupt ? (opposites.get(effect) == null ? effect : opposites.get(effect)) : effect,
+                effCorrupt ? (hasCorrupt() ? opposites.get(effect) : effect) : effect,
                 redTime ? time * 8 / 3 : time,
                 glowLevel ? level + 1 : level);
     }

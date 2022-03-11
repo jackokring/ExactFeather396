@@ -8,6 +8,7 @@ import net.minecraft.world.item.Item;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import uk.co.kring.ef396.ExactFeather;
+import uk.co.kring.ef396.recipes.MobEffectCommon;
 import uk.co.kring.ef396.utilities.Configurator;
 
 public class PoisonAppleItem extends Item implements IForgeRegistryEntry<Item> {
@@ -23,11 +24,11 @@ public class PoisonAppleItem extends Item implements IForgeRegistryEntry<Item> {
                 .food((new FoodProperties.Builder())
                         .nutrition(4)
                         .saturationMod(1.2f)
-                        .effect(() -> new MobEffectInstance(MobEffects.CONFUSION, time.get(), 0),
+                        .effect(() -> new MobEffectCommon(MobEffects.CONFUSION, time.get(), 0),
                                 probWither.get().floatValue())
-                        .effect(() -> new MobEffectInstance(MobEffects.POISON, time.get(), 1),
+                        .effect(() -> new MobEffectCommon(MobEffects.POISON, time.get(), 1),
                                 probPoison.get().floatValue())
-                        .effect(() -> new MobEffectInstance(MobEffects.HUNGER, time.get(), 0),
+                        .effect(() -> new MobEffectCommon(MobEffects.HUNGER, time.get(), 0),
                                 probHunger.get().floatValue())
                         .alwaysEat()
                         .build()

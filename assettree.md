@@ -29,7 +29,9 @@ src/main/resources/assets
     │       ├── ruby_shovel.json
     │       └── ruby_sword.json
     ├── sounds
-    │   └── error.ogg
+    │   ├── boom.ogg
+    │   ├── error.ogg
+    │   └── wipple.ogg
     ├── sounds.json
     └── textures
         ├── blocks
@@ -54,5 +56,5 @@ src/main/resources/assets
                 ├── ruby_layer_1.png
                 └── ruby_layer_2.png
 
-14 directories, 39 files
+14 directories, 41 files
 ```

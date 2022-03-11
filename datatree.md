@@ -24,7 +24,6 @@ src/main/resources/data
 │   │   └── ruby_sword.json
 │   ├── tags
 │   │   └── items
-│   │       └── gems.json
 │   └── worldgen
 │       ├── biome
 │       ├── configured_carver
@@ -53,5 +52,5 @@ src/main/resources/data
         └── items
             └── piglin_loved.json
 
-30 directories, 22 files
+30 directories, 21 files
 ```
