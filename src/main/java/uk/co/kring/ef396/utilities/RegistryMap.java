@@ -84,9 +84,15 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
             EntityRenderers.register(entity.get(),
                     (context) -> new HuskRenderer(context) {//default husk
                         @Override
-                        public ResourceLocation getTextureLocation(Zombie p_113771_) {
+                        public ResourceLocation getTextureLocation(Zombie fashion) {
+                            String f = ((HogEntity)fashion).getFashion();
+                            if(f == null) {
+                                f = "";
+                            } else {
+                                f = "/" + f;
+                            }
                             return new ResourceLocation(ExactFeather.MOD_ID,
-                                    "textures/entity/" + entity.getId().getPath() + ".png");
+                                    "textures/entity/" + entity.getId().getPath() + f + ".png");
                         }
                     });
         });

@@ -86,12 +86,18 @@ public class HogEntity extends Husk implements NeutralMob {
         this.playSound(SoundEvents.PIG_STEP, 0.15F, 1.0F);
     }
 
+    // static collision box
     public static float getSizeXZ() {
         return 0.6f;
     }
 
     public static float getSizeY() {
         return 1.95f;
+    }
+
+    // fashion
+    public String getFashion() {
+        return null;
     }
 
     @Override
