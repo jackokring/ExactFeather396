@@ -20,9 +20,9 @@ public class MobEffectCommon extends MobEffectInstance {
         this.effect = effect;
     }
 
-    private int time;
-    private int level;
-    private MobEffect effect;
+    private final int time;
+    private final int level;
+    private final MobEffect effect;
 
     private final static MobEffect[] keys = {
             MobEffects.MOVEMENT_SPEED,
@@ -121,8 +121,9 @@ public class MobEffectCommon extends MobEffectInstance {
 
     @Override
     public boolean equals(Object e) {
-        if(e instanceof MobEffectCommon) {
-            MobEffectCommon f = (MobEffectCommon) e;
+        // almost. I do remember when the if would inside auto cast to be of instance
+        // because obviously, so I guess this pattern allows use of e also for something?
+        if(e instanceof MobEffectCommon f) {
             return  f.effect == effect && f.level == level && f.time == time;
         } else {
             return false;
@@ -130,8 +131,7 @@ public class MobEffectCommon extends MobEffectInstance {
     }
 
     public boolean hasCorrupt() {
-        if(opposites.get(effect) == null) return false;
-        return true;
+        return opposites.get(effect) != null;//contains key will not work as has key to null
     }
 
     public MobEffectCommon corrupt(boolean effCorrupt, boolean redTime, boolean glowLevel) {
@@ -139,5 +139,12 @@ public class MobEffectCommon extends MobEffectInstance {
                 effCorrupt ? (hasCorrupt() ? opposites.get(effect) : effect) : effect,
                 redTime ? time * 8 / 3 : time,
                 glowLevel ? level + 1 : level);
+    }
+
+    public String nameFormat(String name, boolean redTime, boolean glowLevel) {
+        //prefixes alpha order
+        if(redTime) name = "long_" + name;
+        if(glowLevel) name = "strong_" + name;
+        return name;
     }
 }
