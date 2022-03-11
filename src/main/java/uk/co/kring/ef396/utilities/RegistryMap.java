@@ -10,6 +10,7 @@ import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.block.Block;
@@ -139,6 +140,24 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
         ExactFeather.registerRecipe((event) -> {
             BrewingRecipeRegistry.addRecipe(new BrewingCommon(
                     in.get(), add, potion
+            ));
+        });
+        return potion;
+    }
+
+    public static RegistryObject<Potion> registerPotionCorrupt(String name, RegistryObject<Potion> in,
+                                                                 MobEffectCommon... does) {
+        RegistryObject<Potion> potion;
+        if(does != null) {
+            potion = Registries.potions.register(name,
+                    () -> new Potion(does));
+        } else {
+            potion = Registries.potions.register(name,
+                    () -> new Potion());
+        }
+        ExactFeather.registerRecipe((event) -> {
+            BrewingRecipeRegistry.addRecipe(new BrewingCommon(
+                    in.get(), Items.FERMENTED_SPIDER_EYE, potion
             ));
         });
         return potion;
