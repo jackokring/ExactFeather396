@@ -21,6 +21,7 @@ import net.minecraftforge.registries.*;
 import org.jetbrains.annotations.NotNull;
 import uk.co.kring.ef396.ExactFeather;
 import uk.co.kring.ef396.entities.HogEntity;
+import uk.co.kring.ef396.items.BedtimeBook;
 import uk.co.kring.ef396.recipes.BrewingCommon;
 import uk.co.kring.ef396.recipes.MobEffectCommon;
 
@@ -42,6 +43,11 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
         printClassWrong(Registries.blocks);
         return Registries.items.register(block.getId().getPath(),
                 () -> new BlockItem(block.get(), new Item.Properties().tab(tab).stacksTo(64)));
+    }
+
+    public RegistryObject<Item> regBook(String name, CreativeModeTab tab) {
+        printClassWrong(Registries.items);
+        return BedtimeBook.register(name, tab);
     }
 
     public int colors(RegistryObject<?> entity,
@@ -111,9 +117,9 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
                         new Item.Properties().tab(tab).stacksTo(64)));
     }
 
-    public RegistryObject<Potion> registerPotionImmediate(String name,
-                                                                 RegistryObject<Item> add,
-                                                                 MobEffectCommon... does) {
+    public RegistryObject<Potion> regPotionImmediate(String name,
+                                                     RegistryObject<Item> add,
+                                                     MobEffectCommon... does) {
         printClassWrong(Registries.potions);
         RegistryObject<Potion> potion;
         if(does != null) {
@@ -129,9 +135,9 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
         return potion;
     }
 
-    public RegistryObject<Potion> registerPotionSecondary(String name, RegistryObject<Potion> in,
-                                                  Item add,
-                                                  MobEffectCommon... does) {
+    public RegistryObject<Potion> regPotionSecondary(String name, RegistryObject<Potion> in,
+                                                     Item add,
+                                                     MobEffectCommon... does) {
         printClassWrong(Registries.potions);
         RegistryObject<Potion> potion;
         if(does != null) {
@@ -147,8 +153,8 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
         return potion;
     }
 
-    public RegistryObject<Potion> registerPotionCorrupt(String name, RegistryObject<Potion> in,
-                                                                 MobEffectCommon... does) {
+    public RegistryObject<Potion> regPotionCorrupt(String name, RegistryObject<Potion> in,
+                                                   MobEffectCommon... does) {
         printClassWrong(Registries.potions);
         RegistryObject<Potion> potion;
         if(does != null) {
@@ -164,7 +170,7 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
         return potion;
     }
 
-    public RegistryObject<Potion> registerAlchemyBase(String name, Item item) {
+    public RegistryObject<Potion> regAlchemyBase(String name, Item item) {
         printClassWrong(Registries.potions);
         RegistryObject<Potion> potion = Registries.potions.register(name,
                 Potion::new);

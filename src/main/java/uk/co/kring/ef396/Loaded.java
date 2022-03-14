@@ -12,7 +12,6 @@ import org.jetbrains.annotations.NotNull;
 import uk.co.kring.ef396.blocks.RubyBlock;
 import uk.co.kring.ef396.blocks.RubyOre;
 import uk.co.kring.ef396.entities.HogEntity;
-import uk.co.kring.ef396.items.BedtimeBook;
 import uk.co.kring.ef396.items.PoisonAppleItem;
 import uk.co.kring.ef396.items.enums.ModArmorMaterial;
 import uk.co.kring.ef396.items.enums.ModItemTier;
@@ -62,7 +61,7 @@ public class Loaded {
     public static RegistryObject<Item> ruby, poison_apple, hogSpawnEgg;
     public static RegistryObject<Potion> psydare, psydareCorrupt;
     public static RegistryObject<Block> rubyBlock;
-    public static Map<Item, RegistryObject<Potion>> mundane711;
+    public static Map<Item, RegistryObject<Potion>> mundane711 = BrewingCommon.mundaneFix();//a choice
     public static RegistryObject<EntityType<HogEntity>> hog;
     public static RegistryObject<SoundEvent> error, boom, wipple;
     public static CreativeModeTab tab;
@@ -103,12 +102,12 @@ public class Loaded {
                 () -> new ArmorItem(ModArmorMaterial.RUBY, EquipmentSlot.FEET,
                         new Item.Properties().tab(tab)));
         // Books
-        BedtimeBook.register("book_1", tab);
+        reg.regBook("book_1", tab);
     }
 
     protected void potions(RegistryMap<Potion> reg) {
         MobEffectCommon me = new MobEffectCommon(MobEffects.CONFUSION);
-        psydare = reg.registerPotionImmediate("psydare",
+        psydare = reg.regPotionImmediate("psydare",
                 poison_apple, me);//an active potion 1st step
         //an active potion made from primaries
         //should corrupt but that depends on an opposite
@@ -116,10 +115,8 @@ public class Loaded {
         //from a registered potion which has not been evaluated
         //and so the effect has the corruption handler and
         //adding must be manual
-        psydareCorrupt = reg.registerPotionCorrupt("psydare_corrupt",
+        psydareCorrupt = reg.regPotionCorrupt("psydare_corrupt",
                         psydare, me.corrupt(true, false, false));
-        //uses registerAlchemyBase to make inactive base potions
-        mundane711 = BrewingCommon.mundaneFix();
         // maybe an alchemy table?
     }
 

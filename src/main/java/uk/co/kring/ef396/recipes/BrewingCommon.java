@@ -56,7 +56,7 @@ public class BrewingCommon extends BrewingRecipe {
             // Items.FERMENTED_SPIDER_EYE, -> leave for corrupt, and usual
         };
         Arrays.stream(items).forEach((what) -> {
-            list.put(what, reg.registerAlchemyBase(what.getRegistryName().getPath(), what));
+            list.put(what, reg.regAlchemyBase(what.getRegistryName().getPath(), what));
         });
         return Collections.unmodifiableMap(list);
     }
