@@ -67,37 +67,41 @@ public class MobEffectCommon extends MobEffectInstance {
     };
 
     private final static MobEffect[] values = {
-            //TODO mark OK when converted to opposite in group of 4
             //OK
             MobEffects.MOVEMENT_SLOWDOWN,//
             null,
             null,
             null,
 
-            MobEffects.DAMAGE_BOOST,
+            //OK
+            null,
             MobEffects.HARM,//
             null,
             MobEffects.MOVEMENT_SLOWDOWN,//
 
-            MobEffects.CONFUSION,//
-            MobEffects.REGENERATION,
-            MobEffects.DAMAGE_RESISTANCE,
-            MobEffects.FIRE_RESISTANCE,
+            //OK
+            null,
+            null,
+            null,
+            null,
 
-            MobEffects.WATER_BREATHING,
-            MobEffects.INVISIBILITY,
-            MobEffects.BLINDNESS,
+            //OK
+            null,
+            null,
+            null,
             MobEffects.INVISIBILITY,//
 
-            MobEffects.HUNGER,
-            MobEffects.WEAKNESS,
+            //OK
+            null,
+            null,
             MobEffects.HARM,//
-            MobEffects.WITHER,
+            null,
 
-            MobEffects.HEALTH_BOOST,
-            MobEffects.ABSORPTION,
-            MobEffects.SATURATION,
-            MobEffects.GLOWING,
+            //OK
+            null,
+            null,
+            null,
+            null,
 
             //OK
             null,
@@ -105,10 +109,11 @@ public class MobEffectCommon extends MobEffectInstance {
             MobEffects.LUCK,//
             null,
 
-            MobEffects.CONDUIT_POWER,
-            MobEffects.DOLPHINS_GRACE,
-            MobEffects.BAD_OMEN,
-            MobEffects.HERO_OF_THE_VILLAGE
+            //OK
+            null,
+            null,
+            null,
+            null
     };
 
     public static final Map<MobEffect, MobEffect> opposites = new HashMap<>();

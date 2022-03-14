@@ -106,7 +106,8 @@ public class Loaded {
     }
 
     protected void potions(RegistryMap<Potion> reg) {
-        MobEffectCommon me = new MobEffectCommon(MobEffects.CONFUSION);
+        MobEffectCommon me = (new MobEffectCommon(MobEffects.HEAL))
+                .corrupt(false, true, true);
         psydare = reg.regPotionImmediate("psydare",
                 poison_apple, me);//an active potion 1st step
         //an active potion made from primaries
@@ -116,7 +117,7 @@ public class Loaded {
         //and so the effect has the corruption handler and
         //adding must be manual
         psydareCorrupt = reg.regPotionCorrupt("psydare_corrupt",
-                        psydare, me.corrupt(true, false, false));
+                        psydare, me.corrupt(true, true, true));
         // maybe an alchemy table?
     }
 
