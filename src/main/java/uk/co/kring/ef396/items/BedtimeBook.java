@@ -167,12 +167,12 @@ public class BedtimeBook extends WrittenBookItem implements IForgeRegistryEntry<
                 }
             }//loop next paragraph
         }
-        return (String[]) pages.stream().toArray();
+        return pages.toArray(String[]::new);
     }
 
     public static String processPara(String para) {
         String[] splits = para.split(" ");// use backslash @ at beginning of word
-        String out = Arrays.stream(splits).map((word) -> {
+        return Arrays.stream(splits).map((word) -> {
             if(word.startsWith("\\@")) {// magic \@item.ef396.thing thing
                 String toFind = word.substring(2);//rest of word
                 TranslatableComponent tc = new TranslatableComponent(toFind);
@@ -180,7 +180,6 @@ public class BedtimeBook extends WrittenBookItem implements IForgeRegistryEntry<
             }
             return word;
         }).collect(Collectors.joining(" "));
-        return para;
     }
 
     public static void jsonify(String[] pages, CompoundTag tag) {
@@ -242,7 +241,8 @@ public class BedtimeBook extends WrittenBookItem implements IForgeRegistryEntry<
         int size = chapters.size();
         int rnd = player.getRandom().nextInt(size);
         Supplier<ItemStack>[] is
-                = (Supplier<ItemStack>[]) chapters.values().stream().map((entry) -> entry.sup).toArray();
+                = (Supplier<ItemStack>[]) chapters.values().stream()
+                .map((entry) -> entry.sup).toArray();
         if(is.length == 0) return Optional.empty();
         ItemStack i = is[rnd].get();
         return Optional.of(i);//allows for no values and sleep event no fail
