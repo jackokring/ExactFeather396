@@ -8,6 +8,7 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.registries.RegistryObject;
+import org.jetbrains.annotations.NotNull;
 import uk.co.kring.ef396.blocks.RubyBlock;
 import uk.co.kring.ef396.blocks.RubyOre;
 import uk.co.kring.ef396.entities.HogEntity;
@@ -34,15 +35,16 @@ public class Loaded {
     }
 
     // Custom CreativeModeTab TAB
-    public static final CreativeModeTab tab(Supplier<RegistryObject<Item>> icon) {
+    public final CreativeModeTab tab(Supplier<RegistryObject<Item>> icon) {
         return new CreativeModeTab(ExactFeather.MOD_ID) {
             @Override
+            @NotNull
             public ItemStack makeIcon() {
                 return new ItemStack(icon.get().get());
             }
             //that old Algol-68 triple ref pointer handles and an address to write
         };
-    };
+    }
 
     public final void init() {
         Configurator.pushRegisterNest(Registries.items);
@@ -70,7 +72,7 @@ public class Loaded {
         ruby = reg.register("ruby",
                 () -> new Item(new Item.Properties().tab(tab)));
         poison_apple = reg.register("poison_apple", () -> new PoisonAppleItem(tab),
-                (builder) -> PoisonAppleItem.loadConfig(builder));
+                PoisonAppleItem::loadConfig);
         // Tools
         reg.register("ruby_sword",
                 () -> new SwordItem(ModItemTier.RUBY, 2, -2.4F,
