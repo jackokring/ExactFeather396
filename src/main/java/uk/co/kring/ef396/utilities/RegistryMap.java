@@ -40,13 +40,13 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
     }
 
     public RegistryObject<Item> regBlockItem(RegistryObject<Block> block, CreativeModeTab tab) {
-        printClassWrong(Registries.blocks);
+        printClassWrong(Registries.blocks, block.getId().getPath());
         return Registries.items.register(block.getId().getPath(),
                 () -> new BlockItem(block.get(), new Item.Properties().tab(tab).stacksTo(64)));
     }
 
     public RegistryObject<Item> regBook(String name, CreativeModeTab tab) {
-        printClassWrong(Registries.items);
+        printClassWrong(Registries.items, name);
         return BedtimeBook.register(name, tab);
     }
 
@@ -82,7 +82,7 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
     public RegistryObject<EntityType<HogEntity>> regMob(String name,
                                                                EntityType.EntityFactory<HogEntity> entity,
                                                                float xz, float y) {
-        printClassWrong(Registries.entities);
+        printClassWrong(Registries.entities, name);
         EntityType.Builder<HogEntity> builder = EntityType.Builder.of(
                         entity, MobCategory.CREATURE)
                 .sized(xz, y); // Hit box Size
@@ -110,7 +110,7 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
     public RegistryObject<Item> regEggItem(
             RegistryObject<EntityType<HogEntity>> entity, CreativeModeTab tab
             /* int bg, int fg, String texture */) {
-        printClassWrong(Registries.entities);
+        printClassWrong(Registries.entities, entity.getId().getPath());
         return Registries.items.register(entity.getId().getPath() + "_spawn_egg",
                 () -> new ForgeSpawnEggItem(entity, colors(entity, false),
                         colors(entity, true),
@@ -120,7 +120,7 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
     public RegistryObject<Potion> regPotionImmediate(String name,
                                                      RegistryObject<Item> add,
                                                      MobEffectCommon... does) {
-        printClassWrong(Registries.potions);
+        printClassWrong(Registries.potions, name);
         RegistryObject<Potion> potion;
         if(does != null) {
             potion = Registries.potions.register(name,
@@ -138,7 +138,7 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
     public RegistryObject<Potion> regPotionSecondary(String name, RegistryObject<Potion> in,
                                                      Item add,
                                                      MobEffectCommon... does) {
-        printClassWrong(Registries.potions);
+        printClassWrong(Registries.potions, name);
         RegistryObject<Potion> potion;
         if(does != null) {
              potion = Registries.potions.register(name,
@@ -155,7 +155,7 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
 
     public RegistryObject<Potion> regPotionCorrupt(String name, RegistryObject<Potion> in,
                                                    MobEffectCommon... does) {
-        printClassWrong(Registries.potions);
+        printClassWrong(Registries.potions, name);
         RegistryObject<Potion> potion;
         if(does != null) {
             potion = Registries.potions.register(name,
@@ -171,7 +171,7 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
     }
 
     public RegistryObject<Potion> regAlchemyBase(String name, Item item) {
-        printClassWrong(Registries.potions);
+        printClassWrong(Registries.potions, name);
         RegistryObject<Potion> potion = Registries.potions.register(name,
                 Potion::new);
         ExactFeather.registerRecipe((event) -> BrewingRecipeRegistry.addRecipe(new BrewingCommon(
@@ -181,14 +181,14 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
     }
 
     public RegistryObject<SoundEvent> regSound(String name) {
-        printClassWrong(Registries.sounds);
+        printClassWrong(Registries.sounds, name);
         return Registries.sounds.register(name,
                 () -> new SoundEvent(new ResourceLocation(ExactFeather.MOD_ID, name)));
     }
 
-    private void printClassWrong(RegistryMap<?> test) {
+    private void printClassWrong(RegistryMap<?> test, String name) {
         if(this != test) ExactFeather.LOGGER.warn(this.getClass().getCanonicalName()
-                + " is not the " + test.getClass().getCanonicalName() + " registry.");
+                + " is not the " + test.getClass().getCanonicalName() + " registry for " + name);
     }
 
     public <I extends T> RegistryObject<I> register(String name, Supplier<? extends I> sup,
