@@ -28,12 +28,10 @@
 * Implement some AI.
 * Maybe a custom effect.
 * Tags for classification, and generates in world.
-* Hog drops alterations e.g. spawn egg.
 * Custom `MobEffect` with `addAttributeModifier`, and it seems to have a few serialization IDs. Perhaps `396` is a good choice.
 * Custom `Attribute` to interact with the mind AI.
 * Mob spawning.
 * Perhaps a `BlockEntity` like a minimal `ItemStack` count of a variety, while auto running through the recipes to maximize fullness with build-ables.
-* Mob drops. And drops in general.
 * `TranslatableComponent` and other book ideas.
 * Distributed AI on the network.
 * Texture for `Hog`.

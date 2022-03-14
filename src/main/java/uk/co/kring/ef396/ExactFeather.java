@@ -2,6 +2,7 @@ package uk.co.kring.ef396;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
+import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
@@ -31,6 +32,7 @@ public class ExactFeather {
     private static List<Consumer<FMLClientSetupEvent>> renderers = new LinkedList<>();
     private static List<Consumer<FMLCommonSetupEvent>> recipes = new LinkedList<>();
     private static List<Consumer<EntityAttributeCreationEvent>> attrib = new LinkedList<>();
+    private static List<Consumer<BiomeLoadingEvent>> spawn = new LinkedList<>();
 
     public ExactFeather() {
 
@@ -40,6 +42,7 @@ public class ExactFeather {
         bus.addListener(this::setup);
         bus.addListener(this::doClientStuff);
         bus.addListener(this::doAttributes);
+        bus.addListener(this::doSpawn);
         MinecraftForge.EVENT_BUS.register(this);
 
         // a configuration handler
@@ -79,19 +82,26 @@ public class ExactFeather {
         });
     }
 
-    private void doAttributes(EntityAttributeCreationEvent event) {
+    private void doAttributes(final EntityAttributeCreationEvent event) {
         attrib.forEach((att) -> {
             att.accept(event);
         });
     }
 
-    public static void registerRender(Consumer<FMLClientSetupEvent> event) {
+    private void doSpawn(final BiomeLoadingEvent event) {
+        spawn.forEach((spawnEvent) -> {
+            spawnEvent.accept(event);
+        });
+    }
+
+    public static final void registerRender(Consumer<FMLClientSetupEvent> event) {
         renderers.add(event);
     }
-    public static void registerRecipe(Consumer<FMLCommonSetupEvent> event) {
+    public static final void registerRecipe(Consumer<FMLCommonSetupEvent> event) {
         recipes.add(event);
     }
-    public static void registerAttrib(Consumer<EntityAttributeCreationEvent> event) {
+    public static final void registerAttrib(Consumer<EntityAttributeCreationEvent> event) {
         attrib.add(event);
     }
+    public static final void registerSpawn(Consumer<BiomeLoadingEvent> event) { spawn.add(event); }
 }

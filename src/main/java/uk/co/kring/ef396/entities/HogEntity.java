@@ -19,6 +19,7 @@ import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
 import org.jetbrains.annotations.Nullable;
 import uk.co.kring.ef396.ExactFeather;
 import net.minecraft.world.entity.EntityType;
@@ -51,6 +52,10 @@ public class HogEntity extends Husk implements NeutralMob {
                 .add(Attributes.JUMP_STRENGTH, 2.0f)
                 .build();
         //TODO
+    }
+
+    public static Biome spawnBiome() {
+        return null;//null equals all biomes
     }
 
     @Override

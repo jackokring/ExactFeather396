@@ -13,9 +13,12 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
+import net.minecraftforge.common.world.MobSpawnSettingsBuilder;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.*;
 import org.jetbrains.annotations.NotNull;
@@ -104,6 +107,16 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
                     }
                 }));
         ExactFeather.registerAttrib((event) -> event.put(he.get(), HogEntity.makeAttributes()));
+        ExactFeather.registerSpawn((event) -> {
+            if(event.getName() == null)
+                return;
+            Biome b = HogEntity.spawnBiome();
+            if(b == null || event.getCategory().equals(b)) {
+                event.getSpawns().addSpawn(MobCategory.CREATURE,
+                        new MobSpawnSettings.SpawnerData((EntityType<?>) entity,
+                                100,1,6));
+            }
+        });
         return Registries.entities.register(name, he);
     }
 
