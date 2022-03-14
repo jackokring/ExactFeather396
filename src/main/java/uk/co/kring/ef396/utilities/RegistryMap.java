@@ -113,7 +113,7 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
             Biome b = HogEntity.spawnBiome();
             if(b == null || event.getCategory().equals(b)) {
                 event.getSpawns().addSpawn(MobCategory.CREATURE,
-                        new MobSpawnSettings.SpawnerData((EntityType<?>) entity,
+                        new MobSpawnSettings.SpawnerData(he.get(),
                                 100,1,6));
             }
         });
