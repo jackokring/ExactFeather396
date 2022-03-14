@@ -55,7 +55,7 @@ public class Loader {
                         message(c, "Couldn't make an instance of");
                     } catch(IllegalAccessException e) {
                         // didn't load
-                        message(c, "No public default constructor in");
+                        message(c, "No public access to");
                     }
                     return Optional.ofNullable(c);
                 }).collect(Collectors.toList());
