@@ -3,6 +3,7 @@ package uk.co.kring.ef396.items;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -11,14 +12,17 @@ import net.minecraft.world.item.WrittenBookItem;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.minecraftforge.registries.RegistryObject;
+import org.jetbrains.annotations.NotNull;
 import uk.co.kring.ef396.ExactFeather;
 import uk.co.kring.ef396.utilities.Registries;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 public class BedtimeBook extends WrittenBookItem implements IForgeRegistryEntry<Item> {
 
@@ -35,7 +39,7 @@ public class BedtimeBook extends WrittenBookItem implements IForgeRegistryEntry<
 
         Entry(ForgeConfigSpec.ConfigValue<String> altName,
               ForgeConfigSpec.ConfigValue<String> serverDisclaimer,
-              CreativeModeTab tab) {;
+              CreativeModeTab tab) {
             this.altName = altName;
             this.tab = tab;
             this.serverDisclaimer = serverDisclaimer;
@@ -50,10 +54,6 @@ public class BedtimeBook extends WrittenBookItem implements IForgeRegistryEntry<
             paras = loaded.split("\n\n");
             loadChapter();
             jsonify(paginate(paras), tag);
-        }
-
-        String processPara(String para) {
-            return para;//TODO substitutes
         }
 
         void loadChapter() {
@@ -121,26 +121,26 @@ public class BedtimeBook extends WrittenBookItem implements IForgeRegistryEntry<
     public static String[] paginate(String[] paras) {
         //page size
         ArrayList<String> pages = new ArrayList<>();
-        String current = "";//to output
+        StringBuilder current = new StringBuilder();//to output
         int lineTotal = 0;
         int pageHeight = 0;
-        for(int pa = 0; pa < paras.length; pa ++) {
-            String parse = paras[pa];//get paragraph
+        //get paragraph
+        for (String parse : paras) {
             String[] words = parse.split(" ");
             int[] lens = new int[words.length];
-            for(int c = 0; c < words.length; c++) {
+            for (int c = 0; c < words.length; c++) {
                 lens[c] = sizeWord(words[c]);
             }
             int c = 0;//current count index
             boolean exit = false;
-            while(c < words.length) {
+            while (c < words.length) {
                 while (pageHeight < 14) {//only 13 lines
                     while (lineTotal < 57) {//57 px
                         if (lineTotal + 4 + lens[c] < 57) {//with space
                             lineTotal += lens[c] + 4;
-                            current += words[c] + " ";
+                            current.append(words[c]).append(" ");
                             c++;
-                            if(c >= words.length) {
+                            if (c >= words.length) {
                                 // ran out of text
                                 exit = true;
                                 break;
@@ -148,41 +148,54 @@ public class BedtimeBook extends WrittenBookItem implements IForgeRegistryEntry<
                         }
                     }
                     lineTotal = 0;
-                    if(exit == true) {
-                        if(pageHeight >= 11) {
+                    if (exit) {
+                        if (pageHeight >= 11) {
                             pageHeight = -1;//new page
                         } else {
                             pageHeight += 2;
-                            current += "\n\n";//new page paragraph
+                            current.append("\n\n");//new page paragraph
                         }
                         break;
                     }
                     pageHeight++;
                 }
                 exit = false;
-                if(pageHeight == -1 || c >= words.length) {//needs new page
-                    pages.add(current);
-                    current = "";//new page
+                if (pageHeight == -1 || c >= words.length) {//needs new page
+                    pages.add(current.toString());
+                    current = new StringBuilder();//new page
                     pageHeight = 0;//fix up detected exit without blanks
                 }
             }//loop next paragraph
         }
-        return (String[])pages.stream().toArray();
+        return (String[]) pages.stream().toArray();
+    }
+
+    public static String processPara(String para) {
+        String[] splits = para.split(" ");// use backslash @ at beginning of word
+        String out = Arrays.stream(splits).map((word) -> {
+            if(word.startsWith("\\@")) {
+                String toFind = word.substring(2);//rest of word
+                TranslatableComponent tc = new TranslatableComponent(toFind);
+                word = "\"" + tc.getContents() + "\"";//replace with quoted translation
+            }
+            return word;
+        }).collect(Collectors.joining(" "));
+        return para;
     }
 
     public static void jsonify(String[] pages, CompoundTag tag) {
         //TODO tag like
         ListTag lt = new ListTag();
         tag.put("pages", lt);
-        for(int i = 0; i < pages.length; i++) {
+        for (String s : pages) {
             CompoundTag page = new CompoundTag();
             lt.add(page);
-            page.putString("text", pages[i]);//all black
+            page.putString("text", s);//all black
             //page.putString("color", "red");
         }
     }
 
-    private static HashMap<String, Entry> chapters = new HashMap<>();
+    private static final HashMap<String, Entry> chapters = new HashMap<>();
 
     public static RegistryObject<Item> register(String name, CreativeModeTab tab) {
         // delayed register with config settings
@@ -207,8 +220,8 @@ public class BedtimeBook extends WrittenBookItem implements IForgeRegistryEntry<
     }
 
     @Override
-    public void fillItemCategory(CreativeModeTab tab, NonNullList<ItemStack> stacks) {
-        if(tab != null && !tab.equals(chapters.get(name).tab)) return;
+    public void fillItemCategory(CreativeModeTab tab, @NotNull NonNullList<ItemStack> stacks) {
+        if(!tab.equals(chapters.get(name).tab)) return;
         stacks.add(chapters.get(name).sup.get());
         //super.fillItemCategory(tab, stacks);
     }

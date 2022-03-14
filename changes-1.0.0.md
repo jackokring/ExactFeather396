@@ -21,6 +21,7 @@
 * Started on a `BaseCodeException` system for AI processing.
 * Added a `BedtimeBook` idea.
 * Experimental `Loaded` by `Loader` for modularization of the source tree to reduce merge conflicts on pull requests.
+* Added `mudane711` field for fix for potions of Mundane nature.
 
 ### TODO
 * Finish basic book implementation.
@@ -35,5 +36,4 @@
 * Mob drops. And drops in general.
 * `TranslatableComponent` and other book ideas.
 * Distributed AI on the network.
-* Two more sounds for ambient and dead.
 * Texture for `Hog`.
