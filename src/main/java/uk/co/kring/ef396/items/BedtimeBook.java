@@ -173,7 +173,7 @@ public class BedtimeBook extends WrittenBookItem implements IForgeRegistryEntry<
     public static String processPara(String para) {
         String[] splits = para.split(" ");// use backslash @ at beginning of word
         String out = Arrays.stream(splits).map((word) -> {
-            if(word.startsWith("\\@")) {
+            if(word.startsWith("\\@")) {// magic \@item.ef396.thing thing
                 String toFind = word.substring(2);//rest of word
                 TranslatableComponent tc = new TranslatableComponent(toFind);
                 word = "\"" + tc.getContents() + "\"";//replace with quoted translation
@@ -184,14 +184,26 @@ public class BedtimeBook extends WrittenBookItem implements IForgeRegistryEntry<
     }
 
     public static void jsonify(String[] pages, CompoundTag tag) {
-        //TODO tag like
         ListTag lt = new ListTag();
         tag.put("pages", lt);
+        String color = "black";
+        String quotedColor = "blue";
+        boolean textColor = false;
         for (String s : pages) {
-            CompoundTag page = new CompoundTag();
-            lt.add(page);
-            page.putString("text", s);//all black
-            //page.putString("color", "red");
+            ListTag parts = new ListTag();
+            lt.add(parts);
+            String[] splits = s.split("\"");//on quotes
+            for(String t: splits) {
+                CompoundTag part = new CompoundTag();
+                parts.add(part);
+                if(textColor) {
+                    t = "\"" + t + "\"";//re-quote
+                }
+                part.putString("text", t);//all black
+                part.putString("color", textColor ? quotedColor : color);
+                textColor = !textColor;
+            }
+            textColor = !textColor;//except last part as not closed quote but ended page
         }
     }
 
