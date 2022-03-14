@@ -30,8 +30,8 @@
 * Tags for classification, and generates in world.
 * Custom `MobEffect` with `addAttributeModifier`, and it seems to have a few serialization IDs. Perhaps `396` is a good choice.
 * Custom `Attribute` to interact with the mind AI.
-* Mob spawning.
 * Perhaps a `BlockEntity` like a minimal `ItemStack` count of a variety, while auto running through the recipes to maximize fullness with build-ables.
 * `TranslatableComponent` and other book ideas.
 * Distributed AI on the network.
 * Texture for `Hog`.
+* Ore placement.
