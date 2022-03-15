@@ -170,13 +170,22 @@ public class BedtimeBook extends WrittenBookItem implements IForgeRegistryEntry<
         return pages.toArray(String[]::new);
     }
 
+    private static String execMacro(String macro) {
+        //TODO macro from text translation file
+        //makes for easier data pack modification
+        return macro;
+    }
+
     public static String processPara(String para) {
         String[] splits = para.split(" ");// use backslash @ at beginning of word
         return Arrays.stream(splits).map((word) -> {
             if(word.startsWith("@")) {// magic @item.ef396.thing thing with literal \@ -> @
                 String toFind = word.substring(1);//rest of word
-                TranslatableComponent tc = new TranslatableComponent(toFind);
-                word = "\"" + tc.getContents() + "\"";//replace with quoted translation
+                String tc = (new TranslatableComponent(toFind)).getContents();
+                if(tc.startsWith("/")) {//command processor
+                    tc = execMacro(tc.substring(1));//the macro
+                }
+                word = "\"" + tc + "\"";//replace with quoted translation
             }
             return word.replace("\\@", "@");//literalization
         }).collect(Collectors.joining(" "));
