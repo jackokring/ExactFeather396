@@ -54,6 +54,8 @@ public class HogEntity extends Husk implements NeutralMob {
         //TODO
     }
 
+    public static int spawnWeight() { return 100; }
+
     public static Biome spawnBiome() {
         return null;//null equals all biomes
     }

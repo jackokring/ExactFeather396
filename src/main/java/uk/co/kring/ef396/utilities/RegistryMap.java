@@ -47,6 +47,7 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
         return Registries.items.register(block.getId().getPath(),
                 () -> new BlockItem(block.get(), new Item.Properties().tab(tab).stacksTo(64)));
     }
+    //TODO place in world auto
 
     public RegistryObject<Item> regBook(String name, CreativeModeTab tab) {
         printClassWrong(Registries.items, name);
@@ -114,7 +115,7 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
             if(b == null || event.getCategory().equals(b)) {
                 event.getSpawns().addSpawn(MobCategory.CREATURE,
                         new MobSpawnSettings.SpawnerData(he.get(),
-                                100,1,6));
+                                HogEntity.spawnWeight(),1,3));
             }
         });
         return Registries.entities.register(name, he);
