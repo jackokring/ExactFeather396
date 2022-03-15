@@ -16,7 +16,7 @@ Once upon a time in the overworld the potion mechanism was cast to bring @item.m
 
 @item.minecraft.potion.effect.spider_eye
 
-There were also the modern future mundanes discovered by careful experiment with the @item.minecraft.potion.effect.awkward and the finding that @item.minecraft.potion.effect.thick could be a drink for some. These were as follows:
+There were also the modern future mundanes discovered by careful experiment with the @item.minecraft.potion.effect.awkward and the finding that @item.minecraft.potion.effect.thick could be a drink for some, although not all as for others it was poison. These were as follows:
 
 @item.minecraft.potion.effect.golden_carrot
 
