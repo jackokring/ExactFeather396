@@ -18,7 +18,6 @@ import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
-import net.minecraftforge.common.world.MobSpawnSettingsBuilder;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.*;
 import org.jetbrains.annotations.NotNull;
@@ -28,9 +27,7 @@ import uk.co.kring.ef396.items.BedtimeBook;
 import uk.co.kring.ef396.recipes.BrewingCommon;
 import uk.co.kring.ef396.recipes.MobEffectCommon;
 
-import java.util.Collection;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.*;
 
 public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends PriorityHashMap<String, Supplier<? extends T>> {
@@ -47,7 +44,12 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
         return Registries.items.register(block.getId().getPath(),
                 () -> new BlockItem(block.get(), new Item.Properties().tab(tab).stacksTo(64)));
     }
-    //TODO place in world auto
+
+    public RegistryObject<Block> regBlockPlace(RegistryObject<Block> block) {
+        printClassWrong(Registries.blocks, block.getId().getPath());
+        //TODO place in world auto
+        return block;
+    }
 
     public RegistryObject<Item> regBook(String name, CreativeModeTab tab) {
         printClassWrong(Registries.items, name);
