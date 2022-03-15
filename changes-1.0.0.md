@@ -4,7 +4,7 @@
 [Release Page](https://github.com/jackokring/ExactFeather396/releases)
 
 * Fixed basic faults with `1.18.2` changes in the symbol set.
-* Removed `Ore` generation as `1.18.1` has `data` tags for doing this kind of thing like generating biomes. I assume this is to stop failure of vanilla biomes by block pollution. A `Biome` maybe added later to test this idea.
+* Removed `Ore` generation as `1.18.2` has `data` tags for doing this kind of thing like generating biomes. I assume this is to stop failure of vanilla biomes by block pollution. A `Biome` maybe added later to test this idea.
 * Internal `ForgeSpawnEggItem` automation.
 * Class refactoring when necessary or logical.
 * Removed `Oven` so need new container start. I'm likely to do some `Potion` thing.
@@ -22,6 +22,7 @@
 * Added a `BedtimeBook` idea.
 * Experimental `Loaded` by `Loader` for modularization of the source tree to reduce merge conflicts on pull requests.
 * Added `mudane711` field for fix for potions of Mundane nature.
+* Added feature override without replace for small diamond ore deposit to include ruby blocks and ore. At `src/main/resources/data/minecraft/worldgen/configured_feature/ore_diamond_small.json`.
 
 ### TODO
 * Finish basic book implementation.
