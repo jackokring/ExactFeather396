@@ -173,12 +173,12 @@ public class BedtimeBook extends WrittenBookItem implements IForgeRegistryEntry<
     public static String processPara(String para) {
         String[] splits = para.split(" ");// use backslash @ at beginning of word
         return Arrays.stream(splits).map((word) -> {
-            if(word.startsWith("\\@")) {// magic \@item.ef396.thing thing
-                String toFind = word.substring(2);//rest of word
+            if(word.startsWith("@")) {// magic @item.ef396.thing thing with literal \@ -> @
+                String toFind = word.substring(1);//rest of word
                 TranslatableComponent tc = new TranslatableComponent(toFind);
                 word = "\"" + tc.getContents() + "\"";//replace with quoted translation
             }
-            return word;
+            return word.replace("\\@", "@");//literalization
         }).collect(Collectors.joining(" "));
     }
 
