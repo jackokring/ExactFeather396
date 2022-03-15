@@ -34,4 +34,3 @@
 * `TranslatableComponent` and other book ideas.
 * Distributed AI on the network.
 * Texture for `Hog`.
-* Ore placement.

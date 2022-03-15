@@ -22,17 +22,8 @@ src/main/resources/data
 │   │   ├── ruby_shovel.json
 │   │   ├── ruby_smelt.json
 │   │   └── ruby_sword.json
-│   ├── tags
-│   │   └── items
-│   └── worldgen
-│       ├── biome
-│       ├── configured_carver
-│       ├── configured_feature
-│       ├── configured_structure_feature
-│       ├── configured_surface_builder
-│       ├── noise_settings
-│       ├── processor_list
-│       └── template_pool
+│   └── tags
+│       └── items
 ├── forge
 │   └── tags
 │       ├── blocks
@@ -44,13 +35,23 @@ src/main/resources/data
 │           └── ores
 │               └── ruby.json
 └── minecraft
-    └── tags
-        ├── blocks
-        │   ├── mineable
-        │   │   └── pickaxe.json
-        │   └── needs_stone_tool.json
-        └── items
-            └── piglin_loved.json
+    ├── tags
+    │   ├── blocks
+    │   │   ├── mineable
+    │   │   │   └── pickaxe.json
+    │   │   └── needs_stone_tool.json
+    │   └── items
+    │       └── piglin_loved.json
+    └── worldgen
+        ├── biome
+        ├── configured_carver
+        ├── configured_feature
+        │   └── ore_diamond_small.json
+        ├── configured_structure_feature
+        ├── configured_surface_builder
+        ├── noise_settings
+        ├── processor_list
+        └── template_pool
 
-30 directories, 21 files
+30 directories, 22 files
 ```

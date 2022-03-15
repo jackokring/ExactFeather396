@@ -38,6 +38,7 @@ src/main/resources/assets
         │   ├── ruby_block.png
         │   └── ruby_ore.png
         ├── entity
+        │   ├── hog
         │   └── hog.png
         ├── items
         │   ├── poison_apple.png
@@ -56,5 +57,5 @@ src/main/resources/assets
                 ├── ruby_layer_1.png
                 └── ruby_layer_2.png
 
-14 directories, 41 files
+15 directories, 41 files
 ```
