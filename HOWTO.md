@@ -163,3 +163,30 @@ You can then add a translation for a display subtitle name in `src/main/resource
 ```
 "subtitles.ef396.<name>": "<display name>",
 ```
+
+## Adding a Recipe
+In `src/main/resources/data/ef396/recipes` add a file based on the `<name>.json` and include something like
+```
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern":
+  [
+    "   ",
+    "x x",
+    "x x"
+  ],
+  "key":
+  {
+    "x":
+    {
+      "tag": "ef396:ruby"
+    }
+  },
+  "result":
+  {
+    "item": "ef396:ruby_boots",
+    "count": 1
+  }
+}
+```
+A useful tool for recipes and drops is found [Here](https://misode.github.io/loot-table/) with loot tables being located `src/main/resources/data/ef396/loot_tables/blocks` for blocks.
