@@ -1,9 +1,31 @@
-TITLE
+The Book of Mundane Things
 
-paragraph 1
+Once upon a time in the overworld the potion mechanism was cast to bring @item.minecraft.potion.effect.mundane to mean so much and confusion was born of the alchemical waste. The magic was strong though and sorting out some lesser mundane was just a labelling exercise. And so the following became available:
 
-paragraph 2
+@item.minecraft.potion.effect.sugar
 
-paragraph n
+@item.minecraft.potion.effect.magma_cream
 
-author
+@item.minecraft.potion.effect.rabbit_foot
+
+@item.minecraft.potion.effect.glistering_melon_slice
+
+@item.minecraft.potion.effect.blaze_powder
+
+@item.minecraft.potion.effect.ghast_tear
+
+@item.minecraft.potion.effect.spider_eye
+
+There were also the modern future mundanes discovered by careful experiment with the @item.minecraft.potion.effect.awkward and the finding that @item.minecraft.potion.effect.thick could be a drink for some. These were as follows:
+
+@item.minecraft.potion.effect.golden_carrot
+
+@item.minecraft.potion.effect.turtle_helmet
+
+@item.minecraft.potion.effect.pufferfish
+
+@item.minecraft.potion.effect.phantom_membrane
+
+And it became possible to experiment with the potions as ingredients in more than just brewing. To find the essences and things within the scope of this great reality.
+
+ExactFeather396
