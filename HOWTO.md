@@ -1,5 +1,7 @@
 # How to Add to and Extend `ExactFeather`
 
+### *Don't Forget `runData` to Make Some of the Files Automatically*
+
 ## Adding a Loaded Class
 In `src/main/java/uk/co/kring/ef396/loaded` is a class `BlankLoaded.java` which should be extended and implement any methods relating to the following instructions. The class name should be entered in `src/main/resources/assets/ef396` inside the file `loaded_load.txt` as `loaded.<className>` if you placed the class in the same folder as the class `BlankLoaded`.
 
@@ -15,7 +17,9 @@ and add a field to hold the name reference
 ```
 public static RegistryObject<Item> <name>;
 ```
-replacing `<name>` with the actual name you wish to name it internally. Then create a file in `src/main/resources/assets/ef396/models/item` called `<name>.json` with the content
+replacing `<name>` with the actual name you wish to name it internally.
+
+Auto `runData`: Or create a file in `src/main/resources/assets/ef396/models/item` called `<name>.json` with the content
 ```
 {
   "parent": "item/generated",
@@ -81,7 +85,7 @@ public static RegistryObject<Block> <name>;
 ```
 replacing `<name>` with the actual name you wish to name it internally. You can modify the properties in the class file which extends `Block`.
 
-In addition to items a `Block` needs a blockstate in `src/main/resources/assets/ef396/blockstates/<name>.json` which contains for simple blocks
+Auto `runData`: In addition to items a `Block` needs a blockstate in `src/main/resources/assets/ef396/blockstates/<name>.json` which contains for simple blocks
 ```
 {
   "variants": {
@@ -91,7 +95,7 @@ In addition to items a `Block` needs a blockstate in `src/main/resources/assets/
 ```
 as it allows selection of the model based on the state of the block.
 
-Then create a file in `src/main/resources/assets/ef396/models/block` called `<name>.json` with the content
+Auto `runData`: Then create a file in `src/main/resources/assets/ef396/models/block` called `<name>.json` with the content
 ```
 {
   "parent": "block/cube_all",
@@ -102,10 +106,14 @@ Then create a file in `src/main/resources/assets/ef396/models/block` called `<na
 ```
 which then references a texture `<name>.png` file (of size 16 by 16 px) in `src/main/resources/assets/ef396/textures/blocks` and that completes adding a simple block.
 
+The `runData` generation can be skipped for a block by `implements ComplexBlock` and then you make your own blockstate and model files. 
+
 You can then add a translation for a display name in `src/main/resources/assets/ef396/lang/en_us.json` like, although this would lead to a merge collision, but a simple one.
 ```
 "block.ef396.<name>": "<displayed name>",
 ```
+
+Here's where I changed `src/main/resources/data/minecraft/worldgen/configured_feature/ore_diamond_small.json` to intercept small diamond ore production to make ruby ore.
 
 ## Adding a Simple Mob
 Create a class
@@ -151,12 +159,12 @@ Then in `src/main/resources/assets/ef396/sounds.json` add
 ```
   "<name>": {
     "sounds": [
-      "ef396:<name>"
+      "ef396:<name-file>"
     ],
     "subtitle": "subtitles.ef396.<name>"
   }
 ```
-and finally add the `.ogg` file in `src/main/resources/assets/ef396/sounds` so it can be included in the mod.
+and finally add the `.ogg` file in `src/main/resources/assets/ef396/sounds` so it can be included in the mod. Multiple sounds can be made into a pool for one <name> sound.
 
 You can then add a translation for a display subtitle name in `src/main/resources/assets/ef396/lang/en_us.json` like, although this would lead to a merge collision, but a simple one.
 ```
