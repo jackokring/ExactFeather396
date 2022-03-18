@@ -9,8 +9,12 @@ import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.NotNull;
+import uk.co.kring.ef396.blocks.EnergyBlock;
 import uk.co.kring.ef396.blocks.RubyBlock;
 import uk.co.kring.ef396.blocks.RubyOre;
+import uk.co.kring.ef396.blocks.containers.EnergyContainer;
+import uk.co.kring.ef396.blocks.entities.EnergyEntity;
+import uk.co.kring.ef396.blocks.screens.EnergyScreen;
 import uk.co.kring.ef396.entities.HogEntity;
 import uk.co.kring.ef396.items.PoisonAppleItem;
 import uk.co.kring.ef396.items.enums.ModArmorMaterial;
@@ -124,6 +128,10 @@ public class Loaded {
     protected void blocks(RegistryMap<Block> reg) {
         reg.regBlockItem(rubyBlock = reg.register("ruby_block", RubyBlock::new), tab);
         reg.regBlockItem(reg.register("ruby_ore", RubyOre::new), tab);
+        //trying BlockEntity
+        reg.regBlockEnergy("energy", EnergyBlock::new,
+                EnergyEntity::new, EnergyContainer::new, EnergyScreen::new);
+
     }
 
     protected void entities(RegistryMap<EntityType<?>> reg) {

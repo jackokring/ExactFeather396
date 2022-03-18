@@ -2,9 +2,11 @@ package uk.co.kring.ef396.utilities;
 
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -22,6 +24,10 @@ public class Registries {
             = new RegistryMap<EntityType<?>>(DeferredRegister.create(ForgeRegistries.ENTITIES, ExactFeather.MOD_ID));
     public final static RegistryMap<SoundEvent> sounds
             = new RegistryMap<SoundEvent>(DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, ExactFeather.MOD_ID));
+    public final static RegistryMap<BlockEntityType<?>> blockEntities
+            = new RegistryMap<>(DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, ExactFeather.MOD_ID));
+    public final static RegistryMap<MenuType<?>> containers
+            = new RegistryMap<>(DeferredRegister.create(ForgeRegistries.CONTAINERS, ExactFeather.MOD_ID));
 
     public static void register(IEventBus bus) {
         items.register(bus);
@@ -29,5 +35,7 @@ public class Registries {
         blocks.register(bus);
         entities.register(bus);
         sounds.register(bus);
+        blockEntities.register(bus);
+        containers.register(bus);
     }
 }
