@@ -14,6 +14,7 @@ src/main/resources/assets
     │   │   ├── ruby_block.json
     │   │   └── ruby_ore.json
     │   └── item
+    │       ├── book_1.json
     │       ├── hog_spawn_egg.json
     │       ├── poison_apple.json
     │       ├── ruby_axe.json
@@ -41,6 +42,7 @@ src/main/resources/assets
         │   ├── hog
         │   └── hog.png
         ├── items
+        │   ├── book.png
         │   ├── poison_apple.png
         │   ├── ruby_axe.png
         │   ├── ruby_boots.png
@@ -57,5 +59,5 @@ src/main/resources/assets
                 ├── ruby_layer_1.png
                 └── ruby_layer_2.png
 
-15 directories, 41 files
+15 directories, 43 files
 ```

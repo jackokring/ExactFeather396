@@ -51,12 +51,6 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
                 () -> new BlockItem(block.get(), new Item.Properties().tab(tab).stacksTo(64)));
     }
 
-    public RegistryObject<Block> regBlockPlace(RegistryObject<Block> block) {
-        printClassWrong(Registries.blocks, block.getId().getPath());
-        //TODO place in world auto
-        return block;
-    }
-
     public RegistryObject<Item> regBook(String name, CreativeModeTab tab) {
         printClassWrong(Registries.items, name);
         return BedtimeBook.register(name, tab);
