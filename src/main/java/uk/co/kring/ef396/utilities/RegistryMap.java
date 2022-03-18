@@ -8,21 +8,20 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
-import net.minecraft.client.renderer.entity.HuskRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
-import net.minecraft.world.entity.monster.Zombie;
+import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.Potions;
-import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -93,7 +92,7 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
     }
 
     public static class HogModel extends HumanoidModel<HogEntity> {
-
+        // default simple humanoid renderer
         public static final String BODY = "body";
 
         public static ModelLayerLocation HOG_LAYER
@@ -113,16 +112,20 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
     public RegistryObject<EntityType<HogEntity>> regMob(String name,
                                                                EntityType.EntityFactory<HogEntity> entity) {
         printClassWrong(Registries.entities, name);
+        // entity builder
         EntityType.Builder<HogEntity> builder = EntityType.Builder.of(
                         entity, MobCategory.CREATURE)
                 .sized(0.6f, 1.95f) // Hit box Size
                 .clientTrackingRange(8)
                 .setShouldReceiveVelocityUpdates(false);
+        // entity supplier
         Supplier<EntityType<HogEntity>> he =
                 () -> builder.build(new ResourceLocation(ExactFeather.MOD_ID, "hog").toString());
+        // model control of layers
         ExactFeather.registerLayers((event) -> {
             event.registerLayerDefinition(HogModel.HOG_LAYER, HogModel::createBodyLayer);
         });
+        // renderer for skin
         ExactFeather.registerRender((event) -> EntityRenderers.register(he.get(),
                 (context) -> new HumanoidMobRenderer<HogEntity, HogModel>(context,
                         new HogModel(context.bakeLayer(HogModel.HOG_LAYER)), 1f) {
@@ -139,13 +142,20 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
                                 "textures/entity/" + name + f + ".png");
                     }
                 }));
+        // actionable attributes registration
         ExactFeather.registerAttrib((event)
                 -> event.put(he.get(), HogEntity.createLivingAttributes().build()));
+        // biome specific spawn assignments
         ExactFeather.registerSpawn((event) -> {
             if(event.getName() == null) return;
             event.getSpawns().addSpawn(MobCategory.CREATURE,
                     new MobSpawnSettings.SpawnerData(he.get(),
                             HogEntity.spawnWeight(),1,3));
+        });
+        // register spawning placements
+        ExactFeather.registerCommon((event) -> {
+            SpawnPlacements.register(he.get(), SpawnPlacements.Type.ON_GROUND,
+                    Heightmap.Types.WORLD_SURFACE, HogEntity::canSpawn);
         });
         return Registries.entities.register(name, he);
     }
@@ -172,7 +182,7 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
             potion = Registries.potions.register(name,
                     Potion::new);
         }
-        ExactFeather.registerRecipe((event) -> BrewingRecipeRegistry.addRecipe(new BrewingCommon(
+        ExactFeather.registerCommon((event) -> BrewingRecipeRegistry.addRecipe(new BrewingCommon(
                 Potions.WATER, add, potion
         )));
         return potion;
@@ -190,7 +200,7 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
             potion = Registries.potions.register(name,
                     Potion::new);
         }
-        ExactFeather.registerRecipe((event) -> BrewingRecipeRegistry.addRecipe(new BrewingCommon(
+        ExactFeather.registerCommon((event) -> BrewingRecipeRegistry.addRecipe(new BrewingCommon(
                 in.get(), add, potion
         )));
         return potion;
@@ -207,7 +217,7 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
             potion = Registries.potions.register(name,
                     Potion::new);
         }
-        ExactFeather.registerRecipe((event) -> BrewingRecipeRegistry.addRecipe(new BrewingCommon(
+        ExactFeather.registerCommon((event) -> BrewingRecipeRegistry.addRecipe(new BrewingCommon(
                 in.get(), Items.FERMENTED_SPIDER_EYE, potion
         )));
         return potion;
@@ -217,7 +227,7 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
         printClassWrong(Registries.potions, name);
         RegistryObject<Potion> potion = Registries.potions.register(name,
                 Potion::new);
-        ExactFeather.registerRecipe((event) -> BrewingRecipeRegistry.addRecipe(new BrewingCommon(
+        ExactFeather.registerCommon((event) -> BrewingRecipeRegistry.addRecipe(new BrewingCommon(
                 Potions.WATER, item, potion
         )));
         return potion;

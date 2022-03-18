@@ -1,6 +1,5 @@
 package uk.co.kring.ef396;
 
-import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
@@ -32,7 +31,7 @@ public class ExactFeather {
     public static ForgeConfigSpec.BooleanValue DEBUG;
 
     private static List<Consumer<FMLClientSetupEvent>> renderers = new LinkedList<>();
-    private static List<Consumer<FMLCommonSetupEvent>> recipes = new LinkedList<>();
+    private static List<Consumer<FMLCommonSetupEvent>> recipes = new LinkedList<>();//plus ...
     private static List<Consumer<EntityAttributeCreationEvent>> attrib = new LinkedList<>();
     private static List<Consumer<BiomeLoadingEvent>> spawn = new LinkedList<>();
     private static List<Consumer<EntityRenderersEvent.RegisterLayerDefinitions>> layers = new LinkedList<>();
@@ -107,7 +106,7 @@ public class ExactFeather {
     public static final void registerRender(Consumer<FMLClientSetupEvent> event) {
         renderers.add(event);
     }
-    public static final void registerRecipe(Consumer<FMLCommonSetupEvent> event) {
+    public static final void registerCommon(Consumer<FMLCommonSetupEvent> event) {
         recipes.add(event);
     }
     public static final void registerAttrib(Consumer<EntityAttributeCreationEvent> event) {
