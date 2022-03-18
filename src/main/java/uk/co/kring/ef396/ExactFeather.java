@@ -1,5 +1,7 @@
 package uk.co.kring.ef396;
 
+import net.minecraft.client.renderer.entity.EntityRenderers;
+import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
@@ -33,6 +35,7 @@ public class ExactFeather {
     private static List<Consumer<FMLCommonSetupEvent>> recipes = new LinkedList<>();
     private static List<Consumer<EntityAttributeCreationEvent>> attrib = new LinkedList<>();
     private static List<Consumer<BiomeLoadingEvent>> spawn = new LinkedList<>();
+    private static List<Consumer<EntityRenderersEvent.RegisterLayerDefinitions>> layers = new LinkedList<>();
 
     public ExactFeather() {
 
@@ -43,6 +46,7 @@ public class ExactFeather {
         bus.addListener(this::doClientStuff);
         bus.addListener(this::doAttributes);
         bus.addListener(this::doSpawn);
+        bus.addListener(this::doLayers);
         MinecraftForge.EVENT_BUS.register(this);
 
         // a configuration handler
@@ -94,6 +98,12 @@ public class ExactFeather {
         });
     }
 
+    private void doLayers(final EntityRenderersEvent.RegisterLayerDefinitions event) {
+        layers.forEach((layers) -> {
+            layers.accept(event);
+        });
+    }
+
     public static final void registerRender(Consumer<FMLClientSetupEvent> event) {
         renderers.add(event);
     }
@@ -104,4 +114,6 @@ public class ExactFeather {
         attrib.add(event);
     }
     public static final void registerSpawn(Consumer<BiomeLoadingEvent> event) { spawn.add(event); }
+    public static final void registerLayers(Consumer<EntityRenderersEvent.RegisterLayerDefinitions> event) {
+        layers.add(event); }
 }

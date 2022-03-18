@@ -1,5 +1,5 @@
 # Change Log 1.0.0
-### The TechnoVision TurtyWurty Remix
+### The TechnoVision TurtyWurty Remix Including some https://wiki.cjty.eu when Appropriate
 
 [Release Page](https://github.com/jackokring/ExactFeather396/releases)
 

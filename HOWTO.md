@@ -119,8 +119,7 @@ public class <name> extends HogEntity {
 
 Inside the method `entities(RegistryMap<EntityType<?>> reg)` include the following code
 ```
-<name>SpawnEgg = reg.regEggItem(<name> = reg.regMob("<name>", <name>::new,
-                HogEntity.getSizeXZ(), HogEntity.getSizeY()), tab);
+<name>SpawnEgg = reg.regEggItem(<name> = reg.regMob("<name>", <name>::new), tab);
 ```
 and add a field to hold the name reference
 ```
@@ -128,7 +127,7 @@ public static RegistryObject<EntityType<HogEntity>> <name>;
 ```
 replacing `<name>` with the actual name you wish to name it internally.
 
-A texture `<name>.png` file (a `Zombie` mob skin) in `src/main/resources/assets/ef396/textures/entity` called `<name>.png` completes adding a simple mob.
+A texture `<name>.png` file (a `Humanoid` mob skin) in `src/main/resources/assets/ef396/textures/entity` called `<name>.png` completes adding a simple mob. The mob can also have fashion by using a folder and returning the fashion name with `getFashion`.
 
 You can then add a translation for a display name in `src/main/resources/assets/ef396/lang/en_us.json` like, although this would lead to a merge collision, but a simple one.
 ```

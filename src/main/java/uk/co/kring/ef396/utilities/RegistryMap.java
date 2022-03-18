@@ -1,6 +1,13 @@
 package uk.co.kring.ef396.utilities;
 
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.builders.CubeDeformation;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.renderer.entity.EntityRenderers;
+import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
 import net.minecraft.client.renderer.entity.HuskRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
@@ -85,21 +92,44 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
         }
     }
 
+    public static class HogModel extends HumanoidModel<HogEntity> {
+
+        public static final String BODY = "body";
+
+        public static ModelLayerLocation HOG_LAYER
+                = new ModelLayerLocation(
+                        new ResourceLocation(ExactFeather.MOD_ID, "hog"), BODY);
+
+        public static LayerDefinition createBodyLayer() {
+            MeshDefinition meshdefinition = createMesh(CubeDeformation.NONE, 0.6f);
+            return LayerDefinition.create(meshdefinition, 64, 32);
+        }
+
+        public HogModel(ModelPart part) {
+            super(part);
+        }
+    }
+
     public RegistryObject<EntityType<HogEntity>> regMob(String name,
-                                                               EntityType.EntityFactory<HogEntity> entity,
-                                                               float xz, float y) {
+                                                               EntityType.EntityFactory<HogEntity> entity) {
         printClassWrong(Registries.entities, name);
         EntityType.Builder<HogEntity> builder = EntityType.Builder.of(
                         entity, MobCategory.CREATURE)
-                .sized(xz, y); // Hit box Size
+                .sized(0.6f, 1.95f) // Hit box Size
+                .clientTrackingRange(8)
+                .setShouldReceiveVelocityUpdates(false);
         Supplier<EntityType<HogEntity>> he =
                 () -> builder.build(new ResourceLocation(ExactFeather.MOD_ID, "hog").toString());
+        ExactFeather.registerLayers((event) -> {
+            event.registerLayerDefinition(HogModel.HOG_LAYER, HogModel::createBodyLayer);
+        });
         ExactFeather.registerRender((event) -> EntityRenderers.register(he.get(),
-                (context) -> new HuskRenderer(context) {//default husk
+                (context) -> new HumanoidMobRenderer<HogEntity, HogModel>(context,
+                        new HogModel(context.bakeLayer(HogModel.HOG_LAYER)), 1f) {
                     @Override
                     @NotNull
-                    public ResourceLocation getTextureLocation(@NotNull Zombie fashion) {
-                        String f = ((HogEntity)fashion).getFashion();
+                    public ResourceLocation getTextureLocation(@NotNull HogEntity fashion) {
+                        String f = fashion.getFashion();
                         if(f == null) {
                             f = "";
                         } else {
@@ -109,16 +139,13 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
                                 "textures/entity/" + name + f + ".png");
                     }
                 }));
-        ExactFeather.registerAttrib((event) -> event.put(he.get(), HogEntity.makeAttributes()));
+        ExactFeather.registerAttrib((event)
+                -> event.put(he.get(), HogEntity.createLivingAttributes().build()));
         ExactFeather.registerSpawn((event) -> {
-            if(event.getName() == null)
-                return;
-            Biome b = HogEntity.spawnBiome();
-            if(b == null || event.getCategory().equals(b)) {
-                event.getSpawns().addSpawn(MobCategory.CREATURE,
-                        new MobSpawnSettings.SpawnerData(he.get(),
-                                HogEntity.spawnWeight(),1,3));
-            }
+            if(event.getName() == null) return;
+            event.getSpawns().addSpawn(MobCategory.CREATURE,
+                    new MobSpawnSettings.SpawnerData(he.get(),
+                            HogEntity.spawnWeight(),1,3));
         });
         return Registries.entities.register(name, he);
     }

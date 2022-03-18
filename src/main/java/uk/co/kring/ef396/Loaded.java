@@ -127,8 +127,7 @@ public class Loaded {
     }
 
     protected void entities(RegistryMap<EntityType<?>> reg) {
-        hogSpawnEgg = reg.regEggItem(hog = reg.regMob("hog", HogEntity::new,
-                HogEntity.getSizeXZ(), HogEntity.getSizeY()), tab);
+        hogSpawnEgg = reg.regEggItem(hog = reg.regMob("hog", HogEntity::new), tab);
                 // this also does all renderer and attribute registration indirectly
     }
 
