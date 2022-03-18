@@ -10,15 +10,6 @@
                 "state": {
                     "Name": "ef396:ruby_ore"
                 }
-            },
-            {
-                "target": {
-                    "tag": "minecraft:deepslate_ore_replaceables",
-                    "predicate_type": "minecraft:tag_match"
-                },
-                "state": {
-                    "Name": "ef396:ruby_block"
-                }
             }
         ],
         "size": 4,

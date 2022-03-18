@@ -185,7 +185,7 @@ public class BedtimeBook extends WrittenBookItem implements IForgeRegistryEntry<
                 if(tc.startsWith("/")) {//command processor
                     tc = execMacro(tc.substring(1));//the macro
                 }
-                word = "\"" + tc + "\"";//replace with quoted translation
+                word = "`" + tc + "`";//replace with quoted translation
             }
             return word.replace("\\@", "@");//literalization
         }).collect(Collectors.joining(" "));
@@ -200,13 +200,10 @@ public class BedtimeBook extends WrittenBookItem implements IForgeRegistryEntry<
         for (String s : pages) {
             ListTag parts = new ListTag();
             lt.add(parts);
-            String[] splits = s.split("\"");//on quotes
+            String[] splits = s.split("`");//on backtick
             for(String t: splits) {
                 CompoundTag part = new CompoundTag();
                 parts.add(part);
-                if(textColor) {
-                    t = "\"" + t + "\"";//re-quote
-                }
                 part.putString("text", t);//all black
                 part.putString("color", textColor ? quotedColor : color);
                 textColor = !textColor;
