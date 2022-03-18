@@ -23,6 +23,7 @@
 * Experimental `Loaded` by `Loader` for modularization of the source tree to reduce merge conflicts on pull requests.
 * Added `mudane711` field for fix for potions of Mundane nature.
 * Added feature override without replace for small diamond ore deposit to include ruby blocks and ore. At `src/main/resources/data/minecraft/worldgen/configured_feature/ore_diamond_small.json`.
+* Moving to an `ItemModelProvider` in `DataGen` as all cases are simple enough. Simple `BlockItem`, `Item` and `ForgeSpawnEggItem`.
 
 ### TODO
 * Finish basic book implementation.

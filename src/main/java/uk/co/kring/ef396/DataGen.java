@@ -1,28 +1,21 @@
 package uk.co.kring.ef396;
 
-import com.mojang.datafixers.util.Pair;
-import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.tags.BlockTagsProvider;
 import net.minecraft.data.tags.ItemTagsProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.storage.loot.LootTable;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParamSet;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
-import net.minecraftforge.common.data.LanguageProvider;
+import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
+import uk.co.kring.ef396.blocks.ComplexBlock;
 import uk.co.kring.ef396.utilities.Registries;
-
-import java.util.List;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 @Mod.EventBusSubscriber(modid = "ef396", bus = Mod.EventBusSubscriber.Bus.MOD)
 public class DataGen {
@@ -31,13 +24,6 @@ public class DataGen {
     public static void genData(GatherDataEvent event) {
         var gen = event.getGenerator();
         var file = event.getExistingFileHelper();
-        gen.addProvider(new LanguageProvider(gen, ExactFeather.MOD_ID, "en_us") {
-            //strangely the server needs these perhaps to make substitutions in books
-            @Override
-            protected void addTranslations() {
-                //add("itemGroup." + ExactFeather.MOD_ID, "ExactFeather");
-            }
-        });
         if (event.includeServer()) {
             gen.addProvider(new RecipeProvider(gen) {
                 @Override
@@ -91,36 +77,37 @@ public class DataGen {
             });
         }
         if (event.includeClient()) {
+            // ============= Excellent covers all cases likely =============
             gen.addProvider(new BlockStateProvider(gen, ExactFeather.MOD_ID, file) {
                 @Override
                 protected void registerStatesAndModels() {
-                    /* var reg = Registries.blocks;
-                    reg.getEntries().forEach((block) -> {
+                    Registries.blocks.getEntries().forEach((block) -> {
                         Block b = block.get();
-                        // more complex block types
-                        if(b instanceof Block) {
-                            simpleBlock(b);
-                            return;
-                        }
-                    }); */
+                        if(b instanceof ComplexBlock) return;//needs own model ...
+                        simpleBlock(b);
+                    });
                 }
             });
+            // ============= Excellent covers all cases likely =============
             gen.addProvider(new ItemModelProvider(gen, ExactFeather.MOD_ID, file) {
                 @Override
                 protected void registerModels() {
-                    /* //Items TODO
-
-                    var reg = Registries.blocks;
-                    reg.getEntries().forEach((block) -> {
-                        Block b = block.get();
-                        String p = b.getRegistryName().getPath();
-                        // more complex block types
-                        if(b instanceof Block) {
-                            withExistingParent(p,
-                                    modLoc("block/" + p));//TODO??
+                    Registries.items.getEntries().forEach((item) -> {
+                        Item i = item.get();
+                        if(i instanceof ForgeSpawnEggItem) {
+                            withExistingParent(i.getRegistryName().getPath(),
+                                    mcLoc("item/template_spawn_egg"));
                             return;
                         }
-                    }); */
+                        if(i instanceof BlockItem) {
+                            withExistingParent(i.getRegistryName().getPath(),
+                                    modLoc("block/" + i.getRegistryName().getPath()));
+                            return;//escape ...
+                        }
+                        singleTexture(i.getRegistryName().getPath(),
+                                mcLoc("item/generated"),
+                                "layer0", modLoc("item/" + i.getRegistryName().getPath()));
+                    });
                 }
             });
         }
