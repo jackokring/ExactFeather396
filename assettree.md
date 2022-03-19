@@ -11,6 +11,7 @@ src/main/resources/assets
     ├── loaded_load.txt
     ├── models
     │   ├── block
+    │   │   ├── energy.json
     │   │   ├── ruby_block.json
     │   │   └── ruby_ore.json
     │   └── item
@@ -36,11 +37,14 @@ src/main/resources/assets
     ├── sounds.json
     └── textures
         ├── blocks
+        │   ├── energy.png
         │   ├── ruby_block.png
         │   └── ruby_ore.png
         ├── entity
         │   ├── hog
         │   └── hog.png
+        ├── gui
+        │   └── energy_gui.png
         ├── items
         │   ├── book.png
         │   ├── poison_apple.png
@@ -59,5 +63,5 @@ src/main/resources/assets
                 ├── ruby_layer_1.png
                 └── ruby_layer_2.png
 
-15 directories, 43 files
+16 directories, 46 files
 ```
