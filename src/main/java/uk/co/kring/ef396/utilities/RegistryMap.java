@@ -42,6 +42,7 @@ import uk.co.kring.ef396.blocks.containers.EnergyContainer;
 import uk.co.kring.ef396.blocks.entities.EnergyEntity;
 import uk.co.kring.ef396.blocks.screens.EnergyScreen;
 import uk.co.kring.ef396.entities.HogEntity;
+import uk.co.kring.ef396.entities.initials.HogInitials;
 import uk.co.kring.ef396.items.BedtimeBook;
 import uk.co.kring.ef396.recipes.BrewingCommon;
 import uk.co.kring.ef396.recipes.MobEffectCommon;
@@ -76,15 +77,14 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
                                                 MenuScreens.ScreenConstructor<EnergyContainer,
                                                         EnergyScreen> screen) {
         printClassWrong(Registries.blocks, name);
-        Registries.blockEntities.register(name,
-                () -> BlockEntityType.Builder.of(blockEntitySupplier, blockSupplier.get()).build(null));
+        var beEasy = Registries.blockEntities.register(name,
+                () -> BlockEntityType.Builder.of(blockEntitySupplier,
+                        blockSupplier.get()).build(null));
         var menuEasy = Registries.containers.register(name,
                 () -> IForgeMenuType.create(menu));
         // on client setup so renderer
         ExactFeather.registerRender((event) -> {
             MenuScreens.register(menuEasy.get(), screen);           // Attach our container to the screen
-            ItemBlockRenderTypes.setRenderLayer(blockSupplier.get(),
-                    RenderType.translucent()); // Set the render type for our power generator to translucent
         });
         return Registries.blocks.register(name, blockSupplier);
     }
@@ -137,9 +137,11 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
     }
 
     public RegistryObject<EntityType<HogEntity>> regMob(String name,
-                                                               EntityType.EntityFactory<HogEntity> entity) {
+                                                        EntityType.EntityFactory<HogEntity> entity,
+                                                        Supplier<HogInitials> onNew) {
         printClassWrong(Registries.entities, name);
         // entity builder
+        HogInitials hi = onNew.get();
         EntityType.Builder<HogEntity> builder = EntityType.Builder.of(
                         entity, MobCategory.CREATURE)
                 .sized(0.6f, 1.95f) // Hit box Size
@@ -177,12 +179,12 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
             if(event.getName() == null) return;
             event.getSpawns().addSpawn(MobCategory.CREATURE,
                     new MobSpawnSettings.SpawnerData(he.get(),
-                            HogEntity.spawnWeight(),1,3));
+                            hi.spawnWeight(),1,3));
         });
         // register spawning placements
         ExactFeather.registerCommon((event) -> {
             SpawnPlacements.register(he.get(), SpawnPlacements.Type.ON_GROUND,
-                    Heightmap.Types.WORLD_SURFACE, HogEntity::canSpawn);
+                    Heightmap.Types.WORLD_SURFACE, hi::canSpawn);
         });
         return Registries.entities.register(name, he);
     }

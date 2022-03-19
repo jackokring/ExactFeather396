@@ -2,7 +2,6 @@ package uk.co.kring.ef396.blocks.screens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -12,11 +11,16 @@ import uk.co.kring.ef396.blocks.containers.EnergyContainer;
 
 public class EnergyScreen extends AbstractContainerScreen<EnergyContainer> {
 
-    private final ResourceLocation GUI = new ResourceLocation(ExactFeather.MOD_ID,
-            "textures/gui/powergen_gui.png");
+    protected ResourceLocation GUI;
+
+    protected void setGUI(String name) {
+        GUI = new ResourceLocation(ExactFeather.MOD_ID,
+                "textures/gui/" + name + "_gui.png");
+    }
 
     public EnergyScreen(EnergyContainer container, Inventory inv, Component name) {
         super(container, inv, name);
+        setGUI(name.getContents());//to string best
     }
 
     @Override
@@ -28,7 +32,8 @@ public class EnergyScreen extends AbstractContainerScreen<EnergyContainer> {
 
     @Override
     protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
-        drawString(matrixStack, Minecraft.getInstance().font, "Energy: " + menu.getEnergy(), 10, 10, 0xffffff);
+        drawString(matrixStack, font,
+                "Energy: " + menu.getEnergy(), 10, 10, 0xffffff);
     }
 
     @Override

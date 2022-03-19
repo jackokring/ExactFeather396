@@ -58,30 +58,11 @@ public class HogEntity extends Animal {
         return null;
     }
 
-    public static int spawnWeight() {
-        return 10;
-    }
-
 // Only needed for entities that are not LivingEntity:
 //    @Override
 //    public Packet<?> getAddEntityPacket() {
 //        return NetworkHooks.getEntitySpawningPacket(this);
 //    }
-
-    public static AttributeSupplier.Builder prepareAttributes() {
-        return LivingEntity.createLivingAttributes()
-                .add(Attributes.ATTACK_DAMAGE, 3.0)
-                .add(Attributes.MAX_HEALTH, 20.0)
-                .add(Attributes.FOLLOW_RANGE, 40.0)
-                .add(Attributes.MOVEMENT_SPEED, 0.3);
-    }
-
-    public static boolean canSpawn(EntityType<HogEntity> he, LevelAccessor levelAccess,
-                                   MobSpawnType mobSpawnType, BlockPos pos, Random random) {
-        return Animal.checkAnimalSpawnRules(he, levelAccess,
-                mobSpawnType, pos, random);
-
-    }
 
     // sounds
 

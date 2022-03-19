@@ -125,9 +125,11 @@ public class <name> extends HogEntity {
 }
 ```
 
+You may also want to override the class `HogInitials` to provide initializations for the entity, and perhaps perform configuration by the `Configurator`.
+
 Inside the method `entities(RegistryMap<EntityType<?>> reg)` include the following code
 ```
-<name>SpawnEgg = reg.regEggItem(<name> = reg.regMob("<name>", <name>::new), tab);
+<name>SpawnEgg = reg.regEggItem(<name> = reg.regMob("<name>", <name>::new, <name-initials>::new), tab);
 ```
 and add a field to hold the name reference
 ```

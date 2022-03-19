@@ -25,7 +25,7 @@ public class EnergyContainer extends AbstractContainerMenu {
     private IItemHandler playerInventory;
 
     public EnergyContainer(int windowId, Inventory playerInventory, FriendlyByteBuf data) {
-        super(Registration.POWERGEN_CONTAINER.get(), windowId);
+        super(Registration.POWERGEN_CONTAINER.get(), windowId);//TODO used as key
         this.playerEntity = playerInventory.player;
         blockEntity = playerEntity.getCommandSenderWorld().getBlockEntity(data.readBlockPos());
         this.playerInventory = new InvWrapper(playerInventory);

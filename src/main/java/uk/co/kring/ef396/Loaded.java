@@ -7,6 +7,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.NotNull;
 import uk.co.kring.ef396.blocks.EnergyBlock;
@@ -16,6 +17,7 @@ import uk.co.kring.ef396.blocks.containers.EnergyContainer;
 import uk.co.kring.ef396.blocks.entities.EnergyEntity;
 import uk.co.kring.ef396.blocks.screens.EnergyScreen;
 import uk.co.kring.ef396.entities.HogEntity;
+import uk.co.kring.ef396.entities.initials.HogInitials;
 import uk.co.kring.ef396.items.PoisonAppleItem;
 import uk.co.kring.ef396.items.enums.ModArmorMaterial;
 import uk.co.kring.ef396.items.enums.ModItemTier;
@@ -129,13 +131,17 @@ public class Loaded {
         reg.regBlockItem(rubyBlock = reg.register("ruby_block", RubyBlock::new), tab);
         reg.regBlockItem(reg.register("ruby_ore", RubyOre::new), tab);
         //trying BlockEntity
-        reg.regBlockEnergy("energy", EnergyBlock::new,
-                EnergyEntity::new, EnergyContainer::new, EnergyScreen::new);
+        reg.regBlockEnergy("energy",
+                EnergyBlock::new,       // the block
+                EnergyEntity::new,      // the capability store
+                EnergyContainer::new,   // the network handler
+                EnergyScreen::new);     // the GUI on client
 
     }
 
     protected void entities(RegistryMap<EntityType<?>> reg) {
-        hogSpawnEgg = reg.regEggItem(hog = reg.regMob("hog", HogEntity::new), tab);
+        hogSpawnEgg = reg.regEggItem(hog = reg.regMob("hog", HogEntity::new,
+                HogInitials::new), tab);
                 // this also does all renderer and attribute registration indirectly
     }
 

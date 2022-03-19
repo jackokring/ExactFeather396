@@ -29,6 +29,8 @@ import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import uk.co.kring.ef396.blocks.containers.EnergyContainer;
+import uk.co.kring.ef396.blocks.entities.EnergyEntity;
 
 import java.util.List;
 
@@ -48,14 +50,14 @@ public class EnergyBlock extends Block implements EntityBlock {
 
     @Override
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter reader, List<Component> list, TooltipFlag flags) {
-        list.add(new TranslatableComponent(MESSAGE_POWERGEN, Integer.toString(PowergenBE.POWERGEN_GENERATE))
+        list.add(new TranslatableComponent(MESSAGE_POWERGEN, Integer.toString(EnergyEntity.POWERGEN_GENERATE))
                 .withStyle(ChatFormatting.BLUE));
     }
 
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
-        return new PowergenBE(blockPos, blockState);
+        return new EnergyEntity(blockPos, blockState);
     }
 
     @Nullable
@@ -65,7 +67,7 @@ public class EnergyBlock extends Block implements EntityBlock {
             return null;
         }
         return (lvl, pos, blockState, t) -> {
-            if (t instanceof PowergenBE tile) {
+            if (t instanceof EnergyEntity tile) {
                 tile.tickServer();
             }
         };
@@ -89,7 +91,7 @@ public class EnergyBlock extends Block implements EntityBlock {
                                  Player player, InteractionHand hand, BlockHitResult trace) {
         if (!level.isClientSide) {
             BlockEntity be = level.getBlockEntity(pos);
-            if (be instanceof PowergenBE) {
+            if (be instanceof EnergyEntity) {
                 MenuProvider containerProvider = new MenuProvider() {
                     @Override
                     public Component getDisplayName() {
@@ -98,7 +100,7 @@ public class EnergyBlock extends Block implements EntityBlock {
 
                     @Override
                     public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity) {
-                        return new PowergenContainer(windowId, pos, playerInventory, playerEntity);
+                        return new EnergyContainer(windowId, playerInventory, null);//pos TODO
                     }
                 };
                 NetworkHooks.openGui((ServerPlayer) player, containerProvider, be.getBlockPos());

@@ -14,6 +14,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 import uk.co.kring.ef396.blocks.ComplexBlock;
+import uk.co.kring.ef396.items.ComplexItem;
 import uk.co.kring.ef396.utilities.Registries;
 import java.util.function.Consumer;
 
@@ -94,6 +95,7 @@ public class DataGen {
                 protected void registerModels() {
                     Registries.items.getEntries().forEach((item) -> {
                         Item i = item.get();
+                        if(i instanceof ComplexItem) return;//needs own model ...
                         if(i instanceof ForgeSpawnEggItem) {
                             withExistingParent(i.getRegistryName().getPath(),
                                     mcLoc("item/template_spawn_egg"));

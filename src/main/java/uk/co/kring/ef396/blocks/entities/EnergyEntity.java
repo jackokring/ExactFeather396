@@ -7,6 +7,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.common.ForgeHooks;
@@ -19,6 +20,7 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import uk.co.kring.ef396.utilities.CustomEnergyStorage;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -38,7 +40,7 @@ public class EnergyEntity extends BlockEntity {
     private int counter;
 
     public EnergyEntity(BlockPos pos, BlockState state) {
-        super(Registration.POWERGEN_BE.get(), pos, state);
+        super(, pos, state);//TODO another used as key on type
     }
 
 
