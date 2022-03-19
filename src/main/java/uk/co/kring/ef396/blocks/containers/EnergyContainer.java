@@ -1,6 +1,6 @@
 package uk.co.kring.ef396.blocks.containers;
 
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -35,11 +35,11 @@ public class EnergyContainer extends AbstractContainerMenu {
         return Registries.blocks.get(named.toString()).get();
     }
 
-    public EnergyContainer(int windowId, Inventory playerInventory, FriendlyByteBuf data) {
+    public EnergyContainer(int windowId, Inventory playerInventory, BlockPos pos) {
         super(getContainerFromName(new ResourceLocation(ExactFeather.MOD_ID, "energy")),
                 windowId);
         this.playerEntity = playerInventory.player;
-        blockEntity = playerEntity.getCommandSenderWorld().getBlockEntity(data.readBlockPos());
+        blockEntity = playerEntity.getCommandSenderWorld().getBlockEntity(pos);
         this.playerInventory = new InvWrapper(playerInventory);
 
         if (blockEntity != null) {

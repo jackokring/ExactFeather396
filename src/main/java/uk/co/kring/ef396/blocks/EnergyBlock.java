@@ -2,7 +2,6 @@ package uk.co.kring.ef396.blocks;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
@@ -101,9 +100,7 @@ public class EnergyBlock extends Block implements EntityBlock {
 
                     @Override
                     public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity) {
-                        FriendlyByteBuf data = new FriendlyByteBuf();//<<= where from?
-                        //data. somehow the position was supposed to come from here!! TODO
-                        return new EnergyContainer(windowId, playerInventory, data);//pos TODO
+                        return new EnergyContainer(windowId, playerInventory, pos);
                     }
                 };
                 NetworkHooks.openGui((ServerPlayer) player, containerProvider, be.getBlockPos());

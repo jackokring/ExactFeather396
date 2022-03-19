@@ -73,7 +73,7 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
     public RegistryObject<Block> regBlockEnergy(String name, Supplier<Block> blockSupplier,
                                                 BlockEntityType.BlockEntitySupplier<EnergyEntity>
                                                         blockEntitySupplier,
-                                                IContainerFactory<EnergyContainer> menu,
+                                                FunctionalMenu menu,
                                                 MenuScreens.ScreenConstructor<EnergyContainer,
                                                         EnergyScreen> screen) {
         printClassWrong(Registries.blocks, name);
@@ -81,7 +81,7 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
                 () -> BlockEntityType.Builder.of(blockEntitySupplier,
                         blockSupplier.get()).build(null));
         var menuEasy = Registries.containers.register(name,
-                () -> IForgeMenuType.create(menu));
+                () -> MenuHelper.create(menu));
         // on client setup so renderer
         ExactFeather.registerRender((event) -> {
             MenuScreens.register(menuEasy.get(), screen);           // Attach our container to the screen
