@@ -3,6 +3,7 @@ package uk.co.kring.ef396.blocks.entities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Block;
@@ -20,7 +21,9 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import uk.co.kring.ef396.ExactFeather;
 import uk.co.kring.ef396.utilities.CustomEnergyStorage;
+import uk.co.kring.ef396.utilities.Registries;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -39,10 +42,14 @@ public class EnergyEntity extends BlockEntity {
 
     private int counter;
 
-    public EnergyEntity(BlockPos pos, BlockState state) {
-        super(, pos, state);//TODO another used as key on type
+    public static final BlockEntityType<?> getEntityFromName(ResourceLocation named) {
+        return Registries.blockEntities.get(named.toString()).get();
     }
 
+    public EnergyEntity(BlockPos pos, BlockState state) {
+        super(getEntityFromName(new ResourceLocation(ExactFeather.MOD_ID, "energy")),
+                pos, state);//TODO another used as key on type
+    }
 
     @Override
     public void setRemoved() {

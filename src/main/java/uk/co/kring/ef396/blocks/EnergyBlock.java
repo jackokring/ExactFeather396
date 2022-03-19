@@ -2,6 +2,7 @@ package uk.co.kring.ef396.blocks;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
@@ -29,6 +30,7 @@ import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
 import uk.co.kring.ef396.blocks.containers.EnergyContainer;
 import uk.co.kring.ef396.blocks.entities.EnergyEntity;
 
@@ -85,10 +87,9 @@ public class EnergyBlock extends Block implements EntityBlock {
         return super.getStateForPlacement(context).setValue(BlockStateProperties.POWERED, false);
     }
 
-    @SuppressWarnings("deprecation")
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos,
-                                 Player player, InteractionHand hand, BlockHitResult trace) {
+    public @NotNull InteractionResult use(BlockState state, Level level, BlockPos pos,
+                                          Player player, InteractionHand hand, BlockHitResult trace) {
         if (!level.isClientSide) {
             BlockEntity be = level.getBlockEntity(pos);
             if (be instanceof EnergyEntity) {
@@ -100,7 +101,9 @@ public class EnergyBlock extends Block implements EntityBlock {
 
                     @Override
                     public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity) {
-                        return new EnergyContainer(windowId, playerInventory, null);//pos TODO
+                        FriendlyByteBuf data = new FriendlyByteBuf();//<<= where from?
+                        //data. somehow the position was supposed to come from here!! TODO
+                        return new EnergyContainer(windowId, playerInventory, data);//pos TODO
                     }
                 };
                 NetworkHooks.openGui((ServerPlayer) player, containerProvider, be.getBlockPos());

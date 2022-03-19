@@ -1,14 +1,13 @@
 package uk.co.kring.ef396.blocks.containers;
 
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.minecraft.world.inventory.DataSlot;
-import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.energy.CapabilityEnergy;
@@ -17,15 +16,28 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
+import uk.co.kring.ef396.ExactFeather;
+import uk.co.kring.ef396.utilities.CustomEnergyStorage;
+import uk.co.kring.ef396.utilities.Registries;
 
 public class EnergyContainer extends AbstractContainerMenu {
 
     private BlockEntity blockEntity;
     private Player playerEntity;
     private IItemHandler playerInventory;
+    private Block block;
+
+    public static final MenuType<?> getContainerFromName(ResourceLocation named) {
+        return Registries.containers.get(named.toString()).get();
+    }
+
+    public static final Block getBlockFromName(ResourceLocation named) {
+        return Registries.blocks.get(named.toString()).get();
+    }
 
     public EnergyContainer(int windowId, Inventory playerInventory, FriendlyByteBuf data) {
-        super(Registration.POWERGEN_CONTAINER.get(), windowId);//TODO used as key
+        super(getContainerFromName(new ResourceLocation(ExactFeather.MOD_ID, "energy")),
+                windowId);
         this.playerEntity = playerInventory.player;
         blockEntity = playerEntity.getCommandSenderWorld().getBlockEntity(data.readBlockPos());
         this.playerInventory = new InvWrapper(playerInventory);
@@ -37,6 +49,7 @@ public class EnergyContainer extends AbstractContainerMenu {
         }
         layoutPlayerInventorySlots(10, 70);
         trackPower();
+        block = getBlockFromName(new ResourceLocation(ExactFeather.MOD_ID, "energy"));
     }
 
     // Setup syncing of power from server to client so that the GUI can show the amount of power in the block
@@ -74,12 +87,15 @@ public class EnergyContainer extends AbstractContainerMenu {
     }
 
     public int getEnergy() {
-        return blockEntity.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0);
+        return blockEntity.getCapability(CapabilityEnergy.ENERGY)
+                .map(IEnergyStorage::getEnergyStored).orElse(0);
     }
 
     @Override
     public boolean stillValid(Player playerIn) {
-        return stillValid(ContainerLevelAccess.create(blockEntity.getLevel(), blockEntity.getBlockPos()), playerEntity, Registration.POWERGEN.get());
+        return stillValid(ContainerLevelAccess.create(blockEntity.getLevel(),
+                blockEntity.getBlockPos()), playerEntity,
+                block);
     }
 
     @Override

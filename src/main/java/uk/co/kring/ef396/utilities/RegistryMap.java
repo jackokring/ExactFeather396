@@ -77,7 +77,7 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
                                                 MenuScreens.ScreenConstructor<EnergyContainer,
                                                         EnergyScreen> screen) {
         printClassWrong(Registries.blocks, name);
-        var beEasy = Registries.blockEntities.register(name,
+        Registries.blockEntities.register(name,
                 () -> BlockEntityType.Builder.of(blockEntitySupplier,
                         blockSupplier.get()).build(null));
         var menuEasy = Registries.containers.register(name,
