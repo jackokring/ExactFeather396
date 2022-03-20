@@ -3,18 +3,14 @@
   "pattern":
   [
     "xxx",
-    "xdx",
+    "xxx",
     "xxx"
   ],
   "key":
   {
     "x":
     {
-      "tag": "ef396:gems"
-    },
-    "d":
-    {
-      "tag": "forge:gems/diamond"
+      "tag": "ef396:gems/ruby"
     }
   },
   "result":

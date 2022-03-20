@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern":
+  [
+    "xxx",
+    "rir",
+    "iri"
+  ],
+  "key":
+  {
+    "x":
+    {
+      "item": "ef396:ruby"
+    },
+    "r":
+    {
+      "item": "minecraft:redstone"
+    },
+    "i":
+    {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "result":
+  {
+    "item": "ef396:energy",
+    "count": 1
+  }
+}

@@ -141,6 +141,7 @@ public class Loaded {
                 EnergyContainer::new,   // the network handler
                 EnergyScreen::new);     // the GUI on client
         // postfix pick up from registry
+        // you will need these to reference them in class overrides
         energyEntity = reg.getLastEntity();
         energyContainer = reg.getLastContainer();
 
