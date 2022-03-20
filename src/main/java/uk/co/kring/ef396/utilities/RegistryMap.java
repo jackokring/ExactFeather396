@@ -1,17 +1,12 @@
 package uk.co.kring.ef396.utilities;
 
 import net.minecraft.client.gui.screens.MenuScreens;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
 import net.minecraft.resources.ResourceLocation;
@@ -19,7 +14,6 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.SpawnPlacements;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -32,9 +26,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
-import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.network.IContainerFactory;
 import net.minecraftforge.registries.*;
 import org.jetbrains.annotations.NotNull;
 import uk.co.kring.ef396.ExactFeather;
@@ -73,7 +65,7 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
     public RegistryObject<Block> regBlockEnergy(String name, Supplier<Block> blockSupplier,
                                                 BlockEntityType.BlockEntitySupplier<EnergyEntity>
                                                         blockEntitySupplier,
-                                                FunctionalMenu menu,
+                                                Funky menu,
                                                 MenuScreens.ScreenConstructor<EnergyContainer,
                                                         EnergyScreen> screen) {
         printClassWrong(Registries.blocks, name);
@@ -81,7 +73,7 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
                 () -> BlockEntityType.Builder.of(blockEntitySupplier,
                         blockSupplier.get()).build(null));
         var menuEasy = Registries.containers.register(name,
-                () -> MenuHelper.create(menu));
+                () -> Obtain.menuTypeFrom(menu));
         // on client setup so renderer
         ExactFeather.registerRender((event) -> {
             MenuScreens.register(menuEasy.get(), screen);           // Attach our container to the screen

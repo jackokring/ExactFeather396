@@ -22,16 +22,15 @@ import net.minecraftforge.items.ItemStackHandler;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import uk.co.kring.ef396.ExactFeather;
-import uk.co.kring.ef396.utilities.CustomEnergyStorage;
 import uk.co.kring.ef396.utilities.Registries;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class EnergyEntity extends BlockEntity {
 
-    public static final int POWERGEN_CAPACITY = 50000; // Max capacity
-    public static final int POWERGEN_GENERATE = 60;    // Generation per tick
-    public static final int POWERGEN_SEND = 200;       // Power to send out per tick
+    public static final int CAPACITY = 50000; // Max capacity
+    public static final int GENERATE = 60;    // Generation per tick
+    public static final int SEND = 200;       // Power to send out per tick
 
     // Never create lazy optionals in getCapability. Always place them as fields in the tile entity:
     private final ItemStackHandler itemHandler = createHandler();
@@ -92,7 +91,7 @@ public class EnergyEntity extends BlockEntity {
                 if (be != null) {
                     boolean doContinue = be.getCapability(CapabilityEnergy.ENERGY, direction.getOpposite()).map(handler -> {
                                 if (handler.canReceive()) {
-                                    int received = handler.receiveEnergy(Math.min(capacity.get(), POWERGEN_SEND), false);
+                                    int received = handler.receiveEnergy(Math.min(capacity.get(), SEND), false);
                                     capacity.addAndGet(-received);
                                     energyStorage.consumeEnergy(received);
                                     setChanged();

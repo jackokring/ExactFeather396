@@ -1,4 +1,4 @@
-package uk.co.kring.ef396.utilities;
+package uk.co.kring.ef396.blocks.entities;
 
 import net.minecraftforge.energy.EnergyStorage;
 

@@ -5,6 +5,7 @@ import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.registration.*;
 import mezz.jei.api.runtime.IJeiRuntime;
 import net.minecraft.resources.ResourceLocation;
+import uk.co.kring.ef396.items.BedtimeBook;
 
 @JeiPlugin
 public class JEIManager implements IModPlugin {
@@ -16,6 +17,10 @@ public class JEIManager implements IModPlugin {
 
     @Override
     public void registerItemSubtypes(ISubtypeRegistration registration) {
+        BedtimeBook.getCache().stream().forEach((sup) ->
+                registration.useNbtForSubtypes(sup.get().getItem()) //applies items in books
+                // just in case old load has different NBT
+        );
         IModPlugin.super.registerItemSubtypes(registration);
     }
 

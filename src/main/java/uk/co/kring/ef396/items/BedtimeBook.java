@@ -17,10 +17,7 @@ import uk.co.kring.ef396.ExactFeather;
 import uk.co.kring.ef396.utilities.Registries;
 
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -76,6 +73,7 @@ public class BedtimeBook extends WrittenBookItem implements IForgeRegistryEntry<
 
         void addSupplier(Supplier<ItemStack> sup) {
             this.sup = sup;
+            cache.add(sup);
         }
     }
 
@@ -213,6 +211,11 @@ public class BedtimeBook extends WrittenBookItem implements IForgeRegistryEntry<
     }
 
     private static final HashMap<String, Entry> chapters = new HashMap<>();
+    private static ArrayList<Supplier<ItemStack>> cache = new ArrayList<>();
+
+    public static ArrayList<Supplier<ItemStack>> getCache() {
+        return cache;
+    }
 
     public static RegistryObject<Item> register(String name, CreativeModeTab tab) {
         // delayed register with config settings
@@ -240,17 +243,14 @@ public class BedtimeBook extends WrittenBookItem implements IForgeRegistryEntry<
     public void fillItemCategory(CreativeModeTab tab, @NotNull NonNullList<ItemStack> stacks) {
         if(!tab.equals(chapters.get(name).tab)) return;
         stacks.add(chapters.get(name).sup.get());
-        //super.fillItemCategory(tab, stacks);
+        // the tag is important
     }
 
     public static Optional<ItemStack> random(Player player) {
         int size = chapters.size();
         int rnd = player.getRandom().nextInt(size);
-        Supplier<ItemStack>[] is
-                = (Supplier<ItemStack>[]) chapters.values().stream()
-                .map((entry) -> entry.sup).toArray();
-        if(is.length == 0) return Optional.empty();
-        ItemStack i = is[rnd].get();
+        if(cache.size() == 0) return Optional.empty();
+        ItemStack i = cache.get(rnd).get();//operate a supply NOT a Lazy
         return Optional.of(i);//allows for no values and sleep event no fail
     }
 }

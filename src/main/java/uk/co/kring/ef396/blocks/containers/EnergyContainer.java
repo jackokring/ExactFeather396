@@ -17,7 +17,7 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 import uk.co.kring.ef396.ExactFeather;
-import uk.co.kring.ef396.utilities.CustomEnergyStorage;
+import uk.co.kring.ef396.blocks.entities.CustomEnergyStorage;
 import uk.co.kring.ef396.utilities.Registries;
 
 public class EnergyContainer extends AbstractContainerMenu {
