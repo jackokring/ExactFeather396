@@ -1,4 +1,4 @@
-package uk.co.kring.ef396.blocks.containers;
+package uk.co.kring.ef396.blocks.entities;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
@@ -16,7 +16,6 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 import uk.co.kring.ef396.Loaded;
-import uk.co.kring.ef396.blocks.entities.CustomEnergyStorage;
 
 public class EnergyContainer extends AbstractContainerMenu {
 
@@ -31,7 +30,7 @@ public class EnergyContainer extends AbstractContainerMenu {
 
     // ==================== INITIALIZATION INTERFACE ============================
 
-    public static Block getBlockSingleton() {
+    public Block getBlockSingleton() {
         return Loaded.energy.get();
     }
 

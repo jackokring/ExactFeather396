@@ -30,7 +30,7 @@ import net.minecraftforge.network.NetworkHooks;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.NotNull;
 import uk.co.kring.ef396.ExactFeather;
-import uk.co.kring.ef396.blocks.containers.EnergyContainer;
+import uk.co.kring.ef396.blocks.entities.EnergyContainer;
 import uk.co.kring.ef396.blocks.entities.EnergyEntity;
 
 import java.util.List;

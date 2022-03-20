@@ -2,7 +2,7 @@ package uk.co.kring.ef396.utilities;
 
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.common.extensions.IForgeMenuType;
-import uk.co.kring.ef396.blocks.containers.EnergyContainer;
+import uk.co.kring.ef396.blocks.entities.EnergyContainer;
 
 public class Obtain {
 

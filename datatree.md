@@ -3,6 +3,7 @@ src/main/resources/data
 ├── ef396
 │   ├── loot_tables
 │   │   ├── blocks
+│   │   │   ├── energy.json
 │   │   │   ├── ruby_block.json
 │   │   │   └── ruby_ore.json
 │   │   ├── chests
@@ -53,5 +54,5 @@ src/main/resources/data
         ├── processor_list
         └── template_pool
 
-30 directories, 22 files
+30 directories, 23 files
 ```

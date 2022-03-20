@@ -2,6 +2,7 @@
 src/main/resources/assets
 └── ef396
     ├── blockstates
+    │   ├── energy.json
     │   ├── ruby_block.json
     │   └── ruby_ore.json
     ├── books
@@ -44,7 +45,7 @@ src/main/resources/assets
         │   ├── hog
         │   └── hog.png
         ├── gui
-        │   └── energy_gui.png
+        │   └── energy.png
         ├── items
         │   ├── book.png
         │   ├── poison_apple.png
@@ -63,5 +64,5 @@ src/main/resources/assets
                 ├── ruby_layer_1.png
                 └── ruby_layer_2.png
 
-16 directories, 46 files
+16 directories, 47 files
 ```

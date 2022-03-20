@@ -1,4 +1,4 @@
-package uk.co.kring.ef396.blocks.screens;
+package uk.co.kring.ef396.blocks.entities;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -7,20 +7,20 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import uk.co.kring.ef396.ExactFeather;
-import uk.co.kring.ef396.blocks.containers.EnergyContainer;
 
 public class EnergyScreen extends AbstractContainerScreen<EnergyContainer> {
 
-    protected ResourceLocation GUI;
+    protected static ResourceLocation GUI;
 
-    protected void setGUI(String name) {
+    private void setGUI(String name) {
         GUI = new ResourceLocation(ExactFeather.MOD_ID,
-                "textures/gui/" + name + "_gui.png");
+                "textures/gui/" + name + ".png");//set via path
     }
 
     public EnergyScreen(EnergyContainer container, Inventory inv, Component name) {
+        // name is translated already as is a component
         super(container, inv, name);
-        setGUI(name.getContents());//to string best
+        setGUI(container.getBlockSingleton().getRegistryName().getPath());//via instance
     }
 
     @Override
