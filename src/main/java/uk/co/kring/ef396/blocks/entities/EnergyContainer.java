@@ -44,7 +44,7 @@ public class EnergyContainer extends AbstractContainerMenu {
         this.playerInventory = new InvWrapper(playerInventory);
         if (blockEntity != null) {
             blockEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
-                addSlot(new SlotItemHandler(h, 0, 64, 24));
+                addSlot(new SlotItemHandler(h, 0, 64, 24));// idx 0
             });
         }
         layoutPlayerInventorySlots(10, 70);
@@ -100,19 +100,26 @@ public class EnergyContainer extends AbstractContainerMenu {
             ItemStack stack = slot.getItem();
             itemstack = stack.copy();
             if (index == 0) {
+                // looks like start/end+1 notation with simulate?
+                // player inventory from power slot
                 if (!this.moveItemStackTo(stack, 1, 37, true)) {
                     return ItemStack.EMPTY;
                 }
                 slot.onQuickCraft(stack, itemstack);
             } else {
                 if (ForgeHooks.getBurnTime(stack, RecipeType.SMELTING) > 0) {
+                    // into the power slot from any other
                     if (!this.moveItemStackTo(stack, 0, 1, false)) {
                         return ItemStack.EMPTY;
                     }
                 } else if (index < 28) {
+                    // 28 to 36 seems to be 9 slots hot-bar?
+                    // move to hot bar from inventory main
                     if (!this.moveItemStackTo(stack, 28, 37, false)) {
                         return ItemStack.EMPTY;
                     }
+                    // the 27 inventory squares
+                    // move from hot bar to inventory main
                 } else if (index < 37 && !this.moveItemStackTo(stack, 1, 28, false)) {
                     return ItemStack.EMPTY;
                 }
@@ -153,9 +160,11 @@ public class EnergyContainer extends AbstractContainerMenu {
 
     public void layoutPlayerInventorySlots(int leftCol, int topRow) {
         // Player inventory
+        // so places from player inventory indexed into slots
         addSlotBox(playerInventory, 9, leftCol, topRow, 9, 18, 3, 18);
 
         // Hot-bar
+        // so hot bar happens last inside container
         topRow += 58;
         addSlotRange(playerInventory, 0, leftCol, topRow, 9, 18);
     }
