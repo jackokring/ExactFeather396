@@ -4,10 +4,11 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.NotNull;
 import uk.co.kring.ef396.blocks.EnergyBlock;
@@ -66,11 +67,14 @@ public class Loaded {
 
     public static RegistryObject<Item> ruby, poison_apple, hogSpawnEgg;
     public static RegistryObject<Potion> psydare, psydareCorrupt;
-    public static RegistryObject<Block> rubyBlock;
+    public static RegistryObject<Block> rubyBlock, energy;
     public static Map<Item, RegistryObject<Potion>> mundane711 = BrewingCommon.mundaneFix();//a choice
     public static RegistryObject<EntityType<HogEntity>> hog;
     public static RegistryObject<SoundEvent> error, boom, wipple;
     public static CreativeModeTab tab;
+
+    public static RegistryObject<BlockEntityType<EnergyEntity>> energyEntity;
+    public static RegistryObject<MenuType<EnergyContainer>> energyContainer;
 
     protected void items(RegistryMap<Item> reg) {
         tab = tab(() -> ruby);
@@ -131,11 +135,14 @@ public class Loaded {
         reg.regBlockItem(rubyBlock = reg.register("ruby_block", RubyBlock::new), tab);
         reg.regBlockItem(reg.register("ruby_ore", RubyOre::new), tab);
         //trying BlockEntity
-        reg.regBlockEnergy("energy",
+        energy = reg.regEnergyBlock("energy",
                 EnergyBlock::new,       // the block
                 EnergyEntity::new,      // the capability store
                 EnergyContainer::new,   // the network handler
                 EnergyScreen::new);     // the GUI on client
+        // postfix pick up from registry
+        energyEntity = reg.getLastEntity();
+        energyContainer = reg.getLastContainer();
 
     }
 

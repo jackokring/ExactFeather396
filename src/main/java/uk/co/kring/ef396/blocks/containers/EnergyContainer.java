@@ -1,7 +1,6 @@
 package uk.co.kring.ef396.blocks.containers;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
@@ -16,32 +15,34 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
-import uk.co.kring.ef396.ExactFeather;
+import uk.co.kring.ef396.Loaded;
 import uk.co.kring.ef396.blocks.entities.CustomEnergyStorage;
-import uk.co.kring.ef396.utilities.Registries;
 
 public class EnergyContainer extends AbstractContainerMenu {
 
     private BlockEntity blockEntity;
     private Player playerEntity;
     private IItemHandler playerInventory;
-    private Block block;
-
-    public static final MenuType<?> getContainerFromName(ResourceLocation named) {
-        return Registries.containers.get(named.toString()).get();
-    }
-
-    public static final Block getBlockFromName(ResourceLocation named) {
-        return Registries.blocks.get(named.toString()).get();
-    }
 
     public EnergyContainer(int windowId, Inventory playerInventory, BlockPos pos) {
-        super(getContainerFromName(new ResourceLocation(ExactFeather.MOD_ID, "energy")),
-                windowId);
+        super(getMenuType(), windowId);
+        init(playerInventory, pos);// behavioural overriding
+    }
+
+    // ==================== INITIALIZATION INTERFACE ============================
+
+    public static Block getBlockSingleton() {
+        return Loaded.energy.get();
+    }
+
+    public static MenuType<EnergyContainer> getMenuType() {
+        return Loaded.energyContainer.get();
+    }
+
+    public void init(Inventory playerInventory, BlockPos pos) {
         this.playerEntity = playerInventory.player;
         blockEntity = playerEntity.getCommandSenderWorld().getBlockEntity(pos);
         this.playerInventory = new InvWrapper(playerInventory);
-
         if (blockEntity != null) {
             blockEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
                 addSlot(new SlotItemHandler(h, 0, 64, 24));
@@ -49,13 +50,12 @@ public class EnergyContainer extends AbstractContainerMenu {
         }
         layoutPlayerInventorySlots(10, 70);
         trackPower();
-        block = getBlockFromName(new ResourceLocation(ExactFeather.MOD_ID, "energy"));
     }
 
     // Setup syncing of power from server to client so that the GUI can show the amount of power in the block
     private void trackPower() {
-        // Unfortunatelly on a dedicated server ints are actually truncated to short so we need
-        // to split our integer here (split our 32 bit integer into two 16 bit integers)
+        // Unfortunately on a dedicated server ints are actually truncated to short so we need
+        // to split our integer here (split our 32-bit integer into two 16-bit integers)
         addDataSlot(new DataSlot() {
             @Override
             public int get() {
@@ -91,12 +91,7 @@ public class EnergyContainer extends AbstractContainerMenu {
                 .map(IEnergyStorage::getEnergyStored).orElse(0);
     }
 
-    @Override
-    public boolean stillValid(Player playerIn) {
-        return stillValid(ContainerLevelAccess.create(blockEntity.getLevel(),
-                blockEntity.getBlockPos()), playerEntity,
-                block);
-    }
+    // ============================ INVENTORY INTERFACE =====================
 
     @Override
     public ItemStack quickMoveStack(Player playerIn, int index) {
@@ -140,8 +135,6 @@ public class EnergyContainer extends AbstractContainerMenu {
         return itemstack;
     }
 
-
-
     public int addSlotRange(IItemHandler handler, int index, int x, int y, int amount, int dx) {
         for (int i = 0 ; i < amount ; i++) {
             addSlot(new SlotItemHandler(handler, index, x, y));
@@ -163,8 +156,17 @@ public class EnergyContainer extends AbstractContainerMenu {
         // Player inventory
         addSlotBox(playerInventory, 9, leftCol, topRow, 9, 18, 3, 18);
 
-        // Hotbar
+        // Hot-bar
         topRow += 58;
         addSlotRange(playerInventory, 0, leftCol, topRow, 9, 18);
+    }
+
+    // ================ DATA VALID CHECK =======================
+
+    @Override
+    public final boolean stillValid(Player playerIn) {
+        return stillValid(ContainerLevelAccess.create(blockEntity.getLevel(),
+                        blockEntity.getBlockPos()), playerEntity,
+                getBlockSingleton());
     }
 }

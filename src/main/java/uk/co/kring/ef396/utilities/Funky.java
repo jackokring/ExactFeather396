@@ -8,5 +8,6 @@ import uk.co.kring.ef396.blocks.containers.EnergyContainer;
 public interface Funky {
     EnergyContainer // funky constructor for EnergyContainer
         energyContainer(int windowId, Inventory inventory, BlockPos position);
+
 }
 

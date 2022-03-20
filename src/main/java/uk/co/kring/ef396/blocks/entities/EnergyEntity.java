@@ -3,7 +3,6 @@ package uk.co.kring.ef396.blocks.entities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Block;
@@ -21,8 +20,7 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import uk.co.kring.ef396.ExactFeather;
-import uk.co.kring.ef396.utilities.Registries;
+import uk.co.kring.ef396.Loaded;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -41,29 +39,22 @@ public class EnergyEntity extends BlockEntity {
 
     private int counter;
 
-    public static final BlockEntityType<?> getEntityFromName(ResourceLocation named) {
-        return Registries.blockEntities.get(named.toString()).get();
-    }
-
     public EnergyEntity(BlockPos pos, BlockState state) {
-        super(getEntityFromName(new ResourceLocation(ExactFeather.MOD_ID, "energy")),
-                pos, state);//TODO another used as key on type
+        super(getEntityType(), pos, state);
     }
 
-    @Override
-    public void setRemoved() {
-        super.setRemoved();
-        handler.invalidate();
-        energy.invalidate();
+    public static BlockEntityType<EnergyEntity> getEntityType() {
+        return Loaded.energyEntity.get();
     }
+
+    // ===================== TICK SERVICE =======================
 
     public void tickServer() {
         if (counter > 0) {
-            energyStorage.addEnergy(POWERGEN_GENERATE);
+            energyStorage.addEnergy(GENERATE);
             counter--;
             setChanged();
         }
-
         if (counter <= 0) {
             ItemStack stack = itemHandler.getStackInSlot(0);
             int burnTime = ForgeHooks.getBurnTime(stack, RecipeType.SMELTING);
@@ -73,13 +64,12 @@ public class EnergyEntity extends BlockEntity {
                 setChanged();
             }
         }
-
         BlockState blockState = level.getBlockState(worldPosition);
         if (blockState.getValue(BlockStateProperties.POWERED) != counter > 0) {
-            level.setBlock(worldPosition, blockState.setValue(BlockStateProperties.POWERED, counter > 0),
+            level.setBlock(worldPosition,
+                    blockState.setValue(BlockStateProperties.POWERED, counter > 0),
                     Block.UPDATE_ALL);
         }
-
         sendOutPower();
     }
 
@@ -109,6 +99,8 @@ public class EnergyEntity extends BlockEntity {
         }
     }
 
+    // ==================== TAGS ====================
+
     @Override
     public void load(CompoundTag tag) {
         if (tag.contains("Inventory")) {
@@ -132,6 +124,8 @@ public class EnergyEntity extends BlockEntity {
         infoTag.putInt("Counter", counter);
         tag.put("Info", infoTag);
     }
+
+    // ================ CAPS HANDLERS ===================
 
     private ItemStackHandler createHandler() {
         return new ItemStackHandler(1) {
@@ -160,13 +154,15 @@ public class EnergyEntity extends BlockEntity {
     }
 
     private CustomEnergyStorage createEnergy() {
-        return new CustomEnergyStorage(POWERGEN_CAPACITY, 0) {
+        return new CustomEnergyStorage(CAPACITY, 0) {
             @Override
             protected void onEnergyChanged() {
                 setChanged();
             }
         };
     }
+
+    // ================ CAPS MAKE DESTROY ===============
 
     @NonNull
     @Override
@@ -178,5 +174,12 @@ public class EnergyEntity extends BlockEntity {
             return energy.cast();
         }
         return super.getCapability(cap, side);
+    }
+
+    @Override
+    public void setRemoved() {
+        super.setRemoved();
+        handler.invalidate();
+        energy.invalidate();
     }
 }

@@ -11,4 +11,5 @@ public class Obtain {
                 -> x.energyContainer(windowId, inv, data.readBlockPos()));
         // for creating something to register from a funky constructor
     }
+
 }
