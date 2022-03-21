@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import uk.co.kring.ef396.ExactFeather;
@@ -11,6 +12,7 @@ import uk.co.kring.ef396.ExactFeather;
 public class EnergyScreen extends AbstractContainerScreen<EnergyContainer> {
 
     protected static ResourceLocation GUI;
+    public final Component name;
 
     private void setGUI(String name) {
         GUI = new ResourceLocation(ExactFeather.MOD_ID,
@@ -20,6 +22,7 @@ public class EnergyScreen extends AbstractContainerScreen<EnergyContainer> {
     public EnergyScreen(EnergyContainer container, Inventory inv, Component name) {
         // name is translated already as is a component
         super(container, inv, name);
+        this.name = name;
         setGUI(container.getBlockSingleton().getId().getPath());//via instance
     }
 
@@ -32,8 +35,10 @@ public class EnergyScreen extends AbstractContainerScreen<EnergyContainer> {
 
     @Override
     protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
+        Component label = new TextComponent(name +
+                ": " + String.valueOf(menu.getEnergy()));
         drawString(matrixStack, font,
-                "Energy: " + menu.getEnergy(), 10, 10, 0xffffff);
+                label, 10, 10, 0xffffff);
     }
 
     @Override

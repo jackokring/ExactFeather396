@@ -11,6 +11,7 @@ src/main/resources/data
 │   │   │   └── hog.json
 │   │   └── gameplay
 │   ├── recipes
+│   │   ├── energy.json
 │   │   ├── ruby_axe.json
 │   │   ├── ruby_block.json
 │   │   ├── ruby_boots.json
@@ -54,5 +55,5 @@ src/main/resources/data
         ├── processor_list
         └── template_pool
 
-30 directories, 23 files
+30 directories, 24 files
 ```

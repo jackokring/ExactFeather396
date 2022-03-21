@@ -1,5 +1,6 @@
 package uk.co.kring.ef396.blocks;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -75,8 +76,7 @@ public class EnergyBlock extends Block implements EntityBlock /* , ModelledBlock
     @Override
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter reader,
                                 List<Component> list, TooltipFlag flags) {
-        /* list.add(new TranslatableComponent(key, Integer.toString(format$))
-                .withStyle(ChatFormatting.BLUE)); */
+        list.add(new TranslatableComponent(nameScreen()).withStyle(ChatFormatting.BLUE));
     }
 
     // =================== FIXED FINALS ======================
@@ -133,7 +133,9 @@ public class EnergyBlock extends Block implements EntityBlock /* , ModelledBlock
                 };
                 NetworkHooks.openGui((ServerPlayer) player, containerProvider, be.getBlockPos());
             } else if(rbg.getContainer() != null) {
-                throw new IllegalStateException("Chosen entity container provider is missing.");
+                throw new IllegalStateException(be.getClass().getCanonicalName()
+                        + " entity container provider is missing in "
+                + this.getClass().getCanonicalName());
             }
         }
         return InteractionResult.SUCCESS;

@@ -51,12 +51,13 @@ public class EnergyContainer extends AbstractContainerMenu {
         this.playerEntity = playerInventory.player;
         blockEntity = playerEntity.getCommandSenderWorld().getBlockEntity(pos);
         this.playerInventory = new InvWrapper(playerInventory);
+        layoutPlayerInventorySlots(10, 70);// 0-8, 9-36
+        // funny initialization order bug on multiplayer object destroy before GUI construction?
         if (blockEntity != null) {
             blockEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
-                addSlot(new SlotItemHandler(h, 0, 64, 24));// idx 0
+                addSlot(new SlotItemHandler(h, 0, 64, 24));// idx 37
             });
         }
-        layoutPlayerInventorySlots(10, 70);
         trackPower();
     }
 
@@ -94,88 +95,95 @@ public class EnergyContainer extends AbstractContainerMenu {
         });
     }
 
-    public int getEnergy() {
+    public final int getEnergy() {
         return blockEntity.getCapability(CapabilityEnergy.ENERGY)
                 .map(IEnergyStorage::getEnergyStored).orElse(0);
     }
 
     // ============================ INVENTORY INTERFACE =====================
 
+    public boolean itemStackExtra(ItemStack stack, int index) {
+        // return this.moveItemStackTo(stack, 0, nrg, true);// etc
+        return true;// true to not return ItemStack.EMPTY
+        // slot.onQuickCraft(stack, stack.copy());// if not return EMPTY?? for removal from active slot??
+    }
+
     @Override
-    public ItemStack quickMoveStack(Player playerIn, int index) {
+    public final ItemStack quickMoveStack(Player playerIn, int index) {
+        final int inv = 0;
+        final int big = 9;
+        final int nrg = big + 3 * 9;
         ItemStack itemstack = ItemStack.EMPTY;
         Slot slot = this.slots.get(index);
-        if (slot != null && slot.hasItem()) {
+        if (slot.hasItem()) {
             ItemStack stack = slot.getItem();
             itemstack = stack.copy();
-            if (index == 0) {
-                // looks like start/end+1 notation with simulate?
-                // player inventory from power slot
-                if (!this.moveItemStackTo(stack, 1, 37, true)) {
+            // not power slot
+            if(index > nrg) {
+                // extras
+                if(!itemStackExtra(stack, index)) return ItemStack.EMPTY;
+            } else if (index == nrg) {
+                // player inventory from power slot n+1 end notation
+                if (!this.moveItemStackTo(stack, 0, nrg, true)) {
                     return ItemStack.EMPTY;
                 }
                 slot.onQuickCraft(stack, itemstack);
             } else {
                 if (ForgeHooks.getBurnTime(stack, RecipeType.SMELTING) > 0) {
                     // into the power slot from any other
-                    if (!this.moveItemStackTo(stack, 0, 1, false)) {
+                    if (!this.moveItemStackTo(stack, nrg, nrg + 1, false)) {
                         return ItemStack.EMPTY;
                     }
-                } else if (index < 28) {
-                    // 28 to 36 seems to be 9 slots hot-bar?
-                    // move to hot bar from inventory main
-                    if (!this.moveItemStackTo(stack, 28, 37, false)) {
+                } else if (index >= big) {
+                    // move from inventory main to hot bar
+                    if (!this.moveItemStackTo(stack, 0, big, false)) {
                         return ItemStack.EMPTY;
                     }
                     // the 27 inventory squares
                     // move from hot bar to inventory main
-                } else if (index < 37 && !this.moveItemStackTo(stack, 1, 28, false)) {
+                } else if (!this.moveItemStackTo(stack, big, nrg, false)) {
                     return ItemStack.EMPTY;
                 }
             }
-
             if (stack.isEmpty()) {
                 slot.set(ItemStack.EMPTY);
             } else {
                 slot.setChanged();
             }
-
             if (stack.getCount() == itemstack.getCount()) {
                 return ItemStack.EMPTY;
             }
-
             slot.onTake(playerIn, stack);
         }
-
         return itemstack;
     }
 
-    public int addSlotRange(IItemHandler handler, int index, int x, int y, int amount, int dx) {
+    public final int addSlotRange(IItemHandler handler, int index, int x, int y, int amount) {
         for (int i = 0 ; i < amount ; i++) {
             addSlot(new SlotItemHandler(handler, index, x, y));
-            x += dx;
+            x += 18;
             index++;
         }
         return index;
     }
 
-    public int addSlotBox(IItemHandler handler, int index, int x, int y, int horAmount, int dx, int verAmount, int dy) {
+    public final int addSlotBox(IItemHandler handler, int index, int x, int y, int horAmount, int verAmount) {
         for (int j = 0 ; j < verAmount ; j++) {
-            index = addSlotRange(handler, index, x, y, horAmount, dx);
-            y += dy;
+            index = addSlotRange(handler, index, x, y, horAmount);
+            y += 18;
         }
         return index;
     }
 
-    public void layoutPlayerInventorySlots(int leftCol, int topRow) {
-        // Player inventory
-        // so places from player inventory indexed into slots
-        addSlotBox(playerInventory, 9, leftCol, topRow, 9, 18, 3, 18);
-
+    public final void layoutPlayerInventorySlots(int leftCol, int topRow) {
         // Hot-bar
         // so hot bar happens last inside container
         topRow += 58;
-        addSlotRange(playerInventory, 0, leftCol, topRow, 9, 18);
+        addSlotRange(playerInventory, 0, leftCol, topRow, 9);
+        // Player inventory
+        // so places from player inventory indexed into slots
+        topRow -= 58;//restore pointer
+        addSlotBox(playerInventory, 9, leftCol, topRow, 9, 3);
     }
 
     // ================ DATA VALID CHECK =======================
