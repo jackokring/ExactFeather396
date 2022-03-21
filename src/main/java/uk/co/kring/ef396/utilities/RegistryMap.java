@@ -59,24 +59,18 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
                 () -> new BlockItem(block.get(), new Item.Properties().tab(tab).stacksTo(64)));
     }
 
+    public RegistryObject<Item> regBlockItem(RegistryBlockGroup group, CreativeModeTab tab) {
+        RegistryObject<EnergyBlock> block = group.get();
+        return Registries.items.register(block.getId().getPath(),
+                () -> new BlockItem(block.get(), new Item.Properties().tab(tab).stacksTo(64)));
+    }
+
     public RegistryObject<Item> regBook(String name, CreativeModeTab tab) {
         printClassWrong(Registries.items, name);
         return BedtimeBook.register(name, tab);
     }
 
-    private RegistryObject<BlockEntityType<EnergyEntity>> lastEntity;
-
-    public synchronized RegistryObject<BlockEntityType<EnergyEntity>> getLastEntity() {
-        return lastEntity;
-    }
-
-    private RegistryObject<MenuType<EnergyContainer>> lastContainer;
-
-    public synchronized RegistryObject<MenuType<EnergyContainer>> getLastContainer() {
-        return lastContainer;
-    }
-
-    public synchronized RegistryObject<Block> regEnergyBlock(String name, Supplier<EnergyBlock> blockSupplier,
+    public synchronized RegistryBlockGroup regEnergyBlock(String name, Supplier<EnergyBlock> blockSupplier,
                                                 BlockEntityType.BlockEntitySupplier<EnergyEntity>
                                                         blockEntitySupplier,
                                                 // allow following 2 to be null
@@ -84,23 +78,26 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
                                                 MenuScreens.ScreenConstructor<EnergyContainer,
                                                         EnergyScreen> screen) {
         printClassWrong(Registries.blocks, name);
-        lastEntity = Registries.blockEntities.register(name,
+
+        var lastEntity = Registries.blockEntities.register(name,
                 () -> BlockEntityType.Builder.of(blockEntitySupplier,
                             blockSupplier.get()).build(null)
                 );
+        RegistryObject<MenuType<EnergyContainer>> menuEasy = null;
         if(container != null) {
-            var menuEasy
-                    = lastContainer = Registries.containers.register(name,
+            menuEasy = Registries.containers.register(name,
                     () -> Obtain.menuTypeFrom(container));
             if(screen != null) {
                 // on client setup so renderer
+                RegistryObject<MenuType<EnergyContainer>> finalMenuEasy = menuEasy;
                 ExactFeather.registerRender((event) -> {
-                    MenuScreens.register(menuEasy.get(), screen);
+                    MenuScreens.register(finalMenuEasy.get(), screen);
                     // Attach our container to the screen
                 });
             }
         }
-        return Registries.blocks.register(name, blockSupplier);
+        return new RegistryBlockGroup(Registries.blocks.register(name, blockSupplier),
+                lastEntity, menuEasy, blockEntitySupplier, container);
     }
 
     public int colors(RegistryObject<?> entity,

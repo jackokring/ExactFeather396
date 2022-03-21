@@ -30,12 +30,27 @@ import net.minecraftforge.network.NetworkHooks;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.NotNull;
 import uk.co.kring.ef396.ExactFeather;
-import uk.co.kring.ef396.blocks.entities.EnergyContainer;
+import uk.co.kring.ef396.Loaded;
 import uk.co.kring.ef396.blocks.entities.EnergyEntity;
+import uk.co.kring.ef396.utilities.RegistryBlockGroup;
 
 import java.util.List;
 
-public class EnergyBlock extends Block implements EntityBlock {
+public class EnergyBlock extends Block implements EntityBlock /* , ModelledBlock */ {// for variants
+
+    private static RegistryBlockGroup rbg;
+
+    static {
+        // alter for accessed extending classes
+        // just place another static section in the overriding class
+        setRegister(Loaded.energy);
+    }
+
+    protected static final void setRegister(RegistryBlockGroup blockGroup) {
+        rbg = blockGroup;
+    }
+
+    // ========================== CUSTOMIZATION ===========================
 
     public EnergyBlock() {
         super(Properties.of(Material.METAL)
@@ -43,29 +58,6 @@ public class EnergyBlock extends Block implements EntityBlock {
                 .strength(2.0f)
                 .lightLevel(state -> state.getValue(BlockStateProperties.POWERED) ? 14 : 0)
         );
-    }
-
-    @Nullable
-    @Override
-    public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
-        return new EnergyEntity(blockPos, blockState);
-    }
-
-    public AbstractContainerMenu newContainer(int windowId, Inventory playerInventory, BlockPos pos) {
-        return new EnergyContainer(windowId, playerInventory, pos);
-    }
-
-    public final String nameScreen() {
-        // in lang file as "block.ef396.screen.energy" for example
-        return "block." + ExactFeather.MOD_ID
-                + ".screen." + this.getRegistryName().getPath();
-    }
-
-    @Override
-    public void appendHoverText(ItemStack stack, @Nullable BlockGetter reader,
-                                List<Component> list, TooltipFlag flags) {
-        /* list.add(new TranslatableComponent(key, Integer.toString(format$))
-                .withStyle(ChatFormatting.BLUE)); */
     }
 
     @Override
@@ -80,9 +72,36 @@ public class EnergyBlock extends Block implements EntityBlock {
         return super.getStateForPlacement(context).setValue(BlockStateProperties.POWERED, false);
     }
 
+    @Override
+    public void appendHoverText(ItemStack stack, @Nullable BlockGetter reader,
+                                List<Component> list, TooltipFlag flags) {
+        /* list.add(new TranslatableComponent(key, Integer.toString(format$))
+                .withStyle(ChatFormatting.BLUE)); */
+    }
+
+    // =================== FIXED FINALS ======================
+
     @Nullable
     @Override
-    public final <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+    public final BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
+        return rbg.getEntity(blockPos, blockState);
+    }
+
+    public final AbstractContainerMenu newContainer(int windowId, Inventory playerInventory, BlockPos pos) {
+        return rbg.getFunky(windowId, playerInventory, pos);
+    }
+
+    public final String nameScreen() {
+        // in lang file as "block.ef396.screen.energy" for example
+        return "block." + ExactFeather.MOD_ID
+                + ".screen." + this.getRegistryName().getPath();
+    }
+
+    @Nullable
+    @Override
+    public final <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level,
+                                                                        BlockState state,
+                                                                        BlockEntityType<T> type) {
         if (level.isClientSide()) {
             return null;
         }
@@ -98,7 +117,7 @@ public class EnergyBlock extends Block implements EntityBlock {
                                           Player player, InteractionHand hand, BlockHitResult trace) {
         if (!level.isClientSide) {
             BlockEntity be = level.getBlockEntity(pos);
-            if (be instanceof EnergyEntity) {
+            if (be instanceof EnergyEntity && rbg.getContainer() != null) {// has GUI?
                 MenuProvider containerProvider = new MenuProvider() {
                     @Override
                     public Component getDisplayName() {
@@ -107,13 +126,14 @@ public class EnergyBlock extends Block implements EntityBlock {
                     }
 
                     @Override
-                    public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity) {
+                    public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory,
+                                                            Player playerEntity) {
                         return newContainer(windowId, playerInventory, pos);
                     }
                 };
                 NetworkHooks.openGui((ServerPlayer) player, containerProvider, be.getBlockPos());
-            } else {
-                throw new IllegalStateException("Our named container provider is missing!");
+            } else if(rbg.getContainer() != null) {
+                throw new IllegalStateException("Chosen entity container provider is missing.");
             }
         }
         return InteractionResult.SUCCESS;

@@ -20,7 +20,7 @@ public class EnergyScreen extends AbstractContainerScreen<EnergyContainer> {
     public EnergyScreen(EnergyContainer container, Inventory inv, Component name) {
         // name is translated already as is a component
         super(container, inv, name);
-        setGUI(container.getBlockSingleton().getRegistryName().getPath());//via instance
+        setGUI(container.getBlockSingleton().getId().getPath());//via instance
     }
 
     @Override

@@ -1,5 +1,5 @@
 package uk.co.kring.ef396.blocks;
 
-public interface ComplexBlock {
+public interface ModelledBlock {
     //use to make data generation not make an auto
 }

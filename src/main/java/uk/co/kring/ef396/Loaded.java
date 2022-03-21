@@ -26,6 +26,7 @@ import uk.co.kring.ef396.recipes.BrewingCommon;
 import uk.co.kring.ef396.recipes.MobEffectCommon;
 import uk.co.kring.ef396.utilities.Configurator;
 import uk.co.kring.ef396.utilities.Registries;
+import uk.co.kring.ef396.utilities.RegistryBlockGroup;
 import uk.co.kring.ef396.utilities.RegistryMap;
 
 import java.util.Map;
@@ -67,14 +68,12 @@ public class Loaded {
 
     public static RegistryObject<Item> ruby, poison_apple, hogSpawnEgg;
     public static RegistryObject<Potion> psydare, psydareCorrupt;
-    public static RegistryObject<Block> rubyBlock, energy;
+    public static RegistryObject<Block> rubyBlock;
+    public static RegistryBlockGroup energy;// special for compound return
     public static Map<Item, RegistryObject<Potion>> mundane711 = BrewingCommon.mundaneFix();//a choice
     public static RegistryObject<EntityType<HogEntity>> hog;
     public static RegistryObject<SoundEvent> error, boom, wipple;
     public static CreativeModeTab tab;
-
-    public static RegistryObject<BlockEntityType<EnergyEntity>> energyEntity;
-    public static RegistryObject<MenuType<EnergyContainer>> energyContainer;
 
     protected void items(RegistryMap<Item> reg) {
         tab = tab(() -> ruby);
@@ -135,16 +134,11 @@ public class Loaded {
         reg.regBlockItem(rubyBlock = reg.register("ruby_block", RubyBlock::new), tab);
         reg.regBlockItem(reg.register("ruby_ore", RubyOre::new), tab);
         //trying BlockEntity
-        energy = reg.regEnergyBlock("energy",
+        reg.regBlockItem(energy = reg.regEnergyBlock("energy",
                 EnergyBlock::new,       // the block
                 EnergyEntity::new,      // the capability store
                 EnergyContainer::new,   // the network handler
-                EnergyScreen::new);     // the GUI on client
-        // postfix pick up from registry
-        // you will need these to reference them in class overrides
-        energyEntity = reg.getLastEntity();
-        energyContainer = reg.getLastContainer();
-
+                EnergyScreen::new), tab);     // the GUI on client
     }
 
     protected void entities(RegistryMap<EntityType<?>> reg) {

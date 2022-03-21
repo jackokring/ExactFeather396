@@ -6,7 +6,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.energy.CapabilityEnergy;
@@ -15,27 +14,37 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
+import net.minecraftforge.registries.RegistryObject;
 import uk.co.kring.ef396.Loaded;
+import uk.co.kring.ef396.blocks.EnergyBlock;
+import uk.co.kring.ef396.utilities.RegistryBlockGroup;
 
 public class EnergyContainer extends AbstractContainerMenu {
 
     private BlockEntity blockEntity;
     private Player playerEntity;
     private IItemHandler playerInventory;
+    private static RegistryBlockGroup rbg;
+
+    static {
+        // alter for accessed extending classes
+        // just place another static section in the overriding class
+        setRegister(Loaded.energy);
+    }
 
     public EnergyContainer(int windowId, Inventory playerInventory, BlockPos pos) {
-        super(getMenuType(), windowId);
+        super(rbg.getContainer().get(), windowId);
         init(playerInventory, pos);// behavioural overriding
     }
 
     // ==================== INITIALIZATION INTERFACE ============================
 
-    public Block getBlockSingleton() {
-        return Loaded.energy.get();
+    protected static final void setRegister(RegistryBlockGroup blockGroup) {
+        rbg = blockGroup;
     }
 
-    public static MenuType<EnergyContainer> getMenuType() {
-        return Loaded.energyContainer.get();
+    public final RegistryObject<EnergyBlock> getBlockSingleton() {
+        return rbg.get();
     }
 
     public void init(Inventory playerInventory, BlockPos pos) {
@@ -175,6 +184,6 @@ public class EnergyContainer extends AbstractContainerMenu {
     public final boolean stillValid(Player playerIn) {
         return stillValid(ContainerLevelAccess.create(blockEntity.getLevel(),
                         blockEntity.getBlockPos()), playerEntity,
-                getBlockSingleton());
+                getBlockSingleton().get());
     }
 }
