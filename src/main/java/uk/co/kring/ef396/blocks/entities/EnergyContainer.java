@@ -102,7 +102,7 @@ public class EnergyContainer extends AbstractContainerMenu {
 
     // ============================ INVENTORY INTERFACE =====================
 
-    public boolean itemStackExtra(ItemStack stack, int index) {
+    public boolean itemStackExtra(ItemStack stack, int index, ItemStack copy) {
         // return this.moveItemStackTo(stack, 0, nrg, true);// etc
         return true;// true to not return ItemStack.EMPTY
         // slot.onQuickCraft(stack, stack.copy());// if not return EMPTY?? for removal from active slot??
@@ -121,7 +121,7 @@ public class EnergyContainer extends AbstractContainerMenu {
             // not power slot
             if(index > nrg) {
                 // extras
-                if(!itemStackExtra(stack, index)) return ItemStack.EMPTY;
+                if(!itemStackExtra(stack, index, itemstack)) return ItemStack.EMPTY;
             } else if (index == nrg) {
                 // player inventory from power slot n+1 end notation
                 if (!this.moveItemStackTo(stack, 0, nrg, true)) {
