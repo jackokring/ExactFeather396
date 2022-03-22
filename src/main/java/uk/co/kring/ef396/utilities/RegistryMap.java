@@ -70,23 +70,21 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
         return BedtimeBook.register(name, tab);
     }
 
-    public synchronized RegistryBlockGroup regEnergyBlock(String name, Supplier<EnergyBlock> blockSupplier,
-                                                BlockEntityType.BlockEntitySupplier<EnergyEntity>
-                                                        blockEntitySupplier,
-                                                // allow following 2 to be null
-                                                Funky container,
-                                                MenuScreens.ScreenConstructor<EnergyContainer,
+    public synchronized RegistryBlockGroup regEnergyBlock(String name, FunkyBlock blockSupplier,
+                                                          FunkyEntity blockEntitySupplier,
+                                                            // allow following 2 to be null
+                                                          FunkyContainer container,
+                                                        MenuScreens.ScreenConstructor<EnergyContainer,
                                                         EnergyScreen> screen) {
         printClassWrong(Registries.blocks, name);
-
+        RegistryBlockGroup rbg = new RegistryBlockGroup(name, blockSupplier);
         var lastEntity = Registries.blockEntities.register(name,
-                () -> BlockEntityType.Builder.of(blockEntitySupplier,
-                            blockSupplier.get()).build(null)
-                );
+                () -> Obtain.entityFrom(blockEntitySupplier, rbg)
+        );
         RegistryObject<MenuType<EnergyContainer>> menuEasy = null;
         if(container != null) {
             menuEasy = Registries.containers.register(name,
-                    () -> Obtain.menuTypeFrom(container));
+                    () -> Obtain.menuTypeFrom(container, rbg));
             if(screen != null) {
                 // on client setup so renderer
                 RegistryObject<MenuType<EnergyContainer>> finalMenuEasy = menuEasy;
@@ -96,8 +94,7 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
                 });
             }
         }
-        return new RegistryBlockGroup(Registries.blocks.register(name, blockSupplier),
-                lastEntity, menuEasy, blockEntitySupplier, container);
+        return rbg.fill(lastEntity, menuEasy, blockEntitySupplier, container);
     }
 
     public int colors(RegistryObject<?> entity,

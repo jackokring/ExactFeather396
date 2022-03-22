@@ -31,7 +31,6 @@ import net.minecraftforge.network.NetworkHooks;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.NotNull;
 import uk.co.kring.ef396.ExactFeather;
-import uk.co.kring.ef396.Loaded;
 import uk.co.kring.ef396.blocks.entities.EnergyEntity;
 import uk.co.kring.ef396.utilities.RegistryBlockGroup;
 
@@ -39,26 +38,17 @@ import java.util.List;
 
 public class EnergyBlock extends Block implements EntityBlock /* , ModelledBlock */ {// for variants
 
-    private static RegistryBlockGroup rbg;
-
-    static {
-        // alter for accessed extending classes
-        // just place another static section in the overriding class
-        setRegister(Loaded.energy);
-    }
-
-    protected static final void setRegister(RegistryBlockGroup blockGroup) {
-        rbg = blockGroup;
-    }
+    private RegistryBlockGroup rbg;
 
     // ========================== CUSTOMIZATION ===========================
 
-    public EnergyBlock() {
+    public EnergyBlock(RegistryBlockGroup rbg) {
         super(Properties.of(Material.METAL)
                 .sound(SoundType.METAL)
                 .strength(2.0f)
                 .lightLevel(state -> state.getValue(BlockStateProperties.POWERED) ? 14 : 0)
         );
+        this.rbg = rbg;
     }
 
     @Override

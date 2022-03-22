@@ -5,11 +5,11 @@ import net.minecraft.world.entity.player.Inventory;
 import uk.co.kring.ef396.blocks.entities.EnergyContainer;
 
 @FunctionalInterface
-public interface Funky {
+public interface FunkyContainer {
     EnergyContainer // funky constructor for EnergyContainer
-        energyContainer(int windowId, Inventory inventory, BlockPos position);
+        energyContainer(RegistryBlockGroup rbg, int windowId, Inventory inventory, BlockPos position);
 
-    /*  The technicalitity of supporting more than one method requires a
+    /*  The technicality of supporting more than one method requires a
         default throwing a FunctionalCastException() for any actions called
         on not matching the parameterization of the lambda.
 

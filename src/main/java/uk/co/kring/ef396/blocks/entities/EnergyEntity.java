@@ -19,7 +19,6 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import uk.co.kring.ef396.Loaded;
 import uk.co.kring.ef396.utilities.RegistryBlockGroup;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -35,20 +34,10 @@ public class EnergyEntity extends BlockEntity {
 
     private int counter;
 
-    private static RegistryBlockGroup rbg;
+    private RegistryBlockGroup rbg;
 
-    static {
-        // alter for accessed extending classes
-        // just place another static section in the overriding class
-        setRegister(Loaded.energy);
-    }
-
-    public EnergyEntity(BlockPos pos, BlockState state) {
+    public EnergyEntity(RegistryBlockGroup rbg, BlockPos pos, BlockState state) {
         super(rbg.getEntity().get(), pos, state);
-    }
-
-    protected static final void setRegister(RegistryBlockGroup blockGroup) {
-        rbg = blockGroup;
     }
 
     // ===================== TICK SERVICE =======================

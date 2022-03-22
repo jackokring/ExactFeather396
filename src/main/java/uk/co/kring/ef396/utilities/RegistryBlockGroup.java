@@ -15,20 +15,22 @@ public class RegistryBlockGroup {
     private RegistryObject<EnergyBlock> block;
     private RegistryObject<BlockEntityType<EnergyEntity>> entity;
     private RegistryObject<MenuType<EnergyContainer>> container;
-    private BlockEntityType.BlockEntitySupplier<EnergyEntity> blockEntitySupplier;
-    private Funky containerSupplier;
+    private FunkyEntity blockEntitySupplier;
+    private FunkyContainer containerSupplier;
 
-    public RegistryBlockGroup(RegistryObject<EnergyBlock> block,
-                              RegistryObject<BlockEntityType<EnergyEntity>> entity,
-                              RegistryObject<MenuType<EnergyContainer>> container,
-                              BlockEntityType.BlockEntitySupplier<EnergyEntity>
-                                      blockEntitySupplier,
-                              Funky containerSupplier) {
-        this.block = block;
+    public RegistryBlockGroup(String name, FunkyBlock block) {
+        this.block = Registries.blocks.register(name, () -> block.energyBlock(this));
+    }
+
+    public RegistryBlockGroup fill(RegistryObject<BlockEntityType<EnergyEntity>> entity,
+                                   RegistryObject<MenuType<EnergyContainer>> container,
+                                   FunkyEntity blockEntitySupplier,
+                                   FunkyContainer containerSupplier) {
         this.entity = entity;
         this.container = container;
         this.blockEntitySupplier = blockEntitySupplier;
         this.containerSupplier = containerSupplier;
+        return this;
     }
 
     public RegistryObject<EnergyBlock> get() {
@@ -44,10 +46,10 @@ public class RegistryBlockGroup {
     }
 
     public EnergyEntity getEntity(BlockPos blockPos, BlockState blockState) {
-        return blockEntitySupplier.create(blockPos, blockState);
+        return blockEntitySupplier.energyEntity(this, blockPos, blockState);
     }
 
     public EnergyContainer getFunky(int windowId, Inventory playerInventory, BlockPos pos) {
-        return containerSupplier.energyContainer(windowId, playerInventory, pos);
+        return containerSupplier.energyContainer(this, windowId, playerInventory, pos);
     }
 }

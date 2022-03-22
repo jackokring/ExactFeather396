@@ -15,7 +15,6 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 import net.minecraftforge.registries.RegistryObject;
-import uk.co.kring.ef396.Loaded;
 import uk.co.kring.ef396.blocks.EnergyBlock;
 import uk.co.kring.ef396.utilities.RegistryBlockGroup;
 
@@ -24,24 +23,15 @@ public class EnergyContainer extends AbstractContainerMenu {
     private BlockEntity blockEntity;
     private Player playerEntity;
     private IItemHandler playerInventory;
-    private static RegistryBlockGroup rbg;
+    private RegistryBlockGroup rbg;
 
-    static {
-        // alter for accessed extending classes
-        // just place another static section in the overriding class
-        setRegister(Loaded.energy);
-    }
-
-    public EnergyContainer(int windowId, Inventory playerInventory, BlockPos pos) {
+    public EnergyContainer(RegistryBlockGroup rbg, int windowId, Inventory playerInventory, BlockPos pos) {
         super(rbg.getContainer().get(), windowId);
+        this.rbg = rbg;
         init(playerInventory, pos);// behavioural overriding
     }
 
     // ==================== INITIALIZATION INTERFACE ============================
-
-    protected static final void setRegister(RegistryBlockGroup blockGroup) {
-        rbg = blockGroup;
-    }
 
     public final RegistryObject<EnergyBlock> getBlockSingleton() {
         return rbg.get();
