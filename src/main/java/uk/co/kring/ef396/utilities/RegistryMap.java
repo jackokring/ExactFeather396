@@ -79,12 +79,12 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
         printClassWrong(Registries.blocks, name);
         RegistryBlockGroup rbg = new RegistryBlockGroup(name, blockSupplier);
         var lastEntity = Registries.blockEntities.register(name,
-                () -> Obtain.entityFrom(blockEntitySupplier, rbg)
+                () -> rbg.entityFrom(blockEntitySupplier)
         );
         RegistryObject<MenuType<EnergyContainer>> menuEasy = null;
         if(container != null) {
             menuEasy = Registries.containers.register(name,
-                    () -> Obtain.menuTypeFrom(container, rbg));
+                    () -> rbg.menuTypeFrom(container));
             if(screen != null) {
                 // on client setup so renderer
                 RegistryObject<MenuType<EnergyContainer>> finalMenuEasy = menuEasy;
@@ -108,8 +108,8 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
         return bg;
     }
 
-    public RegistryObject<? extends T> onBotch(RegistryObject<? extends T> object,
-                                               String name, Supplier<? extends T> replace) {
+    public RegistryObject<T> onBotch(RegistryObject<T> object,
+                                               String name, Supplier<T> replace) {
         if(object == null) {
             return register(name, replace);
         } else {
@@ -117,8 +117,8 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
         }
     }
 
-    public RegistryObject<? extends T> onBotch(RegistryObject<? extends T> object,
-                                               RegistryObject<? extends T> replace) {
+    public RegistryObject<T> onBotch(RegistryObject<T> object,
+                                               RegistryObject<T> replace) {
         if(object == null) {
             return replace;
         } else {

@@ -5,6 +5,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.registries.RegistryObject;
 import uk.co.kring.ef396.blocks.EnergyBlock;
 import uk.co.kring.ef396.blocks.entities.EnergyContainer;
@@ -52,4 +53,18 @@ public class RegistryBlockGroup {
     public EnergyContainer getFunky(int windowId, Inventory playerInventory, BlockPos pos) {
         return containerSupplier.energyContainer(this, windowId, playerInventory, pos);
     }
+
+    public MenuType<EnergyContainer> menuTypeFrom(FunkyContainer x) {
+        return IForgeMenuType.create((windowId, inv, data)
+                -> x.energyContainer(this, windowId, inv, data.readBlockPos()));
+        // for creating something to register from a funky constructor
+    }
+
+    public BlockEntityType<EnergyEntity> entityFrom(FunkyEntity x) {
+        return BlockEntityType.Builder.of((pos, state) -> x.energyEntity(this, pos, state),
+                this.get().get()).build(null);
+        // for creating something to register from a funky constructor
+    }
+
+
 }
