@@ -83,10 +83,11 @@ public class EnergyEntity extends BlockEntity {
     private void sendOutPower() {
         AtomicInteger capacity = new AtomicInteger(energyStorage.getEnergyStored());
         if (capacity.get() > 0) {
-            for (Direction direction : Direction.values()) {
+            for (Direction direction : Direction.values()) {//directional out
                 BlockEntity be = level.getBlockEntity(worldPosition.relative(direction));
                 if (be != null) {
-                    boolean doContinue = be.getCapability(CapabilityEnergy.ENERGY, direction.getOpposite()).map(handler -> {
+                    boolean doContinue = be.getCapability(CapabilityEnergy.ENERGY,
+                            direction.getOpposite()).map(handler -> {// get relative direction wall
                                 if (handler.canReceive()) {
                                     int received = handler.receiveEnergy(Math.min(capacity.get(),
                                             dischargeRate()), false);
@@ -175,7 +176,8 @@ public class EnergyEntity extends BlockEntity {
     @NonNull
     @Override
     public <T> LazyOptional<T> getCapability(@NonNull Capability<T> cap, @Nullable Direction side) {
-        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY
+                && side.compareTo(Direction.UP) == 0) {//TOP LOADER
             return handler.cast();
         }
         if (cap == CapabilityEnergy.ENERGY) {

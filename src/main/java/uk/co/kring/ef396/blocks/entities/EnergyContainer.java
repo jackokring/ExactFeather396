@@ -41,7 +41,7 @@ public class EnergyContainer extends AbstractContainerMenu {
         this.playerEntity = playerInventory.player;
         blockEntity = playerEntity.getCommandSenderWorld().getBlockEntity(pos);
         this.playerInventory = new InvWrapper(playerInventory);
-        layoutPlayerInventorySlots(10, 70);// 0-8, 9-36
+        layoutPlayerInventorySlots();// 0-8, 9-36
         // funny initialization order bug on multiplayer object destroy before GUI construction?
         if (blockEntity != null) {
             blockEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
@@ -165,15 +165,13 @@ public class EnergyContainer extends AbstractContainerMenu {
         return index;
     }
 
-    public final void layoutPlayerInventorySlots(int leftCol, int topRow) {
+    public final void layoutPlayerInventorySlots() {//10, 70
         // Hot-bar
         // so hot bar happens last inside container
-        topRow += 58;
-        addSlotRange(playerInventory, 0, leftCol, topRow, 9);
+        addSlotRange(playerInventory, 0, 10, 70 + 58, 9);//58 pix down 18*3 + ??
         // Player inventory
         // so places from player inventory indexed into slots
-        topRow -= 58;//restore pointer
-        addSlotBox(playerInventory, 9, leftCol, topRow, 9, 3);
+        addSlotBox(playerInventory, 9, 10, 70, 9, 3);
     }
 
     // ================ DATA VALID CHECK =======================

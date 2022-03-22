@@ -36,3 +36,7 @@
 * `TranslatableComponent` and other book ideas.
 * Distributed AI on the network.
 * Texture for `Hog`.
+* Power and item autoloader hopper directions?
+* Custom mana.
+* hog food again.
+* 
