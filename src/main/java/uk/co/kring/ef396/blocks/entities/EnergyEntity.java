@@ -44,7 +44,7 @@ public class EnergyEntity extends BlockEntity {
 
     public void tickServer() {
         if (counter > 0) {
-            energyStorage.addEnergy(chargeRate());
+            energyStorage.addEnergy(rbg.get().get().chargeRate());
             counter--;
             setChanged();
         }
@@ -66,18 +66,6 @@ public class EnergyEntity extends BlockEntity {
         sendOutPower();
     }
 
-    public int dischargeRate() {
-        return charge() >> 8;
-    }
-
-    public int chargeRate() {
-        return charge() >> 10;
-    }
-
-    public int charge() {
-        return 65535;
-    }
-
     // ==================== ENERGY EXPORT ==========================
 
     private void sendOutPower() {
@@ -90,7 +78,7 @@ public class EnergyEntity extends BlockEntity {
                             direction.getOpposite()).map(handler -> {// get relative direction wall
                                 if (handler.canReceive()) {
                                     int received = handler.receiveEnergy(Math.min(capacity.get(),
-                                            dischargeRate()), false);
+                                            rbg.get().get().dischargeRate()), false);
                                     capacity.addAndGet(-received);
                                     energyStorage.consumeEnergy(received);
                                     setChanged();
@@ -163,7 +151,7 @@ public class EnergyEntity extends BlockEntity {
     }
 
     private CustomEnergyStorage createEnergy() {
-        return new CustomEnergyStorage(charge(), 0) {
+        return new CustomEnergyStorage(rbg.get().get().charge(), 0) {
             @Override
             protected void onEnergyChanged() {
                 setChanged();

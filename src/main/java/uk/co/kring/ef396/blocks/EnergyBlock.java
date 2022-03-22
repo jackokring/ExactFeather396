@@ -51,6 +51,19 @@ public class EnergyBlock extends Block implements EntityBlock /* , ModelledBlock
         this.rbg = rbg;
     }
 
+
+    public int dischargeRate() {
+        return charge() >> 8;
+    }
+
+    public int chargeRate() {
+        return charge() >> 10;
+    }
+
+    public int charge() {
+        return 65535;
+    }
+
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
@@ -66,7 +79,12 @@ public class EnergyBlock extends Block implements EntityBlock /* , ModelledBlock
     @Override
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter reader,
                                 List<Component> list, TooltipFlag flags) {
-        list.add(new TranslatableComponent(nameScreen()).withStyle(ChatFormatting.BLUE));
+        list.add(new TranslatableComponent(nameScreen()).withStyle(ChatFormatting.AQUA));
+        list.add(new TranslatableComponent(
+                "+" + String.valueOf(chargeRate())
+                        + " / *" + String.valueOf(charge())
+                        + " / -" + String.valueOf(dischargeRate())
+        ).withStyle(ChatFormatting.AQUA));
     }
 
     // =================== FIXED FINALS ======================
