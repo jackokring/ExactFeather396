@@ -19,14 +19,14 @@ import net.minecraftforge.common.data.LanguageProvider;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
+import org.jetbrains.annotations.NotNull;
 import uk.co.kring.ef396.blocks.ModelledBlock;
 import uk.co.kring.ef396.items.ModelledItem;
 import uk.co.kring.ef396.utilities.Registries;
 
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 import java.util.function.Consumer;
 
 @Mod.EventBusSubscriber(modid = "ef396", bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -39,7 +39,7 @@ public class DataGen {
         if (event.includeServer()) {
             gen.addProvider(new RecipeProvider(gen) {
                 @Override
-                protected void buildCraftingRecipes(Consumer<FinishedRecipe> consumer)  {
+                protected void buildCraftingRecipes(@NotNull Consumer<FinishedRecipe> consumer)  {
 
                 }
             });
@@ -101,7 +101,9 @@ public class DataGen {
                                         new ResourceLocation(ExactFeather.MOD_ID, "en_us"),
                                         PackType.CLIENT_RESOURCES, ".json", "lang/")
                                 .getInputStream();
-                        JsonElement json = JsonParser.parseString(is.readAllBytes().toString());
+                        JsonElement json = JsonParser.parseString(
+                                new String(is.readAllBytes(),
+                                        StandardCharsets.UTF_8).trim());
                         JsonObject jsonObject = json.getAsJsonObject();
                         jsonObject.entrySet().forEach((entry) -> {
                             String key = entry.getKey();
@@ -115,9 +117,9 @@ public class DataGen {
                 }
 
                 static class Entry {//key is post $$ expression
-                    String prefix;
-                    String postfix;
-                    String replaced;
+                    final String prefix;
+                    final String postfix;
+                    final String replaced;
 
                     public Entry(String key, String val) {
                         replaced = val;//substitution
@@ -172,7 +174,7 @@ public class DataGen {
                     }
                 }
 
-                public static HashMap<String, List<Entry>> hashMap = new HashMap<>();
+                public static final HashMap<String, List<Entry>> hashMap = new HashMap<>();
 
                 private void the(String key, String val) {//pass 2
                     // substitutions
@@ -193,7 +195,7 @@ public class DataGen {
                                         the(nestKey, nestVal);
                                     }
                                 }
-                            };
+                            }
                             k = k.substring(0, k.length() - 1);//reduce key
                             if (k.length() == 0) {
                                 ExactFeather.LOGGER.error("\"" + key + "\" has missing key.");
@@ -202,14 +204,15 @@ public class DataGen {
                             }
                         }
                     }
-                };
+                }
 
                 @Override
                 protected void addTranslations() {
                     iterate((key, val) -> {//pass 1
                         if(Entry.isKey(key)) {
                             String trimmed = Entry.trimmedKey(key);
-                            List<Entry> le = hashMap.computeIfAbsent(trimmed, k -> new LinkedList<>());
+                            List<Entry> le = hashMap.computeIfAbsent(trimmed,
+                                    k -> new LinkedList<>());
                             le.add(new Entry(key, val));//append
                         }
                     });
@@ -235,16 +238,16 @@ public class DataGen {
                         Item i = item.get();
                         if(i instanceof ModelledItem) return;//needs own model ...
                         if(i instanceof ForgeSpawnEggItem) {
-                            withExistingParent(i.getRegistryName().getPath(),
+                            withExistingParent(Objects.requireNonNull(i.getRegistryName()).getPath(),
                                     mcLoc("item/template_spawn_egg"));
                             return;
                         }
                         if(i instanceof BlockItem) {
-                            withExistingParent(i.getRegistryName().getPath(),
+                            withExistingParent(Objects.requireNonNull(i.getRegistryName()).getPath(),
                                     modLoc("block/" + i.getRegistryName().getPath()));
                             return;//escape ...
                         }
-                        singleTexture(i.getRegistryName().getPath(),
+                        singleTexture(Objects.requireNonNull(i.getRegistryName()).getPath(),
                                 mcLoc("item/generated"),
                                 "layer0", modLoc("item/" + i.getRegistryName().getPath()));
                     });
