@@ -123,8 +123,10 @@ public class DataGen {
                         replaced = val;//substitution
                         String trimmed = trimmedKey(key);
                         int idx = key.indexOf(trimmed);
-                        prefix = key.substring(0, idx - 2);// for $$
-                        postfix = key.substring(idx + trimmed.length());
+                        prefix = (idx > 2) ? key.substring(0, idx - 3) : "";// for ".$$"
+                        postfix = (idx + trimmed.length() < key.length())
+                                ? key.substring(idx + trimmed.length() + 1)
+                                : "";// "."
                     }
 
                     public static boolean isKey(String key) {
@@ -146,7 +148,7 @@ public class DataGen {
                                 List<Entry> el = hashMap.get(k);
                                 if(el != null) {
                                     for (Entry e : el) {
-                                        if (key.contains(e.prefix)) {
+                                        if (key.contains(e.postfix)) {// for matching substitution
                                             int at = val.indexOf("$");
                                             val = val.substring(0, at)
                                                     + e.replaced
