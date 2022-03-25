@@ -49,16 +49,17 @@
   "$item.$ruby_leggings": "$ruby Leggings",
   "$item.$ruby_boots": "$ruby Boots",
 
-  "$block.ruby_block": "Block of Ruby",
-  "$block.ruby_ore": "Ruby Ore",
+  "$block.$ruby_block": "Block of $ruby",
+  "$block.$ruby_ore": "$ruby Ore",
   "$block.energy": "Black Box Energizer",
   "$block.screen.energy": "Energizer Control",
 
+  "$$tag_hog.hog": "H.O.G.",
   "$$hog.hog": "Humanoid Overseer Gollum",
-  "$item.$hog_spawn_egg": "$hog Spawn Egg",
+  "$item.$hog_spawn_egg": "$tag_hog Spawn Egg",
   "$entity.$hog": "$hog",
 
-  "$subs.error": "H.O.G. Error",
-  "$subs.boom": "H.O.G. Died",
-  "$subs.wipple": "H.O.G."
+  "$subs.error": "$tag_hog Error",
+  "$subs.boom": "$tag_hog Died",
+  "$subs.wipple": "$tag_hog"
 }
