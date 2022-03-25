@@ -1,21 +1,32 @@
 package uk.co.kring.ef396;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.tags.BlockTagsProvider;
 import net.minecraft.data.tags.ItemTagsProvider;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.PackType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.common.ForgeSpawnEggItem;
+import net.minecraftforge.common.data.LanguageProvider;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 import uk.co.kring.ef396.blocks.ModelledBlock;
 import uk.co.kring.ef396.items.ModelledItem;
 import uk.co.kring.ef396.utilities.Registries;
+
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.function.Consumer;
 
 @Mod.EventBusSubscriber(modid = "ef396", bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -78,6 +89,126 @@ public class DataGen {
             });
         }
         if (event.includeClient()) {
+            gen.addProvider(new LanguageProvider(gen, ExactFeather.MOD_ID, "en_us") {
+                @FunctionalInterface
+                public interface FunkyHashEntry {
+                    void processEntry(String key, String entry);
+                }
+
+                public void iterate(FunkyHashEntry hashEntry) {
+                    try {
+                        InputStream is = file.getResource(
+                                        new ResourceLocation(ExactFeather.MOD_ID, "en_us"),
+                                        PackType.CLIENT_RESOURCES, ".json", "lang/")
+                                .getInputStream();
+                        JsonElement json = JsonParser.parseString(is.readAllBytes().toString());
+                        JsonObject jsonObject = json.getAsJsonObject();
+                        jsonObject.entrySet().forEach((entry) -> {
+                            String key = entry.getKey();
+                            JsonElement val = entry.getValue();
+                            String v = val.getAsString();
+                            hashEntry.processEntry(key, v);
+                        });
+                    } catch(Exception e) {
+                        ExactFeather.LOGGER.error("lang JSON error.");
+                    }
+                }
+
+                static class Entry {//key is post $$ expression
+                    String prefix;
+                    String postfix;
+                    String replaced;
+
+                    public Entry(String key, String val) {
+                        replaced = val;//substitution
+                        String trimmed = trimmedKey(key);
+                        int idx = key.indexOf(trimmed);
+                        prefix = key.substring(0, idx);
+                        postfix = key.substring(idx + trimmed.length());
+                    }
+
+                    public static boolean isKey(String key) {
+                        return key.contains("$$");
+                    }
+
+                    public static String trimmedKey(String key) {
+                        return key.split("\\$\\$")[1].split("\\.")[0];
+                    }
+
+                    public static String expandValue(String key, String val) {
+                        while (val.contains("$")) {
+                            String k = maximalKey(val);
+                            while(k.length() > 0) {
+                                List<Entry> el = hashMap.get(k);
+                                if(el != null) {
+                                    for (Entry e : el) {
+                                        if (key.contains(e.prefix)) {
+                                            int at = val.indexOf("$");
+                                            val = val.substring(0, at)
+                                                    + e.replaced
+                                                    + val.substring(at + k.length());// keyed !!
+                                        }
+                                    }
+                                }
+                                k = k.substring(0, k.length() - 1);//reduce key
+                                if(k.length() == 0) {
+                                    ExactFeather.LOGGER.error("\"" + val + "\" has missing key.");
+                                    return val;
+                                }
+                            }
+                        }
+                        return val;
+                    }
+
+                    public static String maximalKey(String any) {
+                        return any.split("\\$")[1].split("\\.")[0];
+                    }
+                }
+
+                public static HashMap<String, List<Entry>> hashMap = new HashMap<>();
+
+                @Override
+                protected void addTranslations() {
+                    iterate((key, val) -> {//pass 1
+                        if(Entry.isKey(key)) {
+                            String trimmed = Entry.trimmedKey(key);
+                            List<Entry> le = hashMap.get(trimmed);
+                            if(le == null) {
+                                le = new LinkedList<>();
+                                hashMap.put(trimmed, le);
+                            }
+                            le.add(new Entry(key, val));//append
+                        }
+                    });
+                    iterate((key, val) -> {//pass 2
+                        // substitutions
+                        while (key.contains("$")) {
+                            String k = Entry.maximalKey(key);
+                            while (k.length() > 0) {
+                                List<Entry> el = hashMap.get(k);
+                                if (el != null) {
+                                    for (Entry e : el) {
+                                        if (key.contains(e.prefix)) {
+                                            int at = key.indexOf("$");
+                                            key = key.substring(0, at)
+                                                    + e.postfix
+                                                    + key.substring(at + k.length());// keyed !!
+                                            // so a lot of intermediate expansions happen
+                                            add(key, Entry.expandValue(key, val));
+                                        }
+                                    }
+                                };
+                                k = k.substring(0, k.length() - 1);//reduce key
+                                if (k.length() == 0) {
+                                    ExactFeather.LOGGER.error("\"" + key + "\" has missing key.");
+                                    int at = key.indexOf("$");
+                                    key = key.substring(0, at) + key.substring(at + 1);//drop $
+                                }
+                            }
+                        }
+                    });
+                }
+            });
             // ============= Excellent covers all cases likely =============
             gen.addProvider(new BlockStateProvider(gen, ExactFeather.MOD_ID, file) {
                 @Override
