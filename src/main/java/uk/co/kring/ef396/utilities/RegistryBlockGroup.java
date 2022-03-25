@@ -1,5 +1,6 @@
 package uk.co.kring.ef396.utilities;
 
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
@@ -7,9 +8,11 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.registries.RegistryObject;
+import uk.co.kring.ef396.ExactFeather;
 import uk.co.kring.ef396.blocks.EnergyBlock;
 import uk.co.kring.ef396.blocks.entities.EnergyContainer;
 import uk.co.kring.ef396.blocks.entities.EnergyEntity;
+import uk.co.kring.ef396.blocks.entities.EnergyScreen;
 
 public class RegistryBlockGroup {
 
@@ -19,19 +22,30 @@ public class RegistryBlockGroup {
     private FunkyEntity blockEntitySupplier;
     private FunkyContainer containerSupplier;
 
-    public RegistryBlockGroup(String name, FunkyBlock block) {
+    public RegistryBlockGroup(String name, FunkyBlock block,
+                              FunkyEntity blockEntitySupplier,
+                              // allow following 2 to be null
+                              FunkyContainer container,
+                              MenuScreens.ScreenConstructor<EnergyContainer,
+                                      EnergyScreen> screen) {
         this.block = Registries.blocks.register(name, () -> block.energyBlock(this));
-    }
-
-    public RegistryBlockGroup fill(RegistryObject<BlockEntityType<EnergyEntity>> entity,
-                                   RegistryObject<MenuType<EnergyContainer>> container,
-                                   FunkyEntity blockEntitySupplier,
-                                   FunkyContainer containerSupplier) {
-        this.entity = entity;
-        this.container = container;
+        if(blockEntitySupplier == null) throw new NullPointerException("A block entity supplier is needed.");
+        entity = Registries.blockEntities.register(name,
+                () -> entityFrom(blockEntitySupplier)
+        );
+        if(container != null) {
+            this.container = Registries.containers.register(name,
+                    () -> menuTypeFrom(container));
+            if(screen != null) {
+                // on client setup so renderer
+                ExactFeather.registerRender((event) -> {
+                    MenuScreens.register(this.container.get(), screen);
+                    // Attach our container to the screen
+                });
+            }
+        }
         this.blockEntitySupplier = blockEntitySupplier;
-        this.containerSupplier = containerSupplier;
-        return this;
+        this.containerSupplier = container;
     }
 
     public RegistryObject<EnergyBlock> get() {

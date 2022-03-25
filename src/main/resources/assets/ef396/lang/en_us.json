@@ -1,83 +1,64 @@
 {
-  "itemGroup.ef396.ef396": "Exact Feather",
+  "$$id.ef396": "Exact Feather",
+  "itemGroup.$id.$id": "$id",
 
-  "item.ef396.ruby": "Ruby",
-  "item.ef396.poison_apple": "Poison Apple",
+  "$$item.item.$id": "",
+  "$$block.block.$id": "",
+  "$$entity.entity.$id": "",
+  "$$subs.subtitles.$id": "",
 
-  "item.ef396.ruby_sword": "Ruby Sword",
+  "$$imp.item.minecraft.potion.effect": "Potion of",
+  "$$ims.item.minecraft.splash_potion.effect": "Splash Potion of",
+  "$$iml.item.minecraft.lingering_potion.effect": "Lingering Potion of",
+  "$$imt.item.minecraft.tipped_arrow.effect": "Arrow of",
+  "$$m": "Mundane",
 
-  "item.ef396.ruby_pickaxe": "Ruby Pickaxe",
-  "item.ef396.ruby_shovel": "Ruby Shovel",
-  "item.ef396.ruby_axe": "Ruby Axe",
-  "item.ef396.ruby_hoe": "Ruby Hoe",
+  "$imp.$psy": "$imp $psy",
+  "$ims.$psy": "$ims $psy",
+  "$iml.$psy": "$iml $psy",
+  "$imt.$psy": "$imt $psy",
 
-  "item.ef396.ruby_helmet": "Ruby Helmet",
-  "item.ef396.ruby_chestplate": "Ruby Chestplate",
-  "item.ef396.ruby_leggings": "Ruby Leggings",
-  "item.ef396.ruby_boots": "Ruby Boots",
+  "$$psy.psydare": "Psydare",
+  "$$psy.psydare_corrupt": "Psydone",
 
-  "item.ef396.hog_spawn_egg": "H.O.G. Spawn Egg",
+  "$$psy.sugar": "$m Quickinder",
+  "$$psy.magma_cream": "$m Thiomolic",
+  "$$psy.rabbit_foot": "$m Cubit",
+  "$$psy.glistering_melon_slice": "$m Kinopotent",
+  "$$psy.blaze_powder": "$m Uberdo",
+  "$$psy.ghast_tear": "$m Polecarrow",
+  "$$psy.spider_eye": "$m Gaussinfion",
+  "$$psy.golden_carrot": "$m Fire",
+  "$$psy.turtle_helmet": "$m Earth",
+  "$$psy.pufferfish": "$m Water",
+  "$$psy.phantom_membrane": "$m Air",
 
-  "entity.ef396.hog": "Humanoid Overseer Gollum",
+  "$item.poison_apple": "Poison Apple",
 
-  "block.ef396.ruby_block": "Block of Ruby",
-  "block.ef396.ruby_ore": "Ruby Ore",
-  "block.ef396.energy": "Black Box Energizer",
-  "block.ef396.screen.energy": "Energizer Control",
+  "$$ruby.ruby": "Ruby",
+  "$item.$ruby": "$ruby",
 
-  "subtitles.ef396.error": "H.O.G. Error",
-  "subtitles.ef396.boom": "H.O.G. Died",
-  "subtitles.ef396.wipple": "H.O.G.",
+  "$item.$ruby_sword": "$ruby Sword",
+  "$item.$ruby_pickaxe": "$ruby Pickaxe",
+  "$item.$ruby_shovel": "$ruby Shovel",
+  "$item.$ruby_axe": "$ruby Axe",
+  "$item.$ruby_hoe": "$ruby Hoe",
 
-  "item.minecraft.potion.effect.psydare": "Potion of Psydare",
-  "item.minecraft.splash_potion.effect.psydare": "Splash Potion of Psydare",
-  "item.minecraft.lingering_potion.effect.psydare": "Lingering Potion of Psydare",
+  "$item.$ruby_helmet": "$ruby Helmet",
+  "$item.$ruby_chestplate": "$ruby Chestplate",
+  "$item.$ruby_leggings": "$ruby Leggings",
+  "$item.$ruby_boots": "$ruby Boots",
 
-  "item.minecraft.potion.effect.psydare_corrupt": "Potion of Psydone",
-  "item.minecraft.splash_potion.effect.psydare_corrupt": "Splash Potion of Psydone",
-  "item.minecraft.lingering_potion.effect.psydare_corrupt": "Lingering Potion of Psydone",
+  "$block.ruby_block": "Block of Ruby",
+  "$block.ruby_ore": "Ruby Ore",
+  "$block.energy": "Black Box Energizer",
+  "$block.screen.energy": "Energizer Control",
 
-  "item.minecraft.potion.effect.sugar": "Mundane Potion Quickinder",
-  "item.minecraft.splash_potion.effect.sugar": "Splash Mundane Potion Quickinder",
-  "item.minecraft.lingering_potion.effect.sugar": "Lingering Mundane Potion Quickinder",
+  "$$hog.hog": "Humanoid Overseer Gollum",
+  "$item.$hog_spawn_egg": "$hog Spawn Egg",
+  "$entity.$hog": "$hog",
 
-  "item.minecraft.potion.effect.magma_cream": "Mundane Potion Thiomolic",
-  "item.minecraft.splash_potion.effect.magma_cream": "Splash Mundane Potion Thiomolic",
-  "item.minecraft.lingering_potion.effect.magma_cream": "Lingering Mundane Potion Thiomolic",
-
-  "item.minecraft.potion.effect.rabbit_foot": "Mundane Potion Cubit",
-  "item.minecraft.splash_potion.effect.rabbit_foot": "Splash Mundane Potion Cubit",
-  "item.minecraft.lingering_potion.effect.rabbit_foot": "Lingering Mundane Potion Cubit",
-
-  "item.minecraft.potion.effect.glistering_melon_slice": "Mundane Potion Kinopotent",
-  "item.minecraft.splash_potion.effect.glistering_melon_slice": "Splash Mundane Potion Kinopotent",
-  "item.minecraft.lingering_potion.effect.glistering_melon_slice": "Lingering Mundane Potion Kinopotent",
-
-  "item.minecraft.potion.effect.blaze_powder": "Mundane Potion Uberdo",
-  "item.minecraft.splash_potion.effect.blaze_powder": "Splash Mundane Potion Uberdo",
-  "item.minecraft.lingering_potion.effect.blaze_powder": "Lingering Mundane Potion Uberdo",
-
-  "item.minecraft.potion.effect.ghast_tear": "Mundane Potion Polecarrow",
-  "item.minecraft.splash_potion.effect.ghast_tear": "Splash Mundane Potion Polecarrow",
-  "item.minecraft.lingering_potion.effect.ghast_tear": "Lingering Mundane Potion Polecarrow",
-
-  "item.minecraft.potion.effect.spider_eye": "Mundane Potion Gaussinfion",
-  "item.minecraft.splash_potion.effect.spider_eye": "Splash Mundane Potion Gaussinfion",
-  "item.minecraft.lingering_potion.effect.spider_eye": "Lingering Mundane Potion Gaussinfion",
-
-  "item.minecraft.potion.effect.golden_carrot": "Mundane Potion Fire",
-  "item.minecraft.splash_potion.effect.golden_carrot": "Splash Mundane Potion Fire",
-  "item.minecraft.lingering_potion.effect.golden_carrot": "Lingering Mundane Potion Fire",
-
-  "item.minecraft.potion.effect.turtle_helmet": "Mundane Potion Earth",
-  "item.minecraft.splash_potion.effect.turtle_helmet": "Splash Mundane Potion Earth",
-  "item.minecraft.lingering_potion.effect.turtle_helmet": "Lingering Mundane Potion Earth",
-
-  "item.minecraft.potion.effect.pufferfish": "Mundane Potion Water",
-  "item.minecraft.splash_potion.effect.pufferfish": "Splash Mundane Potion Water",
-  "item.minecraft.lingering_potion.effect.pufferfish": "Lingering Mundane Potion Water",
-
-  "item.minecraft.potion.effect.phantom_membrane": "Mundane Potion Air",
-  "item.minecraft.splash_potion.effect.phantom_membrane": "Splash Mundane Potion Air",
-  "item.minecraft.lingering_potion.effect.phantom_membrane": "Lingering Mundane Potion Air"
+  "$subs.error": "H.O.G. Error",
+  "$subs.boom": "H.O.G. Died",
+  "$subs.wipple": "H.O.G."
 }

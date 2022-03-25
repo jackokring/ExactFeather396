@@ -14,7 +14,6 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.SpawnPlacements;
-import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -23,7 +22,6 @@ import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
@@ -33,7 +31,6 @@ import org.jetbrains.annotations.NotNull;
 import uk.co.kring.ef396.ExactFeather;
 import uk.co.kring.ef396.blocks.EnergyBlock;
 import uk.co.kring.ef396.blocks.entities.EnergyContainer;
-import uk.co.kring.ef396.blocks.entities.EnergyEntity;
 import uk.co.kring.ef396.blocks.entities.EnergyScreen;
 import uk.co.kring.ef396.entities.HogEntity;
 import uk.co.kring.ef396.entities.initials.HogInitials;
@@ -70,31 +67,15 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
         return BedtimeBook.register(name, tab);
     }
 
-    public synchronized RegistryBlockGroup regEnergyBlock(String name, FunkyBlock blockSupplier,
+    public RegistryBlockGroup regEnergyBlock(String name, FunkyBlock blockSupplier,
                                                           FunkyEntity blockEntitySupplier,
                                                             // allow following 2 to be null
                                                           FunkyContainer container,
                                                         MenuScreens.ScreenConstructor<EnergyContainer,
                                                         EnergyScreen> screen) {
         printClassWrong(Registries.blocks, name);
-        RegistryBlockGroup rbg = new RegistryBlockGroup(name, blockSupplier);
-        var lastEntity = Registries.blockEntities.register(name,
-                () -> rbg.entityFrom(blockEntitySupplier)
-        );
-        RegistryObject<MenuType<EnergyContainer>> menuEasy = null;
-        if(container != null) {
-            menuEasy = Registries.containers.register(name,
-                    () -> rbg.menuTypeFrom(container));
-            if(screen != null) {
-                // on client setup so renderer
-                RegistryObject<MenuType<EnergyContainer>> finalMenuEasy = menuEasy;
-                ExactFeather.registerRender((event) -> {
-                    MenuScreens.register(finalMenuEasy.get(), screen);
-                    // Attach our container to the screen
-                });
-            }
-        }
-        return rbg.fill(lastEntity, menuEasy, blockEntitySupplier, container);
+        return new RegistryBlockGroup(name,
+                blockSupplier, blockEntitySupplier, container, screen);
     }
 
     public int colors(RegistryObject<?> entity,
