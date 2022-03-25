@@ -151,6 +151,7 @@ public class DataGen {
                                             val = val.substring(0, at)
                                                     + e.replaced
                                                     + val.substring(at + k.length());// keyed !!
+                                            break;// first only
                                         }
                                     }
                                 }
