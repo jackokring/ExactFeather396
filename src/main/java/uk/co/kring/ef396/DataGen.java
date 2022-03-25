@@ -123,7 +123,7 @@ public class DataGen {
                         replaced = val;//substitution
                         String trimmed = trimmedKey(key);
                         int idx = key.indexOf(trimmed);
-                        prefix = key.substring(0, idx);
+                        prefix = key.substring(0, idx - 2);// for $$
                         postfix = key.substring(idx + trimmed.length());
                     }
 
@@ -135,8 +135,12 @@ public class DataGen {
                         return key.split("\\$\\$")[1].split("\\.")[0];
                     }
 
+                    public static boolean valueHasKey(String val) {
+                        return val.contains("$") && !val.contains("%");// formatted? avoid
+                    }
+
                     public static String expandValue(String key, String val) {
-                        while (val.contains("$")) {
+                        while (valueHasKey(val)) {
                             String k = maximalKey(val);
                             while(k.length() > 0) {
                                 List<Entry> el = hashMap.get(k);
@@ -167,46 +171,46 @@ public class DataGen {
 
                 public static HashMap<String, List<Entry>> hashMap = new HashMap<>();
 
+                private void the(String key, String val) {//pass 2
+                    // substitutions
+                    if (key.contains("$")) {
+                        String k = Entry.maximalKey(key);
+                        while (k.length() > 0) {
+                            List<Entry> el = hashMap.get(k);
+                            if (el != null) {
+                                for (Entry e : el) {
+                                    if (key.contains(e.prefix)) {
+                                        int at = key.indexOf("$");
+                                        String nestKey = key.substring(0, at)
+                                                + e.postfix
+                                                + key.substring(at + k.length());// keyed !!
+                                        // so a lot of intermediate expansions happen
+                                        String nestVal = Entry.expandValue(nestKey, val);
+                                        add(nestKey, nestVal);
+                                        the(nestKey, nestVal);
+                                    }
+                                }
+                            };
+                            k = k.substring(0, k.length() - 1);//reduce key
+                            if (k.length() == 0) {
+                                ExactFeather.LOGGER.error("\"" + key + "\" has missing key.");
+                                int at = key.indexOf("$");
+                                key = key.substring(0, at) + key.substring(at + 1);//drop $
+                            }
+                        }
+                    }
+                };
+
                 @Override
                 protected void addTranslations() {
                     iterate((key, val) -> {//pass 1
                         if(Entry.isKey(key)) {
                             String trimmed = Entry.trimmedKey(key);
-                            List<Entry> le = hashMap.get(trimmed);
-                            if(le == null) {
-                                le = new LinkedList<>();
-                                hashMap.put(trimmed, le);
-                            }
+                            List<Entry> le = hashMap.computeIfAbsent(trimmed, k -> new LinkedList<>());
                             le.add(new Entry(key, val));//append
                         }
                     });
-                    iterate((key, val) -> {//pass 2
-                        // substitutions
-                        while (key.contains("$")) {
-                            String k = Entry.maximalKey(key);
-                            while (k.length() > 0) {
-                                List<Entry> el = hashMap.get(k);
-                                if (el != null) {
-                                    for (Entry e : el) {
-                                        if (key.contains(e.prefix)) {
-                                            int at = key.indexOf("$");
-                                            key = key.substring(0, at)
-                                                    + e.postfix
-                                                    + key.substring(at + k.length());// keyed !!
-                                            // so a lot of intermediate expansions happen
-                                            add(key, Entry.expandValue(key, val));
-                                        }
-                                    }
-                                };
-                                k = k.substring(0, k.length() - 1);//reduce key
-                                if (k.length() == 0) {
-                                    ExactFeather.LOGGER.error("\"" + key + "\" has missing key.");
-                                    int at = key.indexOf("$");
-                                    key = key.substring(0, at) + key.substring(at + 1);//drop $
-                                }
-                            }
-                        }
-                    });
+                    iterate(this::the);//pass 2
                 }
             });
             // ============= Excellent covers all cases likely =============
