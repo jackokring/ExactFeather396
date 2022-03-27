@@ -2,8 +2,11 @@ package uk.co.kring.ef396.entities.goals;
 
 import net.minecraft.world.entity.ai.goal.Goal;
 import uk.co.kring.ef396.entities.HogEntity;
+import uk.co.kring.ef396.entities.goals.exceptions.BaseCodeException;
+import uk.co.kring.ef396.entities.goals.exceptions.StubbornException;
 
 import java.util.EnumSet;
+import java.util.function.Consumer;
 
 public class AICommon extends Goal {
 
@@ -15,6 +18,19 @@ public class AICommon extends Goal {
 
     public final HogEntity getEntity() {
         return entity;
+    }
+
+    public BaseCodeException performSyncAction(Consumer<HogEntity> use) {
+        RuntimeException again = null;
+        synchronized(entity) {
+            try {
+                use.accept(entity);
+            } catch(RuntimeException e) {
+                again = e;
+            }
+        }
+        if(again != null) return BaseCodeException.catchAssist(again);
+        return new StubbornException();//as it does nothing when emoted
     }
 
     @Override
