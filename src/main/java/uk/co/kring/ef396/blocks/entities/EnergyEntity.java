@@ -60,7 +60,8 @@ public class EnergyEntity extends BlockEntity {
         BlockState blockState = level.getBlockState(worldPosition);
         if (blockState.getValue(BlockStateProperties.POWERED) != counter > 0) {
             level.setBlock(worldPosition,
-                    blockState.setValue(BlockStateProperties.POWERED, counter > 0),
+                    blockState.setValue(BlockStateProperties.POWERED, counter > 0)
+                                .setValue(BlockStateProperties.POWER, counter > 0 ? 15 : 0),
                     Block.UPDATE_ALL);
         }
         sendOutPower();
@@ -88,7 +89,7 @@ public class EnergyEntity extends BlockEntity {
                                 }
                             }
                     ).orElse(true);
-                    if (!doContinue) {
+                    if (!doContinue) {// fast empty baulk
                         return;
                     }
                 }

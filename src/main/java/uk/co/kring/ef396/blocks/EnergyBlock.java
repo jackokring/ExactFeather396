@@ -46,11 +46,10 @@ public class EnergyBlock extends Block implements EntityBlock /* , ModelledBlock
         super(Properties.of(Material.METAL)
                 .sound(SoundType.METAL)
                 .strength(2.0f)
-                .lightLevel(state -> state.getValue(BlockStateProperties.POWERED) ? 14 : 0)
+                .lightLevel(state -> state.getValue(BlockStateProperties.POWERED) ? 15 : 0)
         );
         this.rbg = rbg;
     }
-
 
     public int dischargeRate() {
         return charge() >> 8;
@@ -68,12 +67,15 @@ public class EnergyBlock extends Block implements EntityBlock /* , ModelledBlock
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
         builder.add(BlockStateProperties.POWERED);
+        builder.add(BlockStateProperties.POWER);
     }
 
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return super.getStateForPlacement(context).setValue(BlockStateProperties.POWERED, false);
+        return super.getStateForPlacement(context)
+                .setValue(BlockStateProperties.POWERED, false)
+                .setValue(BlockStateProperties.POWER, 0);
     }
 
     @Override
