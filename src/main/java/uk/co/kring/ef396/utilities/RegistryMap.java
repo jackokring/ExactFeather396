@@ -162,7 +162,7 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
                 }));
         // actionable attributes registration
         ExactFeather.registerAttrib((event)
-                -> event.put(he.get(), HogEntity.createLivingAttributes().build()));
+                -> event.put(he.get(), hi.prepareAttributes().build()));//dynamic
         // biome specific spawn assignments
         ExactFeather.registerSpawn((event) -> {
             if(event.getName() == null) return;

@@ -1,6 +1,7 @@
 package uk.co.kring.ef396;
 
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -55,6 +56,8 @@ public class Loaded {
     public final void init() {
         Configurator.pushRegisterNest(Registries.items);
         items(Registries.items);
+        Configurator.pushRegisterNest(Registries.effects);
+        effects(Registries.effects);
         Configurator.pushRegisterNest(Registries.potions);
         potions(Registries.potions);
         Configurator.pushRegisterNest(Registries.blocks);
@@ -70,6 +73,7 @@ public class Loaded {
     public static RegistryObject<Block> rubyBlock;
     public static RegistryBlockGroup energy;// special for compound return
     public static Map<Item, RegistryObject<Potion>> mundane711 = BrewingCommon.mundaneFix();//a choice
+    // above line also registers custom attributes
     public static RegistryObject<EntityType<HogEntity>> hog;
     public static RegistryObject<SoundEvent> error, boom, wipple;
     public static CreativeModeTab tab;
@@ -110,6 +114,10 @@ public class Loaded {
                         new Item.Properties().tab(tab)));
         // Books
         reg.regBook("book_1", tab);
+    }
+
+    protected void effects(RegistryMap<MobEffect> reg) {
+
     }
 
     protected void potions(RegistryMap<Potion> reg) {

@@ -1,5 +1,6 @@
 package uk.co.kring.ef396.recipes;
 
+import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -9,13 +10,17 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.brewing.BrewingRecipe;
 import net.minecraftforge.registries.RegistryObject;
+import uk.co.kring.ef396.entities.initials.UnitaryAttribute;
 import uk.co.kring.ef396.utilities.Registries;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 public class BrewingCommon extends BrewingRecipe {
+
+    public static Attribute A = new UnitaryAttribute("zz", 0);
 
     public BrewingCommon(Potion input, RegistryObject<? extends Item> ingredient,
                          RegistryObject<Potion> potion) {
@@ -34,12 +39,8 @@ public class BrewingCommon extends BrewingRecipe {
         return PotionUtils.setPotion(new ItemStack(Items.POTION), called.get());
     }
 
-    public static Map<Item, RegistryObject<Potion>> mundaneFix() {
-        // extra base alchemy-cals
-        var reg = Registries.potions;
-        HashMap<Item, RegistryObject<Potion>> list = new HashMap<>();
-        Item[] items = {
-                /* The Gang of 13 */
+    public static final Item[] items = {
+            /* The Gang of 13 */
 
             Items.SUGAR,                    //p
             Items.MAGMA_CREAM,              //T
@@ -54,7 +55,27 @@ public class BrewingCommon extends BrewingRecipe {
             Items.PUFFERFISH,               //Water
             Items.PHANTOM_MEMBRANE,         //Air
             // Items.FERMENTED_SPIDER_EYE, -> leave for corrupt, and usual
-        };
+    };
+
+    private static Attribute[] ua;
+
+    public static Attribute[] attributes() {
+        return ua;// unique static
+    }
+
+    public static Map<Item, RegistryObject<Potion>> mundaneFix() {
+        // extra base alchemy-cals
+        var reg = Registries.potions;
+        var reg2 = Registries.attributes;
+        HashMap<Item, RegistryObject<Potion>> list = new HashMap<>();
+        ua = new Attribute[items.length];
+        for(int i = 0; i < items.length; i++) {
+            String name = items[i].getRegistryName().getPath();
+            Supplier<Attribute> tmp = () -> new UnitaryAttribute(name,
+                    0).setSyncable(true);
+            var tmp3 = reg2.register(name, tmp);
+            ua[i] = tmp3.get();//get unique
+        }
         Arrays.stream(items).forEach((what) -> {
             list.put(what, reg.regAlchemyBase(what.getRegistryName().getPath(), what));
         });

@@ -1,7 +1,10 @@
 package uk.co.kring.ef396.utilities;
 
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.alchemy.Potion;
@@ -16,6 +19,10 @@ public class Registries {
 
     public final static RegistryMap<Item> items
             = new RegistryMap<Item>(DeferredRegister.create(ForgeRegistries.ITEMS, ExactFeather.MOD_ID));
+    public final static RegistryMap<Attribute> attributes
+            = new RegistryMap<Attribute>(DeferredRegister.create(ForgeRegistries.ATTRIBUTES, ExactFeather.MOD_ID));
+    public final static RegistryMap<MobEffect> effects
+            = new RegistryMap<MobEffect>(DeferredRegister.create(ForgeRegistries.MOB_EFFECTS, ExactFeather.MOD_ID));
     public final static RegistryMap<Potion> potions
             = new RegistryMap<Potion>(DeferredRegister.create(ForgeRegistries.POTIONS, ExactFeather.MOD_ID));
     public final static RegistryMap<Block> blocks
@@ -31,6 +38,8 @@ public class Registries {
 
     public static void register(IEventBus bus) {
         items.register(bus);
+        attributes.register(bus);
+        effects.register(bus);
         potions.register(bus);
         blocks.register(bus);
         entities.register(bus);
