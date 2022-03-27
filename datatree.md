@@ -10,40 +10,21 @@ src/main/resources/data
 │   │   ├── entities
 │   │   │   └── hog.json
 │   │   └── gameplay
-│   ├── recipes
-│   │   ├── energy.json
-│   │   ├── ruby_axe.json
-│   │   ├── ruby_block.json
-│   │   ├── ruby_boots.json
-│   │   ├── ruby_chestplate.json
-│   │   ├── ruby_helmet.json
-│   │   ├── ruby_hoe.json
-│   │   ├── ruby.json
-│   │   ├── ruby_leggings.json
-│   │   ├── ruby_pickaxe.json
-│   │   ├── ruby_shovel.json
-│   │   ├── ruby_smelt.json
-│   │   └── ruby_sword.json
-│   └── tags
-│       └── items
-├── forge
-│   └── tags
-│       ├── blocks
-│       │   ├── ores
-│       │   └── ruby.json
-│       └── items
-│           ├── gems
-│           │   └── ruby.json
-│           └── ores
-│               └── ruby.json
+│   └── recipes
+│       ├── energy.json
+│       ├── ruby_axe.json
+│       ├── ruby_block.json
+│       ├── ruby_boots.json
+│       ├── ruby_chestplate.json
+│       ├── ruby_helmet.json
+│       ├── ruby_hoe.json
+│       ├── ruby.json
+│       ├── ruby_leggings.json
+│       ├── ruby_pickaxe.json
+│       ├── ruby_shovel.json
+│       ├── ruby_smelt.json
+│       └── ruby_sword.json
 └── minecraft
-    ├── tags
-    │   ├── blocks
-    │   │   ├── mineable
-    │   │   │   └── pickaxe.json
-    │   │   └── needs_stone_tool.json
-    │   └── items
-    │       └── piglin_loved.json
     └── worldgen
         ├── biome
         ├── configured_carver
@@ -55,5 +36,5 @@ src/main/resources/data
         ├── processor_list
         └── template_pool
 
-30 directories, 24 files
+17 directories, 18 files
 ```

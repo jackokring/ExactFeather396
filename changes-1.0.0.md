@@ -12,7 +12,7 @@
 * Added `PriorityHashMap` for first entry priority. Includes `overwrite()` for `super.put()` behaviour. Also includes `getViolations()` for a `List` of the pretenders given a key.
 * `PoisonAppleItem` replaces unmapped items. Uses configuration. Stacks to 33 items.
 * `RubyBlock` replaces unmapped blocks.
-* `HogEntity` replaces unmapped mobs. Temptation via `(ItemLike) Potions.THICK`. Basic texture replace on a `Zombie` as this was easier to engineer as the `Animal` renderer seems more complex. Perhaps this is for the best as the mechanic of reproduction is then open for differentiation.
+* `HogEntity` replaces unmapped mobs. Temptation via `(ItemLike) Potions.THICK`. Basic texture replace on a `Humanoid` as this was easy to engineer. Perhaps this is for the best as the mechanic of reproduction is then open for differentiation.
 * `error.ogg` replaces unmapped sounds.
 * Added tree view of data and asset directories.
 * `Configurator` class easy implements a lot of the boilerplate for configuration files in a reduced number of classes.
@@ -24,12 +24,12 @@
 * Added `mudane711` field for fix for potions of Mundane nature.
 * Added feature override without replace for small diamond ore deposit to include ruby blocks and ore. At `src/main/resources/data/minecraft/worldgen/configured_feature/ore_diamond_small.json`.
 * Moving to an `ItemModelProvider` in `DataGen` as all cases are simple enough. Simple `BlockItem`, `Item` and `ForgeSpawnEggItem`.
+* Automatic tags via `runData` with `implements` interfaces.
 
 ### TODO
 * Finish basic book implementation.
 * Implement some AI.
 * Maybe a custom effect.
-* Tags for classification, and generates in world.
 * Custom `MobEffect` with `addAttributeModifier`, and it seems to have a few serialization IDs. Perhaps `396` is a good choice.
 * Custom `Attribute` to interact with the mind AI.
 * Perhaps a `BlockEntity` like a minimal `ItemStack` count of a variety, while auto running through the recipes to maximize fullness with build-ables.
@@ -38,5 +38,3 @@
 * Texture for `Hog`.
 * Power and item autoloader hopper directions?
 * Custom mana.
-* hog food again.
-* 
