@@ -18,6 +18,7 @@ import uk.co.kring.ef396.blocks.entities.EnergyScreen;
 import uk.co.kring.ef396.entities.HogEntity;
 import uk.co.kring.ef396.entities.initials.HogInitials;
 import uk.co.kring.ef396.items.PoisonAppleItem;
+import uk.co.kring.ef396.items.Ruby;
 import uk.co.kring.ef396.items.enums.ModArmorMaterial;
 import uk.co.kring.ef396.items.enums.ModItemTier;
 import uk.co.kring.ef396.recipes.BrewingCommon;
@@ -75,8 +76,7 @@ public class Loaded {
 
     protected void items(RegistryMap<Item> reg) {
         tab = tab(() -> ruby);
-        ruby = reg.register("ruby",
-                () -> new Item(new Item.Properties().tab(tab)));
+        ruby = reg.register("ruby", () -> new Ruby(tab));
         poison_apple = reg.register("poison_apple", () -> new PoisonAppleItem(tab),
                 PoisonAppleItem::loadConfig);
         // Tools

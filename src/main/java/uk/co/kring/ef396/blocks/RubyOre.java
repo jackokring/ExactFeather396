@@ -7,11 +7,15 @@ import net.minecraft.world.level.block.OreBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
+import uk.co.kring.ef396.tags.MinablePickaxe;
+import uk.co.kring.ef396.tags.MinableStone;
+import uk.co.kring.ef396.tags.OreTag;
 
-public class RubyOre extends OreBlock {
+public class RubyOre extends OreBlock implements
+        OreTag, MinablePickaxe, MinableStone {
 
     public RubyOre() {
-        super(Block.Properties.of(Material.METAL)
+        super(Block.Properties.of(Material.STONE)
                 .requiresCorrectToolForDrops()
                 .strength(3.0f, 4.0f)
                 .sound(SoundType.STONE));

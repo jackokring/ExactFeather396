@@ -35,22 +35,22 @@
 
   "$item.poison_apple": "Poison Apple",
 
-  "$$ruby.ruby": "Ruby",
-  "$item.$ruby": "$ruby",
+  "$$gem.ruby": "Ruby",
+  "$item.$gem": "$gem",
 
-  "$item.$ruby_sword": "$ruby Sword",
-  "$item.$ruby_pickaxe": "$ruby Pickaxe",
-  "$item.$ruby_shovel": "$ruby Shovel",
-  "$item.$ruby_axe": "$ruby Axe",
-  "$item.$ruby_hoe": "$ruby Hoe",
+  "$item.$gem_sword": "$gem Sword",
+  "$item.$gem_pickaxe": "$gem Pickaxe",
+  "$item.$gem_shovel": "$gem Shovel",
+  "$item.$gem_axe": "$gem Axe",
+  "$item.$gem_hoe": "$gem Hoe",
 
-  "$item.$ruby_helmet": "$ruby Helmet",
-  "$item.$ruby_chestplate": "$ruby Chestplate",
-  "$item.$ruby_leggings": "$ruby Leggings",
-  "$item.$ruby_boots": "$ruby Boots",
+  "$item.$gem_helmet": "$gem Helmet",
+  "$item.$gem_chestplate": "$gem Chestplate",
+  "$item.$gem_leggings": "$gem Leggings",
+  "$item.$gem_boots": "$gem Boots",
 
-  "$block.$ruby_block": "Block of $ruby",
-  "$block.$ruby_ore": "$ruby Ore",
+  "$block.$gem_block": "Block of $gem",
+  "$block.$gem_ore": "$gem Ore",
   "$block.energy": "Black Box Energizer",
   "$block.screen.energy": "Energizer Control",
 

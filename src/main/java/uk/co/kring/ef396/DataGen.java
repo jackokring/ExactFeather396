@@ -1,20 +1,21 @@
 package uk.co.kring.ef396;
 
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.tags.BlockTagsProvider;
 import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.common.ForgeSpawnEggItem;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.LanguageProvider;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -22,10 +23,11 @@ import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 import org.jetbrains.annotations.NotNull;
 import uk.co.kring.ef396.blocks.ModelledBlock;
 import uk.co.kring.ef396.items.ModelledItem;
+import uk.co.kring.ef396.tags.*;
+import uk.co.kring.ef396.utilities.JsonAdapter;
 import uk.co.kring.ef396.utilities.Registries;
 
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -43,52 +45,37 @@ public class DataGen {
 
                 }
             });
-            /* gen.addProvider(new LootTableProvider(gen) {
-                @Override
-                protected List<Pair<Supplier<Consumer<BiConsumer<ResourceLocation, LootTable.Builder>>>, LootContextParamSet>> getTables() {
-                    return super.getTables();
-                }
-            }); */
             var blockTags = new BlockTagsProvider(gen, ExactFeather.MOD_ID, file) {
                 @Override
                 protected void addTags() {
-                    /* var reg = Registries.blocks;
+                    var reg = Registries.blocks;
                     reg.getEntries().forEach((block) -> {
                         Block b = block.get();
-                        // more complex block types
-                        if (b instanceof Block) {
-                            /* BlockTags.MINEABLE_WITH_PICKAXE.
-                                    .add(b);
-                            tag(BlockTags.NEEDS_IRON_TOOL)
-                                    .add(b);
-                            tag(Tags.Blocks.ORES)
-                                    .add(b);
-                            return;
-
-                        }
-                    }); */
+                        if(b instanceof MinablePickaxe) tag(BlockTags.MINEABLE_WITH_PICKAXE).add(b);
+                        if(b instanceof MinableStone) tag(BlockTags.NEEDS_STONE_TOOL).add(b);
+                        if(b instanceof OreTag) tag(Tags.Blocks.ORES).add(b);
+                    });
                 }
             };
             gen.addProvider(blockTags);
             gen.addProvider(new ItemTagsProvider(gen, blockTags, ExactFeather.MOD_ID, file) {
                 @Override
                 protected void addTags() {
-                    /* var reg = Registries.items;
+                    var reg = Registries.items;
                     reg.getEntries().forEach((item) -> {
-                        Item b = item.get();
-                        // more complex block types
-                        if (b instanceof Item) {
-                            //Tags.Blocks.class.
-                            /* tag(Tags.Items.ORES)
-                                    .add(b);
-                            return;
-
+                        Item i = item.get();
+                        if (i instanceof BlockItem bi) {
+                            Block b = bi.getBlock();
+                            if(b instanceof OreTag) tag(Tags.Items.ORES).add(i);
                         }
-                    }); */
+                        if(i instanceof GemTag) tag(Tags.Items.GEMS).add(i);
+                        if(i instanceof PiglinLovedTag) tag(ItemTags.PIGLIN_LOVED).add(i);
+                    });
                 }
             });
         }
         if (event.includeClient()) {
+            // ======================== MACRO EXPANDER ====================
             gen.addProvider(new LanguageProvider(gen, ExactFeather.MOD_ID, "en_us") {
                 @FunctionalInterface
                 public interface FunkyHashEntry {
@@ -101,11 +88,8 @@ public class DataGen {
                                         new ResourceLocation(ExactFeather.MOD_ID, "en_us"),
                                         PackType.CLIENT_RESOURCES, ".json", "lang/")
                                 .getInputStream();
-                        JsonElement json = JsonParser.parseString(
-                                new String(is.readAllBytes(),
-                                        StandardCharsets.UTF_8).trim());
-                        JsonObject jsonObject = json.getAsJsonObject();
-                        jsonObject.entrySet().forEach((entry) -> {
+                        JsonAdapter ja = new JsonAdapter(is);
+                        ja.forEach((entry) -> {
                             String key = entry.getKey();
                             JsonElement val = entry.getValue();
                             String v = val.getAsString();
@@ -154,7 +138,7 @@ public class DataGen {
                                             int at = val.indexOf("$");
                                             val = val.substring(0, at)
                                                     + e.replaced
-                                                    + val.substring(at + k.length());// keyed !!
+                                                    + val.substring(at + k.length() + 1);// keyed !!
                                             break;// first only
                                         }
                                     }
@@ -188,7 +172,7 @@ public class DataGen {
                                         int at = key.indexOf("$");
                                         String nestKey = key.substring(0, at)
                                                 + e.postfix
-                                                + key.substring(at + k.length());// keyed !!
+                                                + key.substring(at + k.length() + 1);// keyed !!
                                         // so a lot of intermediate expansions happen
                                         String nestVal = Entry.expandValue(nestKey, val);
                                         add(nestKey, nestVal);
@@ -225,7 +209,10 @@ public class DataGen {
                 protected void registerStatesAndModels() {
                     Registries.blocks.getEntries().forEach((block) -> {
                         Block b = block.get();
-                        if(b instanceof ModelledBlock) return;//needs own model ...
+                        if(b instanceof ModelledBlock bm) {
+                            bm.provideModel(this);
+                            return;//needs own model ...
+                        }
                         simpleBlock(b);
                     });
                 }
@@ -236,7 +223,10 @@ public class DataGen {
                 protected void registerModels() {
                     Registries.items.getEntries().forEach((item) -> {
                         Item i = item.get();
-                        if(i instanceof ModelledItem) return;//needs own model ...
+                        if(i instanceof ModelledItem im) {
+                            im.provideModel(this);
+                            return;//needs own model ...
+                        }
                         if(i instanceof ForgeSpawnEggItem) {
                             withExistingParent(Objects.requireNonNull(i.getRegistryName()).getPath(),
                                     mcLoc("item/template_spawn_egg"));
