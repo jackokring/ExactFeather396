@@ -1,6 +1,8 @@
 package uk.co.kring.ef396;
 
+import net.minecraft.world.entity.Entity;
 import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.client.gui.OverlayRegistry;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
@@ -10,14 +12,20 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import uk.co.kring.ef396.manas.ManaConfig;
+import uk.co.kring.ef396.manas.ManaEvents;
+import uk.co.kring.ef396.manas.ManaOverlay;
 import uk.co.kring.ef396.server.LevelController;
 import uk.co.kring.ef396.utilities.Configurator;
+import uk.co.kring.ef396.utilities.Messages;
 import uk.co.kring.ef396.utilities.Registries;
 import uk.co.kring.ef396.utilities.ThisLogger;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
+
+import static net.minecraftforge.client.gui.ForgeIngameGui.HOTBAR_ELEMENT;
 
 @Mod("ef396")
 public class ExactFeather {
@@ -46,6 +54,10 @@ public class ExactFeather {
         bus.addListener(this::doAttributes);
         bus.addListener(this::doSpawn);
         bus.addListener(this::doLayers);
+        bus.addGenericListener(Entity.class, ManaEvents::onAttachCapabilitiesPlayer);
+        bus.addListener(ManaEvents::onPlayerCloned);
+        bus.addListener(ManaEvents::onRegisterCapabilities);
+        bus.addListener(ManaEvents::onWorldTick);
         MinecraftForge.EVENT_BUS.register(this);
 
         // a configuration handler
@@ -56,6 +68,10 @@ public class ExactFeather {
         // in handler method
         Configurator.configNode("module_global",
                 (builder) -> setConfig(builder));
+        Configurator.configGame("mana.server",
+                ManaConfig::registerServerConfig);
+        Configurator.configTart("mana.client",
+                ManaConfig::registerClientConfig);
 
         Registries.register(bus);
         Loader.init(LOADER);
@@ -75,6 +91,7 @@ public class ExactFeather {
                 recipe.accept(event);
             });
         });
+        Messages.register();
     }
 
     private void doClientStuff(final FMLClientSetupEvent event) {
@@ -83,6 +100,10 @@ public class ExactFeather {
                 render.accept(event);
             });
         });
+        MinecraftForge.EVENT_BUS.addListener(KeyBindings::onKeyInput);
+        KeyBindings.init();
+        OverlayRegistry.registerOverlayAbove(HOTBAR_ELEMENT,
+                "Mana", ManaOverlay.HUD_MANA);
     }
 
     private void doAttributes(final EntityAttributeCreationEvent event) {
