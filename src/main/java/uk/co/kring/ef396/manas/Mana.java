@@ -1,10 +1,12 @@
 package uk.co.kring.ef396.manas;
 
-public class Mana {
+import net.minecraft.nbt.CompoundTag;
+
+public class Mana {// OK, basic load/save mana persistence holder
     private int mana;
 
     public Mana(int mana) {
-        this.mana = mana;
+        setMana(mana);
     }
 
     public int getMana() {
@@ -13,5 +15,22 @@ public class Mana {
 
     public void setMana(int mana) {
         this.mana = mana;
+    }
+
+    public void addMana(int mana) {
+        this.mana += mana;
+    }
+
+    public void copyFrom(Mana source) {
+        mana = source.mana;
+    }
+
+
+    public void saveNBTData(CompoundTag compound) {
+        compound.putInt("mana", mana);
+    }
+
+    public void loadNBTData(CompoundTag compound) {
+        mana = compound.getInt("mana");
     }
 }

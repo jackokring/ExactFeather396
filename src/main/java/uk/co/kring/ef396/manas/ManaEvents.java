@@ -37,7 +37,7 @@ public class ManaEvents {
 
     // Finally, we need to register our capability in a RegisterCapabilitiesEvent
     public static void onRegisterCapabilities(RegisterCapabilitiesEvent event) {
-        event.register(PlayerMana.class);
+        event.register(Mana.class);
     }
 
     public static void onWorldTick(TickEvent.WorldTickEvent event) {

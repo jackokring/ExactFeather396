@@ -21,7 +21,7 @@
 * Started on a `BaseCodeException` system for AI processing.
 * Added a `BedtimeBook` idea.
 * Experimental `Loaded` by `Loader` for modularization of the source tree to reduce merge conflicts on pull requests.
-* Added `mudane711` field for fix for potions of Mundane nature.
+* Added `mudane711` field for fix for potions of Mundane nature with `UnitaryAttribute` on `HogEntity`.
 * Added feature override without replace for small diamond ore deposit to include ruby blocks and ore. At `src/main/resources/data/minecraft/worldgen/configured_feature/ore_diamond_small.json`.
 * Moving to an `ItemModelProvider` in `DataGen` as all cases are simple enough. Simple `BlockItem`, `Item` and `ForgeSpawnEggItem`.
 * Automatic tags via `runData` with `implements` interfaces.
@@ -30,8 +30,6 @@
 ### TODO
 * Finish basic book implementation.
 * Implement some AI.
-* Maybe a custom effect.
-* Custom `MobEffect` with `addAttributeModifier`, and it seems to have a few serialization IDs. Perhaps `396` is a good choice.
 * Perhaps a `BlockEntity` like a minimal `ItemStack` count of a variety, while auto running through the recipes to maximize fullness with build-ables.
 * `TranslatableComponent` (client only!!) and other book ideas.
 * Distributed AI on the network.

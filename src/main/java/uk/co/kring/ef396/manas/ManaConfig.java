@@ -2,7 +2,7 @@ package uk.co.kring.ef396.manas;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 
-public class ManaConfig {
+public class ManaConfig {//OK config
 
     public static ForgeConfigSpec.IntValue CHUNK_MIN_MANA;
     public static ForgeConfigSpec.IntValue CHUNK_MAX_MANA;

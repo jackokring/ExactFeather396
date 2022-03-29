@@ -20,7 +20,8 @@ import java.util.Random;
 
 public class ManaManager extends SavedData {
 
-    // For every chunk that we visisted already we store the mana currently available. Note that this is done in a lazy way.
+    // For every chunk that we visited already we store the mana currently available.
+    // Note that this is done in a lazy way.
     // Chunks that we didn't visit will not have mana yet
     private final Map<ChunkPos, Mana> manaMap = new HashMap<>();
     private final Random random = new Random();
@@ -28,7 +29,8 @@ public class ManaManager extends SavedData {
     // Keep a counter so that we don't send mana back to the client every tick
     private int counter = 0;
 
-    // This function can be used to get access to the mana manager for a given level. It can only be called server-side!
+    // This function can be used to get access to the mana manager for a given level.
+    // It can only be called server-side!
     @Nonnull
     public static ManaManager get(Level level) {
         if (level.isClientSide) {
@@ -36,7 +38,7 @@ public class ManaManager extends SavedData {
         }
         // Get the vanilla storage manager from the level
         DimensionDataStorage storage = ((ServerLevel)level).getDataStorage();
-        // Get the mana manager if it already exists. Otherwise create a new one. Note that both
+        // Get the mana manager if it already exists. Otherwise, create a new one. Note that both
         // invocations of ManaManager::new actually refer to a different constructor. One without parameters
         // and the other with a CompoundTag parameter
         return storage.computeIfAbsent(ManaManager::new, ManaManager::new, "manamanager");
@@ -44,9 +46,12 @@ public class ManaManager extends SavedData {
 
     @NotNull
     private Mana getManaInternal(BlockPos pos) {
-        // Get the mana at a certain chunk. If this is the first time then we fill in the manaMap using computeIfAbsent
+        // Get the mana at a certain chunk.
+        // If this is the first time then we fill in the manaMap using computeIfAbsent
         ChunkPos chunkPos = new ChunkPos(pos);
-        return manaMap.computeIfAbsent(chunkPos, cp -> new Mana(random.nextInt(ManaConfig.CHUNK_MAX_MANA.get()) + ManaConfig.CHUNK_MIN_MANA.get()));
+        return manaMap.computeIfAbsent(chunkPos,
+                cp -> new Mana(random.nextInt(ManaConfig.CHUNK_MAX_MANA.get())
+                        + ManaConfig.CHUNK_MIN_MANA.get()));
     }
 
     public int getMana(BlockPos pos) {
@@ -79,7 +84,7 @@ public class ManaManager extends SavedData {
             level.players().forEach(player -> {
                 if (player instanceof ServerPlayer serverPlayer) {
                     int playerMana = serverPlayer.getCapability(PlayerManaProvider.PLAYER_MANA)
-                            .map(PlayerMana::getMana)
+                            .map(Mana::getMana)
                             .orElse(-1);
                     int chunkMana = getMana(serverPlayer.blockPosition());
                     Messages.sendToPlayer(new PacketSyncManaToClient(playerMana, chunkMana), serverPlayer);
@@ -118,5 +123,4 @@ public class ManaManager extends SavedData {
         tag.put("mana", list);
         return tag;
     }
-
 }

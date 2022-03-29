@@ -49,4 +49,9 @@ public class BlankLoaded extends Loaded {
     protected void sounds(RegistryMap<SoundEvent> reg) {
 
     }
+
+    @Override
+    protected void keys() {
+
+    }
 }

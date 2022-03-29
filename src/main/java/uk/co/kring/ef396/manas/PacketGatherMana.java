@@ -6,10 +6,11 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkEvent;
+import uk.co.kring.ef396.utilities.Packet;
 
 import java.util.function.Supplier;
 
-public class PacketGatherMana {
+public class PacketGatherMana implements Packet {//OK basic packet and handler class
     public static final String MESSAGE_NO_MANA = "message.nomana";
 
     public PacketGatherMana() {

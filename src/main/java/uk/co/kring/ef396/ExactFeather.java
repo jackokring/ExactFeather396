@@ -16,10 +16,7 @@ import uk.co.kring.ef396.manas.ManaConfig;
 import uk.co.kring.ef396.manas.ManaEvents;
 import uk.co.kring.ef396.manas.ManaOverlay;
 import uk.co.kring.ef396.server.LevelController;
-import uk.co.kring.ef396.utilities.Configurator;
-import uk.co.kring.ef396.utilities.Messages;
-import uk.co.kring.ef396.utilities.Registries;
-import uk.co.kring.ef396.utilities.ThisLogger;
+import uk.co.kring.ef396.utilities.*;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -100,8 +97,7 @@ public class ExactFeather {
                 render.accept(event);
             });
         });
-        MinecraftForge.EVENT_BUS.addListener(KeyBindings::onKeyInput);
-        KeyBindings.init();
+        MinecraftForge.EVENT_BUS.addListener(KeyBinding::onKeyInput);
         OverlayRegistry.registerOverlayAbove(HOTBAR_ELEMENT,
                 "Mana", ManaOverlay.HUD_MANA);
     }

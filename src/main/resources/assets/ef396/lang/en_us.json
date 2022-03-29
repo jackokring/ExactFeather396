@@ -74,5 +74,8 @@
 
   "$subs.error": "$tag_hog Error",
   "$subs.boom": "$tag_hog Died",
-  "$subs.wipple": "$tag_hog"
+  "$subs.wipple": "$tag_hog",
+
+  "key.gatherMana": "Gather Mana",
+  "message.nomana": "There is no Mana"
 }

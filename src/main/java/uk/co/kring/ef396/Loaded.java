@@ -22,13 +22,10 @@ import uk.co.kring.ef396.items.PoisonAppleItem;
 import uk.co.kring.ef396.items.Ruby;
 import uk.co.kring.ef396.items.enums.ModArmorMaterial;
 import uk.co.kring.ef396.items.enums.ModItemTier;
-import uk.co.kring.ef396.manas.ManaConfig;
+import uk.co.kring.ef396.manas.PacketGatherMana;
 import uk.co.kring.ef396.recipes.BrewingCommon;
 import uk.co.kring.ef396.recipes.MobEffectCommon;
-import uk.co.kring.ef396.utilities.Configurator;
-import uk.co.kring.ef396.utilities.Registries;
-import uk.co.kring.ef396.utilities.RegistryBlockGroup;
-import uk.co.kring.ef396.utilities.RegistryMap;
+import uk.co.kring.ef396.utilities.*;
 
 import java.util.Map;
 import java.util.function.Supplier;
@@ -67,6 +64,7 @@ public class Loaded {
         entities(Registries.entities);
         Configurator.pushRegisterNest(Registries.sounds);
         sounds(Registries.sounds);
+        keys();
     }
 
     public static RegistryObject<Item> ruby, poison_apple, hogSpawnEgg;
@@ -158,5 +156,9 @@ public class Loaded {
         error = reg.regSound("error");
         boom = reg.regSound("boom");
         wipple = reg.regSound("wipple");
+    }
+
+    protected void keys() {
+        new KeyBinding("gatherMana", "period", PacketGatherMana::new);
     }
 }
