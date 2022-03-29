@@ -7,8 +7,8 @@ import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
 import uk.co.kring.ef396.ExactFeather;
-import uk.co.kring.ef396.manas.PacketGatherMana;
-import uk.co.kring.ef396.manas.PacketSyncManaToClient;
+import uk.co.kring.ef396.manas.packets.PacketGatherMana;
+import uk.co.kring.ef396.manas.packets.PacketSyncManaToClient;
 
 public class Messages {
     private static SimpleChannel INSTANCE;

@@ -46,7 +46,7 @@ public class EnergyBlock extends Block implements EntityBlock /* , ModelledBlock
         super(Properties.of(Material.METAL)
                 .sound(SoundType.METAL)
                 .strength(2.0f)
-                .lightLevel(state -> state.getValue(BlockStateProperties.POWERED) ? 15 : 0)
+                .lightLevel(state -> state.getValue(BlockStateProperties.POWER))
         );
         this.rbg = rbg;
     }
@@ -63,10 +63,13 @@ public class EnergyBlock extends Block implements EntityBlock /* , ModelledBlock
         return 65535;
     }
 
+    public final int scaleRedstone(int count) {
+        return 15 * count / 65535;
+    }
+
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
-        builder.add(BlockStateProperties.POWERED);
         builder.add(BlockStateProperties.POWER);
     }
 
@@ -74,7 +77,6 @@ public class EnergyBlock extends Block implements EntityBlock /* , ModelledBlock
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         return super.getStateForPlacement(context)
-                .setValue(BlockStateProperties.POWERED, false)
                 .setValue(BlockStateProperties.POWER, 0);
     }
 
@@ -83,9 +85,9 @@ public class EnergyBlock extends Block implements EntityBlock /* , ModelledBlock
                                 List<Component> list, TooltipFlag flags) {
         list.add(new TranslatableComponent(nameScreen()).withStyle(ChatFormatting.AQUA));
         list.add(new TranslatableComponent(
-                "+" + String.valueOf(chargeRate())
-                        + " / *" + String.valueOf(charge())
-                        + " / -" + String.valueOf(dischargeRate())
+                "+" + chargeRate()
+                        + " / *" + charge()
+                        + " / -" + dischargeRate()
         ).withStyle(ChatFormatting.AQUA));
     }
 

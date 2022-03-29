@@ -3,12 +3,16 @@ package uk.co.kring.ef396.blocks.entities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -19,9 +23,12 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import uk.co.kring.ef396.blocks.EnergyBlock;
 import uk.co.kring.ef396.utilities.RegistryBlockGroup;
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Predicate;
 
 public class EnergyEntity extends BlockEntity {
 
@@ -58,13 +65,29 @@ public class EnergyEntity extends BlockEntity {
             }
         }
         BlockState blockState = level.getBlockState(worldPosition);
-        if (blockState.getValue(BlockStateProperties.POWERED) != counter > 0) {
-            level.setBlock(worldPosition,
-                    blockState.setValue(BlockStateProperties.POWERED, counter > 0)
-                                .setValue(BlockStateProperties.POWER, counter > 0 ? 15 : 0),
-                    Block.UPDATE_ALL);
+        Block b = blockState.getBlock();
+        if(b instanceof EnergyBlock eb) {
+            int red = eb.scaleRedstone(counter);
+            if (blockState.getValue(BlockStateProperties.POWER) != red) {
+                level.setBlock(worldPosition,
+                        blockState.setValue(BlockStateProperties.POWER, red),
+                        Block.UPDATE_ALL);
+            }
         }
         sendOutPower();
+    }
+
+    public final void kryptonite(int range, Predicate<Entity> kill) {
+        BlockPos topCorner = this.worldPosition.offset(range, range, range);
+        BlockPos bottomCorner = this.worldPosition.offset(-range, -range, -range);
+        AABB box = new AABB(topCorner, bottomCorner);
+
+        List<Entity> entities = this.level.getEntities(null, box);
+        for (Entity target : entities){
+            if (!(target instanceof Player) && kill.test(target)){
+                target.hurt(DamageSource.MAGIC, 2);
+            }
+        }
     }
 
     // ==================== ENERGY EXPORT ==========================

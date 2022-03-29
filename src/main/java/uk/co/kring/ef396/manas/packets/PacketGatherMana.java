@@ -1,4 +1,4 @@
-package uk.co.kring.ef396.manas;
+package uk.co.kring.ef396.manas.packets;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
@@ -6,6 +6,8 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkEvent;
+import uk.co.kring.ef396.capabilities.ManaProvider;
+import uk.co.kring.ef396.manas.ManaManager;
 import uk.co.kring.ef396.utilities.Packet;
 
 import java.util.function.Supplier;
@@ -34,7 +36,7 @@ public class PacketGatherMana implements Packet {//OK basic packet and handler c
                         .withStyle(ChatFormatting.RED), Util.NIL_UUID);
             } else {
                 // Get the capability from the player and use it to add mana
-                player.getCapability(PlayerManaProvider.PLAYER_MANA).ifPresent(playerMana -> {
+                player.getCapability(ManaProvider.PLAYER_MANA).ifPresent(playerMana -> {
                     playerMana.addMana(extracted);
                 });
             }

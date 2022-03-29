@@ -92,11 +92,7 @@ public class EnergyContainer extends AbstractContainerMenu {
 
     // ============================ INVENTORY INTERFACE =====================
 
-    public boolean itemStackExtra(ItemStack stack, int index, ItemStack copy) {
-        // return this.moveItemStackTo(stack, 0, nrg, true);// etc
-        return true;// true to not return ItemStack.EMPTY
-        // slot.onQuickCraft(stack, stack.copy());// if not return EMPTY?? for removal from active slot??
-    }
+    public boolean quickCrafty[] = { true };// true consumes?
 
     @Override
     public final ItemStack quickMoveStack(Player playerIn, int index) {
@@ -108,31 +104,25 @@ public class EnergyContainer extends AbstractContainerMenu {
         if (slot.hasItem()) {
             ItemStack stack = slot.getItem();
             itemstack = stack.copy();
-            // not power slot
-            if(index > nrg) {
-                // extras
-                if(!itemStackExtra(stack, index, itemstack)) return ItemStack.EMPTY;
-            } else if (index == nrg) {
-                // player inventory from power slot n+1 end notation
+            if (index >= nrg) {
+                // player inventory from power slot ++ end notation
                 if (!this.moveItemStackTo(stack, 0, nrg, true)) {
                     return ItemStack.EMPTY;
                 }
-                slot.onQuickCraft(stack, itemstack);
+                if(quickCrafty[index - nrg]) slot.onQuickCraft(stack, itemstack);
             } else {
-                if (ForgeHooks.getBurnTime(stack, RecipeType.SMELTING) > 0) {
+                if (quickCrafty[index - nrg] &&
+                        ForgeHooks.getBurnTime(stack, RecipeType.SMELTING) > 0) {//burnable
                     // into the power slot from any other
-                    if (!this.moveItemStackTo(stack, nrg, nrg + 1, false)) {
+                    if (!this.moveItemStackTo(stack, nrg,
+                            nrg + quickCrafty.length, false)) {
                         return ItemStack.EMPTY;
                     }
-                } else if (index >= big) {
-                    // move from inventory main to hot bar
-                    if (!this.moveItemStackTo(stack, 0, big, false)) {
+                } else {
+                    // move from inventory to inventory
+                    if (!this.moveItemStackTo(stack, 0, nrg, false)) {
                         return ItemStack.EMPTY;
                     }
-                    // the 27 inventory squares
-                    // move from hot bar to inventory main
-                } else if (!this.moveItemStackTo(stack, big, nrg, false)) {
-                    return ItemStack.EMPTY;
                 }
             }
             if (stack.isEmpty()) {

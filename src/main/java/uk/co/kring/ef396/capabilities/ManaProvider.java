@@ -1,4 +1,4 @@
-package uk.co.kring.ef396.manas;
+package uk.co.kring.ef396.capabilities;
 
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -9,20 +9,21 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.Nullable;
+import uk.co.kring.ef396.manas.Mana;
 
 import javax.annotation.Nonnull;
 
-public class PlayerManaProvider implements ICapabilityProvider,
+public class ManaProvider implements ICapabilityProvider,
         INBTSerializable<CompoundTag> {//OK it's the capability provider
 
     public static Capability<Mana> PLAYER_MANA
             = CapabilityManager.get(new CapabilityToken<>(){});
 
     private Mana playerMana = null;
-    private final LazyOptional<Mana> opt = LazyOptional.of(this::createPlayerMana);
+    private final LazyOptional<Mana> opt = LazyOptional.of(this::createMana);
 
     @Nonnull
-    private Mana createPlayerMana() {
+    private Mana createMana() {
         if (playerMana == null) {
             playerMana = new Mana(0);// start with none
         }
@@ -47,12 +48,12 @@ public class PlayerManaProvider implements ICapabilityProvider,
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag nbt = new CompoundTag();
-        createPlayerMana().saveNBTData(nbt);
+        createMana().saveNBTData(nbt);
         return nbt;
     }
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
-        createPlayerMana().loadNBTData(nbt);
+        createMana().loadNBTData(nbt);
     }
 }

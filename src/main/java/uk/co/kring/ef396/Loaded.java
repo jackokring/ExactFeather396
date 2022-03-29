@@ -22,7 +22,7 @@ import uk.co.kring.ef396.items.PoisonAppleItem;
 import uk.co.kring.ef396.items.Ruby;
 import uk.co.kring.ef396.items.enums.ModArmorMaterial;
 import uk.co.kring.ef396.items.enums.ModItemTier;
-import uk.co.kring.ef396.manas.PacketGatherMana;
+import uk.co.kring.ef396.manas.packets.PacketGatherMana;
 import uk.co.kring.ef396.recipes.BrewingCommon;
 import uk.co.kring.ef396.recipes.MobEffectCommon;
 import uk.co.kring.ef396.utilities.*;

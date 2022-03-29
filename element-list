@@ -1,6 +1,7 @@
 uk.co.kring.ef396
 uk.co.kring.ef396.blocks
 uk.co.kring.ef396.blocks.entities
+uk.co.kring.ef396.capabilities
 uk.co.kring.ef396.entities
 uk.co.kring.ef396.entities.goals
 uk.co.kring.ef396.entities.goals.exceptions
@@ -9,6 +10,7 @@ uk.co.kring.ef396.items
 uk.co.kring.ef396.items.enums
 uk.co.kring.ef396.loaded
 uk.co.kring.ef396.manas
+uk.co.kring.ef396.manas.packets
 uk.co.kring.ef396.recipes
 uk.co.kring.ef396.server
 uk.co.kring.ef396.tags

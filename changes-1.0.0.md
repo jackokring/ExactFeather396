@@ -26,6 +26,7 @@
 * Moving to an `ItemModelProvider` in `DataGen` as all cases are simple enough. Simple `BlockItem`, `Item` and `ForgeSpawnEggItem`.
 * Automatic tags via `runData` with `implements` interfaces.
 * Added 11 custom `UnitaryAttribute` entries to `Hog`.
+* Basic `Mana` implementation.
 
 ### TODO
 * Finish basic book implementation.

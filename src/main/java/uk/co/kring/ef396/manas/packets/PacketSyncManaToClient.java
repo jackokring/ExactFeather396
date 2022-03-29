@@ -1,11 +1,13 @@
-package uk.co.kring.ef396.manas;
+package uk.co.kring.ef396.manas.packets;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
+import uk.co.kring.ef396.manas.ManaOverlay;
+import uk.co.kring.ef396.utilities.Packet;
 
 import java.util.function.Supplier;
 
-public class PacketSyncManaToClient {
+public class PacketSyncManaToClient implements Packet {//OK a data container to client
 
     private final int playerMana;
     private final int chunkMana;
@@ -31,7 +33,7 @@ public class PacketSyncManaToClient {
             // Here we are client side.
             // Be very careful not to access client-only classes here! (like Minecraft) because
             // this packet needs to be available server-side too
-            ClientManaData.set(playerMana, chunkMana);
+            ManaOverlay.set(playerMana, chunkMana);
         });
         return true;
     }
