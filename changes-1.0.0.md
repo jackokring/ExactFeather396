@@ -37,4 +37,3 @@
 * Distributed AI on the network.
 * Texture for `Hog`.
 * Power and item autoloader hopper directions?
-* Custom mana.

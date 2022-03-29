@@ -128,6 +128,7 @@ public class DataGen {
                     }
 
                     public static String expandValue(String key, String val) {
+                        String error = key;
                         while (valueHasKey(val)) {
                             String k = maximalKey(val);
                             while(k.length() > 0) {
@@ -145,7 +146,10 @@ public class DataGen {
                                 }
                                 k = k.substring(0, k.length() - 1);//reduce key
                                 if(k.length() == 0) {
-                                    ExactFeather.LOGGER.error("\"" + val + "\" has missing key.");
+                                    int at = val.indexOf("$");
+                                    val = val.substring(0, at) + "\"" + maximalKey(val)
+                                            + "\"" + val.substring(at + 1);
+                                    ExactFeather.LOGGER.error("\"" + error + "\" has missing $$key.");
                                     return val;
                                 }
                             }
@@ -162,6 +166,7 @@ public class DataGen {
 
                 private void the(String key, String val) {//pass 2
                     // substitutions
+                    String error = key;
                     if (key.contains("$")) {
                         String k = Entry.maximalKey(key);
                         while (k.length() > 0) {
@@ -182,7 +187,7 @@ public class DataGen {
                             }
                             k = k.substring(0, k.length() - 1);//reduce key
                             if (k.length() == 0) {
-                                ExactFeather.LOGGER.error("\"" + key + "\" has missing key.");
+                                ExactFeather.LOGGER.error("\"" + error + "\" has missing $$key.");
                                 int at = key.indexOf("$");
                                 key = key.substring(0, at) + key.substring(at + 1);//drop $
                             }
