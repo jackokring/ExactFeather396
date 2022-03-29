@@ -2,15 +2,12 @@
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {
-      "item": "minecraft:emerald"
-    },
-    {
-      "item": "minecraft:red_dye"
+      "item": "ef396:ruby_block"
     }
   ],
   "result":
   {
     "item": "ef396:ruby",
-    "count": 3
+    "count": 9
   }
 }
