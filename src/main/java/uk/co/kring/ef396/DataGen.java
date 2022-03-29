@@ -215,7 +215,7 @@ public class DataGen {
                     Registries.blocks.getEntries().forEach((block) -> {
                         Block b = block.get();
                         if(b instanceof ModelledBlock bm) {
-                            bm.provideModel(this);
+                            bm.provideModel(this, b);
                             return;//needs own model ...
                         }
                         simpleBlock(b);
@@ -229,7 +229,7 @@ public class DataGen {
                     Registries.items.getEntries().forEach((item) -> {
                         Item i = item.get();
                         if(i instanceof ModelledItem im) {
-                            im.provideModel(this);
+                            im.provideModel(this, i);
                             return;//needs own model ...
                         }
                         if(i instanceof ForgeSpawnEggItem) {
