@@ -83,21 +83,14 @@ public class DataGen {
                 }
 
                 public void iterate(FunkyHashEntry hashEntry) {
-                    try {
-                        InputStream is = file.getResource(
-                                        new ResourceLocation(ExactFeather.MOD_ID, "en_us"),
-                                        PackType.CLIENT_RESOURCES, ".json", "lang/")
-                                .getInputStream();
-                        JsonAdapter ja = new JsonAdapter(is);
-                        ja.forEach((entry) -> {
-                            String key = entry.getKey();
-                            JsonElement val = entry.getValue();
-                            String v = val.getAsString();
-                            hashEntry.processEntry(key, v);
-                        });
-                    } catch(Exception e) {
-                        ExactFeather.LOGGER.error("lang JSON error.");
-                    }
+                    JsonAdapter ja = new JsonAdapter(file, "lang",
+                            "en_us", PackType.CLIENT_RESOURCES);
+                    ja.forEach((entry) -> {
+                        String key = entry.getKey();
+                        JsonElement val = entry.getValue();
+                        String v = val.getAsString();
+                        hashEntry.processEntry(key, v);
+                    });
                 }
 
                 static class Entry {//key is post $$ expression
