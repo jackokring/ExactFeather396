@@ -131,51 +131,7 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
         printClassWrong(Registries.entities, name);
         // entity builder
         HogInitials hi = onNew.get();
-        EntityType.Builder<HogEntity> builder = EntityType.Builder.of(
-                        entity, MobCategory.CREATURE)
-                .sized(0.6f, 1.95f) // Hit box Size
-                .clientTrackingRange(8)
-                .setShouldReceiveVelocityUpdates(false);
-        // entity supplier
-        Supplier<EntityType<HogEntity>> he =
-                () -> builder.build(new ResourceLocation(ExactFeather.MOD_ID, "hog").toString());
-        // model control of layers
-        ExactFeather.registerLayers((event) -> {
-            event.registerLayerDefinition(HogModel.HOG_LAYER, HogModel::createBodyLayer);
-        });
-        // renderer for skin
-        ExactFeather.registerRender((event) -> EntityRenderers.register(he.get(),
-                (context) -> new HumanoidMobRenderer<HogEntity, HogModel>(context,
-                        new HogModel(context.bakeLayer(HogModel.HOG_LAYER)), 1f) {
-                    @Override
-                    @NotNull
-                    public ResourceLocation getTextureLocation(@NotNull HogEntity fashion) {
-                        String f = fashion.getFashion();
-                        if(f == null) {
-                            f = "";
-                        } else {
-                            f = "/" + f;
-                        }
-                        return new ResourceLocation(ExactFeather.MOD_ID,
-                                "textures/entity/" + name + f + ".png");
-                    }
-                }));
-        // actionable attributes registration
-        ExactFeather.registerAttrib((event)
-                -> event.put(he.get(), hi.prepareAttributes().build()));//dynamic
-        // biome specific spawn assignments
-        ExactFeather.registerSpawn((event) -> {
-            if(event.getName() == null) return;
-            event.getSpawns().addSpawn(MobCategory.CREATURE,
-                    new MobSpawnSettings.SpawnerData(he.get(),
-                            hi.spawnWeight(),1,3));
-        });
-        // register spawning placements
-        ExactFeather.registerCommon((event) -> {
-            SpawnPlacements.register(he.get(), SpawnPlacements.Type.ON_GROUND,
-                    Heightmap.Types.WORLD_SURFACE, hi::canSpawn);
-        });
-        return Registries.entities.register(name, he);
+        return Registries.entities.register(name, hi.register(name, entity));
     }
 
     public RegistryObject<Item> regEggItem(
