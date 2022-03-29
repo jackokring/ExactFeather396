@@ -35,7 +35,7 @@ public class HogInitials {
                 .add(Attributes.MOVEMENT_SPEED, 0.3);
         var attributes = BrewingCommon.attributes();
         for (Attribute ua: attributes) {
-            builder.add(ua);// attributes for AI "circuit bending"
+            builder.add(ua, 0);// attributes for AI "circuit bending"
         }
         return builder;
     }

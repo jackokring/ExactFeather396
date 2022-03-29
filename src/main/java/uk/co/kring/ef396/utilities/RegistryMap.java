@@ -197,12 +197,24 @@ public final class RegistryMap<T extends IForgeRegistryEntry<T>> extends Priorit
         return potion;
     }
 
-    public RegistryObject<Potion> regAlchemyBase(String name, Item item) {
+    public RegistryObject<Potion> regAlchemyBase(String name, Item item,
+                                                 MobEffectCommon... does) {
         printClassWrong(Registries.potions, name);
         RegistryObject<Potion> potion = Registries.potions.register(name,
-                Potion::new);
+                () -> new Potion(does));
         ExactFeather.registerCommon((event) -> BrewingRecipeRegistry.addRecipe(new BrewingCommon(
                 Potions.WATER, item, potion
+        )));
+        return potion;
+    }
+
+    public RegistryObject<Potion> regAlchemyCorrupt(String name, RegistryObject<Potion> item,
+                                                 MobEffectCommon... does) {
+        printClassWrong(Registries.potions, name);
+        RegistryObject<Potion> potion = Registries.potions.register(name,
+                () -> new Potion(does));
+        ExactFeather.registerCommon((event) -> BrewingRecipeRegistry.addRecipe(new BrewingCommon(
+                item.get(), Items.FERMENTED_SPIDER_EYE, potion
         )));
         return potion;
     }

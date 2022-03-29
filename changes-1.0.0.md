@@ -12,7 +12,7 @@
 * Added `PriorityHashMap` for first entry priority. Includes `overwrite()` for `super.put()` behaviour. Also includes `getViolations()` for a `List` of the pretenders given a key.
 * `PoisonAppleItem` replaces unmapped items. Uses configuration. Stacks to 33 items.
 * `RubyBlock` replaces unmapped blocks.
-* `HogEntity` replaces unmapped mobs. Temptation via `(ItemLike) Potions.THICK`. Basic texture replace on a `Humanoid` as this was easy to engineer. Perhaps this is for the best as the mechanic of reproduction is then open for differentiation.
+* `HogEntity` replaces unmapped mobs. Temptation via `Potions.THICK`. Basic texture replace on a `Humanoid` as this was easy to engineer. Perhaps this is for the best as the mechanic of reproduction is then open for differentiation.
 * `error.ogg` replaces unmapped sounds.
 * Added tree view of data and asset directories.
 * `Configurator` class easy implements a lot of the boilerplate for configuration files in a reduced number of classes.

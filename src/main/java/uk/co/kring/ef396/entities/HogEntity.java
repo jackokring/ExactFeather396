@@ -10,11 +10,11 @@ import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 import net.minecraft.world.entity.EntityType;
 import uk.co.kring.ef396.Loaded;
+import uk.co.kring.ef396.recipes.BrewingCommon;
 
 public class HogEntity extends Animal {
 
@@ -30,7 +30,7 @@ public class HogEntity extends Animal {
         this.goalSelector.addGoal(3, new BreedGoal(this, 1.0D));
         this.goalSelector.addGoal(4, new FollowParentGoal(this, 1.1D));
         this.goalSelector.addGoal(5, new TemptGoal(this, 1.2D,
-                Ingredient.of((ItemLike) Potions.THICK), false));
+                Ingredient.of(BrewingCommon.getPotionStack(Potions.THICK)), false));
 
         // dithering and style
         this.goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 0.8));

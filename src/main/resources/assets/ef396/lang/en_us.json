@@ -12,6 +12,7 @@
   "$$iml.item.minecraft.lingering_potion.effect": "Lingering Potion of",
   "$$imt.item.minecraft.tipped_arrow.effect": "Arrow of",
   "$$m": "Mundane",
+  "$$c": "Corrupted $m",
 
   "$imp.$psy": "$imp $psy",
   "$ims.$psy": "$ims $psy",
@@ -32,6 +33,18 @@
   "$$psy.turtle_helmet": "$m Earth",
   "$$psy.pufferfish": "$m Water",
   "$$psy.phantom_membrane": "$m Air",
+
+  "$$psy.sugar_corrupt": "$c Quickinder",
+  "$$psy.magma_cream_corrupt": "$c Thiomolic",
+  "$$psy.rabbit_foot_corrupt": "$c Cubit",
+  "$$psy.glistering_melon_slice_corrupt": "$c Kinopotent",
+  "$$psy.blaze_powder_corrupt": "$c Uberdo",
+  "$$psy.ghast_tear_corrupt": "$c Polecarrow",
+  "$$psy.spider_eye_corrupt": "$c Gaussinfion",
+  "$$psy.golden_carrot_corrupt": "$c Fire",
+  "$$psy.turtle_helmet_corrupt": "$c Earth",
+  "$$psy.pufferfish_corrupt": "$c Water",
+  "$$psy.phantom_membrane_corrupt": "$c Air",
 
   "$item.poison_apple": "Poison Apple",
 
