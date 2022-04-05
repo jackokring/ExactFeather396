@@ -85,7 +85,7 @@ public class EnergyEntity extends BlockEntity {
         List<Entity> entities = this.level.getEntities(null, box);
         for (Entity target : entities){
             if (!(target instanceof Player) && kill.test(target)){
-                target.hurt(DamageSource.MAGIC, 2);
+                target.hurt(DamageSource.GENERIC, 2);
             }
         }
     }

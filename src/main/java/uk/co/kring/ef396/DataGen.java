@@ -5,7 +5,6 @@ import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.tags.BlockTagsProvider;
 import net.minecraft.data.tags.ItemTagsProvider;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
@@ -25,9 +24,9 @@ import uk.co.kring.ef396.blocks.ModelledBlock;
 import uk.co.kring.ef396.items.ModelledItem;
 import uk.co.kring.ef396.tags.*;
 import uk.co.kring.ef396.utilities.JsonAdapter;
+import uk.co.kring.ef396.utilities.Perl;
 import uk.co.kring.ef396.utilities.Registries;
 
-import java.io.InputStream;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -113,7 +112,8 @@ public class DataGen {
                     }
 
                     public static String trimmedKey(String key) {
-                        return key.split("\\$\\$")[1].split("\\.")[0];
+                        return key.split(new Perl("$$").toString())[1]
+                                .split(new Perl(".").toString())[0];
                     }
 
                     public static boolean valueHasKey(String val) {
@@ -151,7 +151,8 @@ public class DataGen {
                     }
 
                     public static String maximalKey(String any) {
-                        return any.split("\\$")[1].split("\\.")[0];
+                        return any.split(new Perl("$").toString())[1]
+                                .split(new Perl(".").toString())[0];
                     }
                 }
 

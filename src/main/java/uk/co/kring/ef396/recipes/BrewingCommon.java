@@ -85,13 +85,13 @@ public class BrewingCommon extends BrewingRecipe {
     public static class MyEffect extends MobEffect {
         protected MyEffect(int attribute, boolean corrupt) {
             super(corrupt ? MobEffectCategory.HARMFUL : MobEffectCategory.BENEFICIAL,
-                    baseID.get() + attribute);
+                    baseID.get() + attribute * (corrupt ? -1 : 1));
             addAttributeModifier(ua[attribute], uuid[attribute], corrupt ? -1 : 1,
                     AttributeModifier.Operation.ADDITION);
         }
 
         public int getColor() {
-            return 0xff00ffff;//cyan
+            return 0x00ffff;//cyan
         }
     }
 
