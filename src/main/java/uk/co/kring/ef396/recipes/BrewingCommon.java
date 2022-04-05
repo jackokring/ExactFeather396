@@ -85,7 +85,7 @@ public class BrewingCommon extends BrewingRecipe {
     public static class MyEffect extends MobEffect {
         protected MyEffect(int attribute, boolean corrupt) {
             super(corrupt ? MobEffectCategory.HARMFUL : MobEffectCategory.BENEFICIAL,
-                    baseID.get() + attribute * (corrupt ? -1 : 1));
+                    baseID.get() + (attribute + 1) * (corrupt ? -1 : 1));
             addAttributeModifier(ua[attribute], uuid[attribute], corrupt ? -1 : 1,
                     AttributeModifier.Operation.ADDITION);
         }
