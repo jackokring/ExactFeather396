@@ -29,6 +29,8 @@ public class Perl {
         return this;
     }
 
+    // ================================= NAMED MATCHES AND RAW REGEX ================
+
     public Perl match(String named) {
         this.literal += "\\k<" + named + ">";// back reference to find again
         return this;
@@ -43,6 +45,8 @@ public class Perl {
         this.literal += "(" + expression + ")";// as a matching expression
         return this;
     }
+
+    // ================================= REPEATS AND OPTIONALS ==========================
 
     public Perl option() {
         this.literal += "?";// 0 or 1 times
@@ -80,6 +84,8 @@ public class Perl {
         }
     }
 
+    // =========================== LOGICAL RANGES =============================
+
     public Perl or(Perl or) {
         this.literal = "(" + this.literal + ")|(" + or.literal + ")";
         return this;
@@ -99,6 +105,8 @@ public class Perl {
         return this;
     }
 
+    // ============================ PATTERN REDO ==============================
+
     public Perl extendPattern() {
         pattern = null;
         return this;
@@ -112,17 +120,18 @@ public class Perl {
     // ================================ MATCHER INTERFACE ==============================
 
     public Perl reset(String match) {
+        if(match == null) match = "";//blank
         if(pattern == null) {
             pattern = Pattern.compile(literal);
             matcher = null;//clear match
         }
         if(matcher == null) {
-            matcher = pattern.matcher(match);
             this.match = match;//cache
+            matcher = pattern.matcher(this.match);
         }
         if(this.match != match) {
-            matcher.reset(match);
             this.match = match;//cache
+            matcher.reset(this.match);
         }
         return this;//get matcher
     }

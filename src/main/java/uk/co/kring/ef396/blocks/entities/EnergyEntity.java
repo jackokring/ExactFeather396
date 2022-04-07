@@ -56,10 +56,10 @@ public class EnergyEntity extends BlockEntity {
             setChanged();
         }
         if (counter <= 0) {
-            ItemStack stack = itemHandler.getStackInSlot(0 + 9 * 4);
+            ItemStack stack = itemHandler.getStackInSlot(0);
             int burnTime = ForgeHooks.getBurnTime(stack, RecipeType.SMELTING);
             if (burnTime > 0) {
-                itemHandler.extractItem(0 + 9 * 4, 1, false);
+                itemHandler.extractItem(0, 1, false);
                 counter = burnTime;
                 setChanged();
             }
@@ -149,7 +149,7 @@ public class EnergyEntity extends BlockEntity {
     // ================ CAPS HANDLERS ===================
 
     private ItemStackHandler createHandler() {
-        return new ItemStackHandler(1) {
+        return new ItemStackHandler(1) {// SLOT 0
 
             @Override
             protected void onContentsChanged(int slot) {

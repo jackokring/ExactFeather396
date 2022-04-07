@@ -18,6 +18,8 @@ import net.minecraftforge.registries.RegistryObject;
 import uk.co.kring.ef396.blocks.EnergyBlock;
 import uk.co.kring.ef396.utilities.RegistryBlockGroup;
 
+import java.util.ArrayList;
+
 public class EnergyContainer extends AbstractContainerMenu {
 
     private BlockEntity blockEntity;
@@ -46,6 +48,7 @@ public class EnergyContainer extends AbstractContainerMenu {
         if (blockEntity != null) {
             blockEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
                 addSlot(new SlotItemHandler(h, 0, 64, 24));// idx 37
+                quickCrafty.add(ExtraSlot.FUEL);
             });
         }
         trackPower();
@@ -92,7 +95,7 @@ public class EnergyContainer extends AbstractContainerMenu {
 
     // ============================ INVENTORY INTERFACE =====================
 
-    public boolean quickCrafty[] = { true };// true consumes?
+    private ArrayList<ExtraSlot> quickCrafty;
 
     @Override
     public final ItemStack quickMoveStack(Player playerIn, int index) {
@@ -109,13 +112,13 @@ public class EnergyContainer extends AbstractContainerMenu {
                 if (!this.moveItemStackTo(stack, 0, nrg, true)) {
                     return ItemStack.EMPTY;
                 }
-                if(quickCrafty[index - nrg]) slot.onQuickCraft(stack, itemstack);
+                if(quickCrafty.get(index - nrg).isFuel()) slot.onQuickCraft(stack, itemstack);
             } else {
-                if (quickCrafty[index - nrg] &&
+                if (quickCrafty.get(index - nrg).isFuel() &&
                         ForgeHooks.getBurnTime(stack, RecipeType.SMELTING) > 0) {//burnable
                     // into the power slot from any other
                     if (!this.moveItemStackTo(stack, nrg,
-                            nrg + quickCrafty.length, false)) {
+                            nrg + quickCrafty.size(), false)) {
                         return ItemStack.EMPTY;
                     }
                 } else {
