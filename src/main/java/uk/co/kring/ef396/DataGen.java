@@ -112,8 +112,8 @@ public class DataGen {
                     }
 
                     public static String trimmedKey(String key) {
-                        return key.split(new Perl("$$").toString())[1]
-                                .split(new Perl(".").toString())[0];
+                        return key.split(new Perl("$$").get())[1]
+                                .split(new Perl(".").get())[0];
                     }
 
                     public static boolean valueHasKey(String val) {
@@ -151,8 +151,8 @@ public class DataGen {
                     }
 
                     public static String maximalKey(String any) {
-                        return any.split(new Perl("$").toString())[1]
-                                .split(new Perl(".").toString())[0];
+                        return any.split(new Perl("$").get())[1]
+                                .split(new Perl(".").get())[0];
                     }
                 }
 

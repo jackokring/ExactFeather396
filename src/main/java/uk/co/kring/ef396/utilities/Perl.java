@@ -5,8 +5,14 @@ import java.util.regex.Pattern;
 
 public class Perl {
 
-    String literal;
-    Pattern pattern;
+    private String literal;
+    private String match;
+    private Matcher matcher;
+    private Pattern pattern;
+
+    private String escapeChar(char c) {
+        return Pattern.quote(String.valueOf(c));
+    }
 
     public Perl() {
         literal = "";
@@ -14,7 +20,7 @@ public class Perl {
 
     public Perl(String literal) {
         this();
-        this.literal = Pattern.quote(literal);
+        append(literal);
     }
 
     public Perl append(String literal) {
@@ -23,21 +29,16 @@ public class Perl {
     }
 
     public Perl match(String named) {
-        this.literal += "\\k<" + named + ">";// back reference
-        return this;
-    }
-
-    public Perl match(String named, String match) {
-        this.literal += "(?<" + named + ">" + Pattern.quote(match) + ")";
+        this.literal += "\\k<" + named + ">";// back reference to find again
         return this;
     }
 
     public Perl match(String named, Perl match) {
-        this.literal += "(?<" + named + ">" + match.literal + ")";
+        this.literal += "(?<" + named + ">" + match.literal + ")";// match and name
         return this;
     }
 
-    public Perl find(String expression) {
+    public Perl raw(String expression) {
         this.literal += "(" + expression + ")";// as a matching expression
         return this;
     }
@@ -83,17 +84,17 @@ public class Perl {
         return this;
     }
 
-    public Perl anyOrNot(String these, boolean not) {
+    public Perl anyOrNot(String these, boolean notInverted) {
         String inv = "^";
-        if(not) inv = "";
-        this.literal = "[" + inv + these + "]";
+        if(notInverted) inv = "";
+        this.literal = "[" + inv + Pattern.quote(these) + "]";// - ??
         return this;
     }
 
-    public Perl anyOrNot(char from, char to, boolean not) {
+    public Perl anyOrNot(char from, char to, boolean notInverted) {
         String inv = "^";
-        if(not) inv = "";
-        this.literal = "[" + inv + from + "-" + to + "]";
+        if(notInverted) inv = "";
+        this.literal = "[" + inv + escapeChar(from) + "-" + escapeChar(to) + "]";
         return this;
     }
 
@@ -107,13 +108,59 @@ public class Perl {
         return extendPattern();
     }
 
-    public Matcher matcherFor(String match) {
-        if(pattern == null) pattern = Pattern.compile(literal);
-        return pattern.matcher(match);//get matcher
+    // ================================ MATCHER INTERFACE ==============================
+
+    public Perl reset(String match) {
+        if(pattern == null) {
+            pattern = Pattern.compile(literal);
+            matcher = null;//clear match
+        }
+        if(matcher == null) {
+            matcher = pattern.matcher(match);
+            this.match = match;//cache
+        }
+        if(this.match != match) {
+            matcher.reset(match);
+            this.match = match;//cache
+        }
+        return this;//get matcher
     }
 
-    @Override
-    public String toString() {
+    public Perl appendMatch(StringBuffer sb, String named) {
+        if(matcher == null) return this;
+        matcher.appendReplacement(sb, "${" + named + "}");
+        return this;
+    }
+
+    public Perl appendQuote(StringBuffer sb, String literal) {
+        if(matcher == null) return this;
+        matcher.appendReplacement(sb, Matcher.quoteReplacement(literal));
+        return this;
+    }
+
+    public Perl appendTail(StringBuffer sb) {
+        if(matcher == null) return this;
+        matcher.appendTail(sb);
+        return this;
+    }
+
+    public Boolean find() {
+        if(matcher == null) return false;
+        return matcher.find();
+    }
+
+    public Perl reset() {
+        if(matcher == null) return this;
+        matcher.reset();//reset current
+        return this;
+    }
+
+    public String replaceAll(String literal) {
+        if(matcher == null) return "";
+        return matcher.replaceAll(Matcher.quoteReplacement(literal));
+    }
+
+    public String get() {
         return literal;
     }
 }
