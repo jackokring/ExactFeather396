@@ -1,5 +1,6 @@
 package uk.co.kring.ef396.utilities;
 
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -162,5 +163,9 @@ public class Perl {
 
     public String get() {
         return literal;
+    }
+
+    public Optional<Matcher> getBareMatcher() {
+        return Optional.ofNullable(matcher);
     }
 }
