@@ -20,7 +20,6 @@ import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import uk.co.kring.ef396.blocks.EnergyBlock;
@@ -33,7 +32,7 @@ import java.util.function.Predicate;
 public class EnergyEntity extends BlockEntity {
 
     // Never create lazy optionals in getCapability. Always place them as fields in the tile entity:
-    private final ItemStackHandler itemHandler = createHandler();
+    private final CraftyStackHandler itemHandler = createHandler();
     private final LazyOptional<IItemHandler> handler = LazyOptional.of(() -> itemHandler);
 
     private final CustomEnergyStorage energyStorage = createEnergy();
@@ -148,8 +147,8 @@ public class EnergyEntity extends BlockEntity {
 
     // ================ CAPS HANDLERS ===================
 
-    private ItemStackHandler createHandler() {
-        return new ItemStackHandler(1) {// SLOT 0
+    private CraftyStackHandler createHandler() {
+        return new CraftyStackHandler(1) {// SLOT 0
 
             @Override
             protected void onContentsChanged(int slot) {
@@ -188,9 +187,11 @@ public class EnergyEntity extends BlockEntity {
     @NonNull
     @Override
     public <T> LazyOptional<T> getCapability(@NonNull Capability<T> cap, @Nullable Direction side) {
-        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY
-                && side.compareTo(Direction.UP) == 0) {//TOP LOADER
-            return handler.cast();
+        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            if(side == null) return handler.cast();
+            if(side.compareTo(Direction.UP) == 0) {//TOP LOADER
+                // TODO
+            }
         }
         if (cap == CapabilityEnergy.ENERGY) {
             return energy.cast();

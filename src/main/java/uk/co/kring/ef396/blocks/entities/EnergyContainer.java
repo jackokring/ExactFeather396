@@ -19,6 +19,8 @@ import uk.co.kring.ef396.blocks.EnergyBlock;
 import uk.co.kring.ef396.utilities.RegistryBlockGroup;
 
 import java.util.ArrayList;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 public class EnergyContainer extends AbstractContainerMenu {
 
@@ -60,8 +62,38 @@ public class EnergyContainer extends AbstractContainerMenu {
             int y = xy / 9;
             blockEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
                 addSlot(new SlotItemHandler(h, idx, 10 + 18 * x, 24 + 18 * y));
-                quickCrafty.add(kind);
+                ((CraftyStackHandler)h).getQuickCrafty().add(kind);
             });
+        }
+    }
+
+    public final void withExtraSlot(Consumer<ExtraSlot> extraSlot, int idx) {
+        blockEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
+            extraSlot.accept(((CraftyStackHandler)h).getQuickCrafty().get(idx));
+        });
+    }
+
+    public final int sizeExtraSlots() {
+        try {
+            blockEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
+                throw new RuntimeException(
+                        String.valueOf((char)((CraftyStackHandler) h).getQuickCrafty().size()));//predicated
+            });
+            return 0;
+        } catch(Exception e) {
+            return e.getMessage().charAt(0);// a bit of a bodge
+        }
+    }
+
+    public final boolean predicateExtraSlot(Predicate<ExtraSlot> extraSlot, int idx) {
+        try {
+            blockEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
+                if(extraSlot.test(((CraftyStackHandler) h).getQuickCrafty().get(idx)))
+                    throw new RuntimeException();//predicated
+            });
+            return false;
+        } catch(Exception e) {
+            return true;// a bit of a bodge
         }
     }
 
@@ -106,8 +138,6 @@ public class EnergyContainer extends AbstractContainerMenu {
 
     // ============================ INVENTORY INTERFACE =====================
 
-    private ArrayList<ExtraSlot> quickCrafty;
-
     @Override
     public final ItemStack quickMoveStack(Player playerIn, int index) {
         final int inv = 0;
@@ -123,18 +153,27 @@ public class EnergyContainer extends AbstractContainerMenu {
                 if (!this.moveItemStackTo(stack, 0, nrg, true)) {
                     return ItemStack.EMPTY;
                 }
-                if(quickCrafty.get(index - nrg).isFuel()) slot.onQuickCraft(stack, itemstack);
+                ItemStack finalItemstack = itemstack;
+                withExtraSlot((extraSlot) -> {
+                    if(extraSlot.isFuel()) slot.onQuickCraft(stack, finalItemstack);
+                }, index - nrg);
             } else {
-                if (quickCrafty.get(index - nrg).isFuel() &&
-                        ForgeHooks.getBurnTime(stack, RecipeType.SMELTING) > 0) {//burnable
-                    // into the power slot from any other
-                    if (!this.moveItemStackTo(stack, nrg,
-                            nrg + quickCrafty.size(), false)) {
-                        return ItemStack.EMPTY;
+                int size = sizeExtraSlots();
+                if (ForgeHooks.getBurnTime(stack, RecipeType.SMELTING) > 0) {//burnable
+                    // into the power slots from any other
+                    for(int i = 0; i < size; i++) {
+                        int finalI = i;
+                        if (predicateExtraSlot((extraSlot) ->
+                                // check if fuel as extra part of if
+                                extraSlot.isFuel() && !this.moveItemStackTo(stack, nrg + finalI,
+                                nrg + finalI + 1, false), i)) {
+                            return ItemStack.EMPTY;
+                        }
                     }
                 } else {
                     // move from inventory to inventory
-                    if (!this.moveItemStackTo(stack, 0, nrg, false)) {
+                    if (!this.moveItemStackTo(stack, 0,
+                            nrg + size, false)) {
                         return ItemStack.EMPTY;
                     }
                 }

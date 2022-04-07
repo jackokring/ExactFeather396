@@ -4,7 +4,7 @@ public enum ExtraSlot {
 
     FUEL(true);
 
-    private boolean fuel;
+    private boolean fuel;// decides if slot is fuel for energy
 
     ExtraSlot(boolean fuel) {
         this.fuel = fuel;
