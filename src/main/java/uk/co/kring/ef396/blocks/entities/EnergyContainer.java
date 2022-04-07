@@ -45,13 +45,24 @@ public class EnergyContainer extends AbstractContainerMenu {
         this.playerInventory = new InvWrapper(playerInventory);
         layoutPlayerInventorySlots();// 0-8, 9-36
         // funny initialization order bug on multiplayer object destroy before GUI construction?
+        addEntitySlots(blockEntity);
+        trackPower();
+    }
+
+    public void addEntitySlots(BlockEntity blockEntity) {
+        addEntitySlot(blockEntity, 0, ExtraSlot.FUEL, 0);// idx 37
+    }
+
+    protected void addEntitySlot(BlockEntity blockEntity, int idx, ExtraSlot kind, int xy) {
         if (blockEntity != null) {
+            // placed xy for easier planning
+            int x = xy % 9;
+            int y = xy / 9;
             blockEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
-                addSlot(new SlotItemHandler(h, 0, 64, 24));// idx 37
-                quickCrafty.add(ExtraSlot.FUEL);
+                addSlot(new SlotItemHandler(h, idx, 10 + 18 * x, 24 + 18 * y));
+                quickCrafty.add(kind);
             });
         }
-        trackPower();
     }
 
     // Setup syncing of power from server to client so that the GUI can show the amount of power in the block
