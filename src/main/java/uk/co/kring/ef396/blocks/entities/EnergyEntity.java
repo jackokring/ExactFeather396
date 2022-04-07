@@ -159,13 +159,17 @@ public class EnergyEntity extends BlockEntity {
 
             @Override
             public boolean isItemValid(int slot, @NonNull ItemStack stack) {
-                return ForgeHooks.getBurnTime(stack, RecipeType.SMELTING) > 0;
+                if(getQuickCrafty().get(slot).isFuel()) {
+                    return ForgeHooks.getBurnTime(stack, RecipeType.SMELTING) > 0;
+                } else {
+                    return false;//not fuel
+                }
             }
 
             @NonNull
             @Override
             public ItemStack insertItem(int slot, @NonNull ItemStack stack, boolean simulate) {
-                if (ForgeHooks.getBurnTime(stack, RecipeType.SMELTING) <= 0) {
+                if (!isItemValid(slot, stack)) {
                     return stack;
                 }
                 return super.insertItem(slot, stack, simulate);

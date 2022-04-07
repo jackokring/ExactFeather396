@@ -173,7 +173,7 @@ public class EnergyContainer extends AbstractContainerMenu {
                 } else {
                     // move from inventory to inventory
                     if (!this.moveItemStackTo(stack, 0,
-                            nrg + size, false)) {
+                            nrg, false)) {
                         return ItemStack.EMPTY;
                     }
                 }
