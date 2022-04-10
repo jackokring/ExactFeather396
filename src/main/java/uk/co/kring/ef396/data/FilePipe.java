@@ -10,6 +10,8 @@ public enum FilePipe {
     RLE("rle", Pipe.RLE),
     RLE_GZIP("rle.gz", Pipe.RLE_GZIP),//almost useless except on very sparse data
     BWT_GZIP("bgz", Pipe.BWT_GZIP),
+    LZW("lzw", Pipe.LZW),
+    BWT_LZW_GZIP("blwz",Pipe.BWT_LZW_GZIP),
     //TODO
     NULL("", Pipe.NULL);
 

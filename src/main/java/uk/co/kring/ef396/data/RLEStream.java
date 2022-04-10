@@ -13,7 +13,10 @@ public class RLEStream {
         public int read() throws IOException {
             if(last == -1) {
                 last = super.read();
-                count = super.read();
+                if(last != -1) {
+                    count = super.read();
+                    if(count == -1) throw new IOException("Malformed terminal EOF");
+                }
             }
             int tmp = last;
             if(count == 0) {
@@ -50,7 +53,6 @@ public class RLEStream {
                 count = 0;
                 super.write(b);
             }
-            //super.write(b);
         }
 
         public Output(OutputStream out) {

@@ -16,7 +16,9 @@ public class BWTStream {
             if(count < 0) {
                 DataInputStream dis = new DataInputStream(this);
                 count = dis.readInt();
+                if(count > buffer.length) throw new IOException("Invalid length for block size");
                 int p = dis.readInt();//index
+                if(p > count) throw new IOException("Invalid index for block size");
                 byte[] U = new byte[buffer.length];
                 int[] A = new int[buffer.length];
                 super.read(U);
