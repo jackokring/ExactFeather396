@@ -6,9 +6,11 @@ import java.util.zip.GZIPOutputStream;
 
 public enum Pipe {
 
-    GZIP(false, true),
-    RLE(true, false);
+    GZIP(false, true),//generic deflate algorithm
+    RLE(true, false),//run length encoding
+    RLE_GZIP(true, true),//long run compression before deflate (highly redundant data?)
     // TODO
+    NULL(false, false);//straight data pipe
 
     private final boolean gzip;
     private final boolean rle;

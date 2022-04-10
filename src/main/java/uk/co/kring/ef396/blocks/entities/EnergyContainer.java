@@ -51,18 +51,17 @@ public class EnergyContainer extends AbstractContainerMenu {
         trackPower();
     }
 
-    public void addEntitySlots(BlockEntity blockEntity) {
-        addEntitySlot(blockEntity, 0, ExtraSlot.FUEL, 0);// idx 37
+    public void addEntitySlots(BlockEntity blockEntity) {// for layout
+        addEntitySlot(blockEntity, 0, 0);// idx 37
     }
 
-    protected void addEntitySlot(BlockEntity blockEntity, int idx, ExtraSlot kind, int xy) {
+    protected void addEntitySlot(BlockEntity blockEntity, int idx, int xy) {
         if (blockEntity != null) {
             // placed xy for easier planning
             int x = xy % 9;
             int y = xy / 9;
             blockEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
                 addSlot(new SlotItemHandler(h, idx, 10 + 18 * x, 24 + 18 * y));
-                ((CraftyStackHandler)h).getQuickCrafty().add(kind);
             });
         }
     }
@@ -74,32 +73,20 @@ public class EnergyContainer extends AbstractContainerMenu {
     }
 
     public final int sizeExtraSlots() {
-        try {
-            blockEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
-                throw new RuntimeException(
-                        String.valueOf((char)((CraftyStackHandler) h).getQuickCrafty().size()));//predicated
-            });
-            return 0;
-        } catch(Exception e) {
-            return e.getMessage().charAt(0);// a bit of a bodge
-        }
+        return blockEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).map(h -> {
+            return ((CraftyStackHandler) h).getQuickCrafty().size();//predicated
+        }).orElse(0);
     }
 
     public final boolean predicateExtraSlot(Predicate<ExtraSlot> extraSlot, int idx) {
-        try {
-            blockEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
-                if(extraSlot.test(((CraftyStackHandler) h).getQuickCrafty().get(idx)))
-                    throw new RuntimeException();//predicated
-            });
-            return false;
-        } catch(Exception e) {
-            return true;// a bit of a bodge
-        }
+        return blockEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).map(h -> {
+            return extraSlot.test(((CraftyStackHandler) h).getQuickCrafty().get(idx));//predicated
+        }).orElse(false);// no do consume to EMPTY
     }
 
     // Setup syncing of power from server to client so that the GUI can show the amount of power in the block
     private void trackPower() {
-        // Unfortunately on a dedicated server ints are actually truncated to short so we need
+        // Unfortunately on a dedicated server ints are actually truncated to short, so we need
         // to split our integer here (split our 32-bit integer into two 16-bit integers)
         addDataSlot(new DataSlot() {
             @Override

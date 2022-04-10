@@ -91,6 +91,11 @@ public class Perl {
         return this;
     }
 
+    public Perl anyOrNone(boolean notNone) {
+        anyOrNot("", !notNone);
+        return this;
+    }
+
     public Perl anyOrNot(String these, boolean notInverted) {
         String inv = "^";
         if(notInverted) inv = "";
@@ -176,5 +181,9 @@ public class Perl {
 
     public Optional<Matcher> getBareMatcher() {
         return Optional.ofNullable(matcher);
+    }
+
+    public boolean matches(String like) {
+        return Pattern.matches(literal, like);
     }
 }

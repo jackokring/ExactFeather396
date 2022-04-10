@@ -148,7 +148,11 @@ public class EnergyEntity extends BlockEntity {
     // ================ CAPS HANDLERS ===================
 
     private CraftyStackHandler createHandler() {
-        return new CraftyStackHandler(1) {// SLOT 0
+        return new CraftyStackHandler(1) {
+            @Override
+            public void addSlots() {
+                addSlot(ExtraSlot.FUEL);// SLOT 0
+            }
 
             @Override
             protected void onContentsChanged(int slot) {
