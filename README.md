@@ -16,3 +16,5 @@ The automatic module update notification files are supplied where possible.
 [Tree view of assets directory](https://github.com/jackokring/ExactFeather396/blob/main/assettree.md) for understanding where to locate resources.
 
 [Javadoc of source](https://htmlpreview.github.io/?https://github.com/jackokring/ExactFeather396/blob/main/index.html) for understanding where to locate resources.
+
+[Data tools](https://github.com/jackokring/ExactFeather396/blob/main/src/main/java/uk/co/kring/ef396/data) for some data tools (general Java not just MC).
