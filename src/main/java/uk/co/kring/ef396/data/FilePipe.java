@@ -20,6 +20,7 @@ public enum FilePipe {
     BWT_LZW_ZLE_GZIP("blwz",Pipe.BWT_LZW_ZLE_GZIP, null),
     //TODO
     PNG("png", Pipe.NULL, FilePipe::registerImageComponent),
+    JPG("jpg", Pipe.NULL, FilePipe::registerImageComponent),
     NULL("", Pipe.NULL, null);
 
     private final String extension;

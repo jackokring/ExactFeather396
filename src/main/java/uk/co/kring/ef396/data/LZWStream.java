@@ -1,5 +1,6 @@
 package uk.co.kring.ef396.data;
 
+import uk.co.kring.ef396.data.backend.Restart;
 import uk.co.kring.ef396.data.backend.Sais;
 
 import java.io.*;
@@ -67,7 +68,7 @@ public class LZWStream {
         return result.toString();
     }
 
-    public static class Input extends FilterInputStream {
+    public static class Input extends FilterInputStream implements Restart {
 
         @Override
         public int read() throws IOException {
@@ -77,9 +78,14 @@ public class LZWStream {
         public Input(InputStream in) {
             super(in);
         }
+
+        @Override
+        public void restart() {
+
+        }
     }
 
-    public static class Output extends FilterOutputStream {
+    public static class Output extends FilterOutputStream implements Restart {
 
         @Override
         public void write(int b) throws IOException {
@@ -102,6 +108,11 @@ public class LZWStream {
 
         public Output(OutputStream out) {
             super(out);
+        }
+
+        @Override
+        public void restart() {
+
         }
     }
 }
