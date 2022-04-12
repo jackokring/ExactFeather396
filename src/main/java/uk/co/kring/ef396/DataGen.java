@@ -24,7 +24,7 @@ import uk.co.kring.ef396.blocks.ModelledBlock;
 import uk.co.kring.ef396.items.ModelledItem;
 import uk.co.kring.ef396.tags.*;
 import uk.co.kring.ef396.utilities.JsonAdapter;
-import uk.co.kring.ef396.utilities.Perl;
+import uk.co.kring.ef396.data.Perl;
 import uk.co.kring.ef396.utilities.Registries;
 
 import java.util.*;

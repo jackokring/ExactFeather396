@@ -1,4 +1,4 @@
-package uk.co.kring.ef396.data;
+package uk.co.kring.ef396.data.backend;
 
 /*
  * sais.java for sais-java

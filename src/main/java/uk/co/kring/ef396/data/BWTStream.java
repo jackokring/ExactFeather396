@@ -1,5 +1,7 @@
 package uk.co.kring.ef396.data;
 
+import uk.co.kring.ef396.data.backend.Sais;
+
 import java.io.*;
 
 public class BWTStream {
@@ -27,7 +29,7 @@ public class BWTStream {
             return buffer[buffer.length - (count--) - 1];//zero 1st
         }
 
-        protected Input(InputStream in) {
+        public Input(InputStream in) {
             super(in);
         }
     }

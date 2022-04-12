@@ -2,7 +2,8 @@ package uk.co.kring.ef396.data;
 
 import java.io.*;
 
-public class RLEStream {
+public class ZLEStream {
+
 
     public static class Input extends FilterInputStream {
 
@@ -13,17 +14,21 @@ public class RLEStream {
         public int read() throws IOException {
             if(last == -1) {
                 last = super.read();
-                if(last != -1) {
+                if(last == 0) {
                     count = super.read();
                     if(count == -1) throw new IOException("Malformed count EOF");
-                } else {
+                } else if(last == -1) {
                     throw new IOException("Malformed byte EOF");
                 }
             }
             int tmp = last;
-            count--;
-            if(count < 0) {//all decremented off
-                last = -1;
+            if(last != 0) {
+                last = -1;//reset
+            } else {
+                count--;
+                if (count < 0) {//all decremented off
+                    last = -1;
+                }
             }
             return tmp;
         }
@@ -36,24 +41,27 @@ public class RLEStream {
     public static class Output extends FilterOutputStream {
 
         private int count = 0;
-        private int last = -1;
+        private boolean last = false;
 
         @Override
         public void write(int b) throws IOException {
-            if(last == b) {//same
-                count++;
-                if(count == 255) {//overflow?
-                    super.write(count);//complete count
-                    super.write(b);//new set
-                    count = 0;//for increment to zero
+            if(b == 0) {
+                if(!last) {
+                    super.write(0);//zero RLE
+                    last = true;
+                    count = 0;//first
+                } else {//in zero stream
+                    count++;
+                    if (count == 255) {
+                        super.write(count);
+                        count = 0;
+                        super.write(0);//new run
+                    }
                 }
             } else {
-                if(last != -1) {
-                    super.write(count);//zero basis last count
-                }
-                last = b;//new char
-                count = 0;//one found so zero count
-                super.write(b);//write it
+                if(last) super.write(count);//finish count
+                super.write(b);
+                last = false;//reset
             }
         }
 

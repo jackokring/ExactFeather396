@@ -1,5 +1,7 @@
 package uk.co.kring.ef396.data;
 
+import uk.co.kring.ef396.data.backend.Sais;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -72,7 +74,7 @@ public class LZWStream {
             return 0;//TODO
         }
 
-        protected Input(InputStream in) {
+        public Input(InputStream in) {
             super(in);
         }
     }

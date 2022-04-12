@@ -1,4 +1,4 @@
-package uk.co.kring.ef396.utilities;
+package uk.co.kring.ef396.data;
 
 import java.util.Optional;
 import java.util.regex.Matcher;
