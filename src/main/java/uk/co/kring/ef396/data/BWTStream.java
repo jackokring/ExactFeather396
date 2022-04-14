@@ -17,15 +17,17 @@ public class BWTStream {
         @Override
         public int read() throws IOException {
             if(count < 0) {
-                DataInputStream dis = new DataInputStream(this);
-                count = dis.readInt();
-                if(count > buffer.length) throw new IOException("Invalid length for block size");
-                int p = dis.readInt();//index
-                if(p > count) throw new IOException("Invalid index for block size");
+                DataInputStream dis = new DataInputStream(this.in);
+                int p;
                 int[] L = new int[256];
                 byte[] U = new byte[buffer.length];
                 int[] A = new int[buffer.length];
                 if(in instanceof Restart restart) {//special
+                    restart.restart();
+                    count = dis.readInt();
+                    if(count > buffer.length) throw new IOException("Invalid length for block size");
+                    p = dis.readInt();//index
+                    if(p > count) throw new IOException("Invalid index for block size");
                     for(int i = 0; i < 256; i++) {
                         L[i] = dis.readInt();//24 bit?
                     }
@@ -36,6 +38,10 @@ public class BWTStream {
                         start += L[i];//next section
                     }
                 } else {
+                    count = dis.readInt();
+                    if(count > buffer.length) throw new IOException("Invalid length for block size");
+                    p = dis.readInt();//index
+                    if(p > count) throw new IOException("Invalid index for block size");
                     super.read(U);
                 }
                 Sais.unbwt(U, buffer, A, count, p);//un-transform
@@ -70,14 +76,15 @@ public class BWTStream {
 
         public void flusher() throws IOException {
             if(count > 0) {
-                DataOutputStream dos = new DataOutputStream(this);
-                dos.writeInt(count);
+                DataOutputStream dos = new DataOutputStream(this.out);
                 int[] L = new int[256];
                 byte[] U = new byte[buffer.length];
                 int[] A = new int[buffer.length];
                 int p = Sais.bwtransform(buffer, U, A, count);
-                dos.writeInt(p);//index
                 if(out instanceof Restart restart) {//special
+                    restart.restart();
+                    dos.writeInt(count);
+                    dos.writeInt(p);//index
                     for(int i = 0; i < buffer.length; i++) {
                         L[U[i]]++;//count characters of type
                     }
@@ -91,6 +98,8 @@ public class BWTStream {
                         start += L[i];//next section
                     }
                 } else {
+                    dos.writeInt(count);
+                    dos.writeInt(p);//index
                     super.write(U);//transform
                 }
                 count = 0;

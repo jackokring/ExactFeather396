@@ -14,9 +14,9 @@ public enum FilePipe {
 
     GZIP("gz", Pipe.GZIP, null),
     RLE("rle", Pipe.RLE, null),
-    SPARSE("rle.gz", Pipe.ZLE_GZIP, null),//almost useless except on very sparse data
+    SPARSE("spa", Pipe.ZLE_GZIP, null),//almost useless except on very sparse data
     BGZ("bgz", Pipe.BWT_GZIP, null),
-    LZW("lzw", Pipe.LZW, null),
+    LZW("w24", Pipe.LZW, null),
     BLWZ("blwz",Pipe.BWT_LZW_GZIP, null),
     //TODO
     PNG("png", Pipe.NULL, FilePipe::registerImageComponent),

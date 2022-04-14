@@ -12,10 +12,10 @@ public enum Pipe {
     RLE(false,false, Runs.RLE, false, false),//run length encoding
     ZLE_GZIP(false,false, Runs.ZLE, true, false),//long run compression
     // before deflate (highly redundant data?)
-    BWT_GZIP(false,true, Runs.NULL, true, false),
-    LZW(true,false, Runs.NULL, false, false),
+    BWT_GZIP(false,true, Runs.NULL, true, false),//good
+    LZW(true,false, Runs.NULL, false, false),//24-bit dictionary indexing
     // technically this is slow but does have full size in the 1MB block for dictionary per prefix
-    // and the MTF on the dictionary indexes keeps them as low as possible so GZIP cleans up.
+    // and the dictionary indexes keeps them as low as possible so GZIP cleans up.
     BWT_LZW_GZIP(true,true, Runs.NULL, true, true),
     SIGN(false, false, Runs.NULL, false, true),
     NULL(false,false, Runs.NULL, false, false);//straight data pipe
