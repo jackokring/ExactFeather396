@@ -2,6 +2,8 @@ uk.co.kring.ef396
 uk.co.kring.ef396.blocks
 uk.co.kring.ef396.blocks.entities
 uk.co.kring.ef396.capabilities
+uk.co.kring.ef396.data
+uk.co.kring.ef396.data.backend
 uk.co.kring.ef396.entities
 uk.co.kring.ef396.entities.goals
 uk.co.kring.ef396.entities.goals.exceptions
