@@ -14,10 +14,10 @@ public enum FilePipe {
 
     GZIP("gz", Pipe.GZIP, null),
     RLE("rle", Pipe.RLE, null),
-    RLE_GZIP("rle.gz", Pipe.RLE_GZIP, null),//almost useless except on very sparse data
-    BWT_GZIP("bgz", Pipe.BWT_GZIP, null),
+    SPARSE("rle.gz", Pipe.ZLE_GZIP, null),//almost useless except on very sparse data
+    BGZ("bgz", Pipe.BWT_GZIP, null),
     LZW("lzw", Pipe.LZW, null),
-    BWT_LZW_ZLE_GZIP("blwz",Pipe.BWT_LZW_ZLE_GZIP, null),
+    BLWZ("blwz",Pipe.BWT_LZW_GZIP, null),
     //TODO
     PNG("png", Pipe.NULL, FilePipe::registerImageComponent),
     JPG("jpg", Pipe.NULL, FilePipe::registerImageComponent),
@@ -62,6 +62,14 @@ public enum FilePipe {
 
     public static TypedStream.Output getOutputStream(Socket ip, FilePipe fp) throws IOException {
         return new TypedStream.Output(ip.getOutputStream(), fp);
+    }
+
+    public static TypedStream.Input getInputStream(TypedStream.Input in, FilePipe fp) throws IOException {
+        return new TypedStream.Input(fp.uses.getStream(in), fp);
+    }
+
+    public static TypedStream.Output getOutputStream(TypedStream.Output out, FilePipe fp) throws IOException {
+        return new TypedStream.Output(fp.uses.getStream(out), fp);
     }
 
     //====================== COMPONENT AUTOMATICS =========================

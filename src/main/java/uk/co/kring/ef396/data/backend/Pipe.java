@@ -1,9 +1,6 @@
 package uk.co.kring.ef396.data.backend;
 
-import uk.co.kring.ef396.data.BWTStream;
-import uk.co.kring.ef396.data.LZWStream;
-import uk.co.kring.ef396.data.RLEStream;
-import uk.co.kring.ef396.data.ZLEStream;
+import uk.co.kring.ef396.data.*;
 
 import java.io.*;
 import java.util.zip.GZIPInputStream;
@@ -11,45 +8,55 @@ import java.util.zip.GZIPOutputStream;
 
 public enum Pipe {
 
-    GZIP(false,false,false,false, true),//generic deflate algorithm
-    RLE(false,false,false,true, false),//run length encoding
-    RLE_GZIP(false,false,false,true, true),//long run compression before deflate (highly redundant data?)
-    //although almost pointless unless the RLE is still not the most compressed the repeats can get
-    //GZIP includes some LZ77 so the repeats would be compacted quite a bit anyhow.
-    BWT_GZIP(false,true,false,false, true),
-    LZW(true,false,false,false, false),
+    GZIP(false,false, Runs.NULL, true, false),//generic deflate algorithm
+    RLE(false,false, Runs.RLE, false, false),//run length encoding
+    ZLE_GZIP(false,false, Runs.ZLE, true, false),//long run compression
+    // before deflate (highly redundant data?)
+    BWT_GZIP(false,true, Runs.NULL, true, false),
+    LZW(true,false, Runs.NULL, false, false),
     // technically this is slow but does have full size in the 1MB block for dictionary per prefix
     // and the MTF on the dictionary indexes keeps them as low as possible so GZIP cleans up.
-    BWT_LZW_ZLE_GZIP(true,true,true,false, true),
-    NULL(false,false,false,false, false);//straight data pipe
+    BWT_LZW_GZIP(true,true, Runs.NULL, true, true),
+    SIGN(false, false, Runs.NULL, false, true),
+    NULL(false,false, Runs.NULL, false, false);//straight data pipe
 
+    private final boolean check;
     private final boolean gzip;
-    private final boolean rle;
-    private final boolean zle;
+    private final Runs runs;
     private final boolean bwt;
     private final boolean lzw;
 
-    Pipe(boolean lzw, boolean bwt, boolean zle, boolean rle, boolean gzip) {
+    public enum Runs {
+        RLE(), ZLE(), NULL();
+    }
+
+    Pipe(boolean lzw, boolean bwt, Runs runs, boolean gzip, boolean check) {
         this.lzw = lzw;
         this.bwt = bwt;
-        this.zle = zle;
-        this.rle = rle;
+        this.runs = runs;
         this.gzip = gzip;
+        this.check = check;
     }
 
     public DataInputStream getStream(InputStream is) throws IOException {
-        if(gzip) is = new GZIPInputStream(is);
-        if(rle) is = new RLEStream.Input(is);
-        if(zle) is = new ZLEStream.Input(is);
+        if(check) is = new SignedStream.Input(is);
+        if(gzip) is = new GZIPInputStream(is, 65536);
+        switch(runs) {
+            case RLE -> is = new RLEStream.Input(is);
+            case ZLE -> is = new ZLEStream.Input(is);
+        }
         if(lzw) is = new LZWStream.Input(is);
         if(bwt) is = new BWTStream.Input(is);
         return new DataInputStream(is);
     }
 
     public DataOutputStream getStream(OutputStream os) throws IOException {
-        if(gzip) os = new GZIPOutputStream(os);
-        if(rle) os = new RLEStream.Output(os);
-        if(zle) os = new ZLEStream.Output(os);
+        if(check) os = new SignedStream.Output(os);
+        if(gzip) os = new GZIPOutputStream(os, 65536, true);// SYNC_FLUSH
+        switch(runs) {
+            case RLE ->  os = new RLEStream.Output(os);
+            case ZLE ->  os = new ZLEStream.Output(os);
+        }
         if(lzw) os = new LZWStream.Output(os);
         if(bwt) os = new BWTStream.Output(os);
         return new DataOutputStream(os);

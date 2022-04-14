@@ -57,13 +57,18 @@ public class BWTStream {
         @Override
         public void write(int b) throws IOException {
             if(count == buffer.length) {
-                flush();
+                flusher();
             }
             buffer[count] = (byte)b;
             count++;
         }
 
         public void flush() throws IOException {
+            flusher();//avoid pass through issues of flush
+            super.flush();
+        }
+
+        public void flusher() throws IOException {
             if(count > 0) {
                 DataOutputStream dos = new DataOutputStream(this);
                 dos.writeInt(count);
@@ -89,7 +94,6 @@ public class BWTStream {
                     super.write(U);//transform
                 }
                 count = 0;
-                super.flush();
             }
         }
 
