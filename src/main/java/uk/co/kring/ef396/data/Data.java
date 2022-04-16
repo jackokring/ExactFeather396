@@ -32,34 +32,45 @@ public class Data {
 
     public static int execute(String command, InputStream in, OutputStream out) throws IOException {
         ProcessBuilder builder = new ProcessBuilder(command);
-        Process p = builder.start();
+        Process p = builder. /* directory(new File("~")). */ start();
         InputStream is = p.getInputStream();
         InputStream es = p.getErrorStream();
         OutputStream os = p.getOutputStream();
-        new Thread(() -> {
+        Thread j1 = new Thread(() -> {
             try {
                 FilePipe.cloneStream(in, os);
             } catch (IOException e) {
                 System.err.println(e.getMessage());
                 throw new RuntimeException("Input stream failure read.");
             }
-        }).start();
-        new Thread(() -> {
+        });
+        j1.start();
+        Thread j2 = new Thread(() -> {
             try {
                 FilePipe.cloneStream(is, out);
             } catch (IOException e) {
                 System.err.println(e.getMessage());
                 throw new RuntimeException("Output stream failure write.");
             }
-        }).start();
-        new Thread(() -> {
+        });
+        j2.start();
+        Thread j3 = new Thread(() -> {
             try {
                 FilePipe.cloneStream(es, System.err);
             } catch (IOException e) {
                 System.err.println(e.getMessage());
                 throw new RuntimeException("Error stream failure write.");
             }
-        }).start();
+        });
+        j3.start();
+        try {// have to join to prevent stream problems on exit value and no stream clone completion
+            j1.join();
+            j2.join();
+            j3.join();
+        } catch(Exception e) {
+            System.err.println(e.getMessage());
+            throw new IOException("Process join error.");
+        }
         return p.exitValue();
     }
 
