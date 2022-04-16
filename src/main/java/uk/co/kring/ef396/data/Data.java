@@ -1,12 +1,12 @@
 package uk.co.kring.ef396.data;
 
 import java.awt.*;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.awt.image.BufferedImage;
+import java.io.*;
 
 public class Data {
 
@@ -19,19 +19,83 @@ public class Data {
     public static final String version = "1.0.0";
 
     public static final String FILE = "FILE NAME";
-    public static final String ARCHIVE = "ARCHIVE NAME";
-
-    private static InputStream in = System.in;
-    private static OutputStream out = System.out;
+    public static final String ARCH = "ARCHIVE NAME";
+    public static final String COMMAND = "COMMAND STRING";
 
     public static void exitCode(int code) {
-        System.err.print("[" + code + "] ");
-        System.err.println("Error in data tools causing premature exit.");
+        if(code != 0) {
+            System.err.print("[" + code + "] ");
+            System.err.println("Error in data tools causing premature exit.");
+        }
         System.exit(code);
     }
 
-    public static void imageCanvas(TypedStream.Input in) {
-        //TODO
+    public static int execute(String command, InputStream in, OutputStream out) throws IOException {
+        ProcessBuilder builder = new ProcessBuilder(command);
+        Process p = builder.start();
+        InputStream is = p.getInputStream();
+        InputStream es = p.getErrorStream();
+        OutputStream os = p.getOutputStream();
+        new Thread(() -> {
+            try {
+                FilePipe.cloneStream(in, os);
+            } catch (IOException e) {
+                System.err.println(e.getMessage());
+                throw new RuntimeException("Input stream failure read.");
+            }
+        }).start();
+        new Thread(() -> {
+            try {
+                FilePipe.cloneStream(is, out);
+            } catch (IOException e) {
+                System.err.println(e.getMessage());
+                throw new RuntimeException("Output stream failure write.");
+            }
+        }).start();
+        new Thread(() -> {
+            try {
+                FilePipe.cloneStream(es, System.err);
+            } catch (IOException e) {
+                System.err.println(e.getMessage());
+                throw new RuntimeException("Error stream failure write.");
+            }
+        }).start();
+        return p.exitValue();
+    }
+
+    public static void imageCanvas(BufferedImage image) {
+        Frame f = new Frame("Image");
+        f.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent we) {
+                f.setVisible(false);
+            }
+        });
+        Canvas c = new Canvas();
+        c.addComponentListener(new ComponentListener() {
+            @Override
+            public void componentResized(ComponentEvent componentEvent) {
+                componentShown(componentEvent);//proxy
+            }
+
+            @Override
+            public void componentMoved(ComponentEvent componentEvent) {
+                //null
+            }
+
+            @Override
+            public void componentShown(ComponentEvent componentEvent) {
+                c.getGraphics().drawImage(image, 0, 0, c.getWidth(), c.getHeight(),
+                        0, 0, image.getWidth(), image.getHeight(), null);
+            }
+
+            @Override
+            public void componentHidden(ComponentEvent componentEvent) {
+                //null
+            }
+        });
+        f.add(c);
+        f.setVisible(true);
+        while(f.isVisible()) Thread.yield();//stay open to show
     }
 
     public static TypedStream.Input loadDialog() throws IOException {
@@ -81,13 +145,17 @@ public class Data {
         ARCHIVE('a', "archive", (args) -> {  }, new String[]{""}),
         EXTRACT('x', "extract", (args) -> {  }, new String[]{""}),
         LOAD('l', "load dialog", (args) -> {
-            in = loadDialog();//TODO
+            FilePipe.cloneStream(loadDialog(), System.out);
         }, new String[]{ }),
         SAVE('s', "save dialog", (args) -> {
-            out = saveDialog();//TODO
+            FilePipe.cloneStream(System.in, saveDialog());
         }, new String[]{ }),
-        COMPRESS('c', "compress", (args) -> {  }, new String[]{ FILE }),
-        EXPAND('e', "expand", (args) -> {  }, new String[]{ FILE }),
+        COMPRESS('c', "compress", (args) -> {
+            FilePipe.cloneStream(System.in, FilePipe.getOutputStream(new File(args[0])));
+        }, new String[]{ FILE }),
+        EXPAND('e', "expand", (args) -> {
+            FilePipe.cloneStream(FilePipe.getInputStream(new File(args[0])), System.out);
+        }, new String[]{ ARCH }),
         VERSION('v', "version", (args) -> {
             System.out.println(version);
         }, new String[]{ }),
@@ -100,10 +168,16 @@ public class Data {
                 show(args[0], true);
             }
         }, new String[]{ }),
-        USE('u', "use", (args) -> {  }, new String[]{""}),
+        USE('u', "use", (args) -> {
+            exitCode(execute(args[2], FilePipe.getInputStream(new File(args[0])),
+                    FilePipe.getOutputStream(new File(args[1]))));
+        }, new String[]{ ARCH, FILE, COMMAND }),
         IMAGE('i', "image load", (args) -> {
-            //TODO
-        }, new String[]{ FILE });
+            FilePipe.readComponent(FilePipe.getInputStream(new File(args[0])), BufferedImage.class)
+                    .ifPresent((image) -> {
+                        imageCanvas((BufferedImage) image);//create if possible
+                    });
+        }, new String[]{ ARCH });
 
         private final char option;
         private final String description;

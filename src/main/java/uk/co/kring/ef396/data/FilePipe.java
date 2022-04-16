@@ -63,12 +63,19 @@ public enum FilePipe {
         return new TypedStream.Output(ip.getOutputStream(), fp);
     }
 
-    public static TypedStream.Input getInputStream(TypedStream.Input in, FilePipe fp) throws IOException {
+    public static TypedStream.Input getInputStream(InputStream in, FilePipe fp) throws IOException {
         return new TypedStream.Input(fp.uses.getStream(in), fp);
     }
 
-    public static TypedStream.Output getOutputStream(TypedStream.Output out, FilePipe fp) throws IOException {
+    public static TypedStream.Output getOutputStream(OutputStream out, FilePipe fp) throws IOException {
         return new TypedStream.Output(fp.uses.getStream(out), fp);
+    }
+
+    public static void cloneStream(InputStream in, OutputStream out) throws IOException {
+        int b = -1;
+        while((b = in.read()) != -1)  {
+            out.write(b);
+        }
     }
 
     //====================== COMPONENT AUTOMATICS =========================
