@@ -13,9 +13,9 @@ public class ZLEStream {
         @Override
         public int read() throws IOException {
             if(last == -1) {
-                last = super.read();
+                last = in.read();
                 if(last == 0) {
-                    count = super.read();
+                    count = in.read();
                     if(count == -1) throw new IOException("Malformed count EOF");
                 } else if(last == -1) {
                     throw new IOException("Malformed byte EOF");
@@ -47,20 +47,20 @@ public class ZLEStream {
         public void write(int b) throws IOException {
             if(b == 0) {
                 if(!last) {
-                    super.write(0);//zero RLE
+                    out.write(0);//zero RLE
                     last = true;
                     count = 0;//first
                 } else {//in zero stream
                     count++;
                     if (count == 255) {
-                        super.write(count);
+                        out.write(count);
                         count = 0;
-                        super.write(0);//new run
+                        out.write(0);//new run
                     }
                 }
             } else {
-                if(last) super.write(count);//finish count
-                super.write(b);
+                if(last) out.write(count);//finish count
+                out.write(b);
                 last = false;//reset
             }
         }

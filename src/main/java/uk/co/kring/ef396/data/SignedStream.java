@@ -5,11 +5,12 @@ import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.Arrays;
 
 public class SignedStream {
 
-    private static final File pri = new File("~/.data/dsa");
-    private static final File pub = new File("~/.data/dsa.pub");
+    private static final File pri = new File("~/.config/data/dsa");
+    private static final File pub = new File("~/.config/data/dsa.pub");
 
     public static byte[] readConfig(File file) throws IOException {
         return FilePipe.getInputStream(file).readAllBytes();
@@ -64,14 +65,24 @@ public class SignedStream {
             return buffer[buffer.length - count - 1];
         }
 
+        private void readCheck(byte[] buffer, int start, int length) throws IOException {
+            int at = 0;
+            int checked = 0;
+            if(length < 0 || start < 0) throw new IOException("Negative size specification");
+            while(length - at != (at = super.read(buffer, start + at, length - at))) {
+                if (checked == 5) throw new IOException("Read stream unavailable amount");
+                checked++;
+            }
+        }
+
         public void readBuffer() throws IOException {
             count = new DataInputStream(this.in).readInt();
             if(count < 0 || count > buffer.length) throw new IOException("Bad length EOF");
-            in.read(buffer, 0, count);
+            readCheck(buffer, 0, count);
             md.update(buffer, 0, count);//check
             byte[] d = md.digest();
             byte[] e = readLenBytes(this.in);
-            if(!d.equals(e)) {
+            if(!Arrays.equals(d, e)) {
                 throw new IOException("Checksum error");
             }
             try {
@@ -97,10 +108,9 @@ public class SignedStream {
     public static class Output extends FilterOutputStream {
 
         private PrivateKey pk;
-        private PublicKey puk;
         private MessageDigest md;
         private int count = 0;
-        private byte[] buffer = new byte[1024];
+        private final byte[] buffer = new byte[1024];
 
         @Override
         public void write(int b) throws IOException {
@@ -134,6 +144,7 @@ public class SignedStream {
 
         public Output(OutputStream out) throws IOException {
             super(out);
+            PublicKey puk;
             try {
                 md = MessageDigest.getInstance("SHA-256");
                 pk = priKey(pri);

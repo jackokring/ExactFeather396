@@ -17,20 +17,26 @@ public class LZWStream {//not quite
 
     public static class Input extends FilterInputStream implements Restart {
 
-        private Map<Integer,String> dictionary = new HashMap<Integer,String>();
+        private final Map<Integer,String> dictionary = new HashMap<>();
         private int dictSize = 0;
-        private String entry, w;
+        private String w;
         private Input24 dis;
         private byte[] ok;
         private int count;
 
+        // a better distribution of numbers
+        private int inverted(int entry, boolean first) {
+            return first ? dictSize - entry - 1 : dictSize - entry;//one behind on dictSize
+        }
+
         @Override
         public int read() throws IOException {
             if(ok == null) {
-                int k = dis.read24();//inverse e.g. 256 - (256 - x) = x
+                int k = inverted(dis.read24(), false);//inverse e.g. 256 - (256 - x) = x
+                String entry;
                 if (dictionary.containsKey(k))
                     entry = dictionary.get(k);
-                else if (k == dictSize)
+                else if (k == 0 /*dictSize*/)
                     entry = w + w.charAt(0);
                 else
                     throw new IllegalArgumentException("Bad compression dictionary index");
@@ -54,7 +60,7 @@ public class LZWStream {//not quite
             dictSize = 256;
             for (int i = 0; i < 256; i++)
                 dictionary.put(i, "" + (char)i);
-            int c = dis.read24();
+            int c = inverted(dis.read24(), true);
             if(c >= dictSize) throw new IOException("Bad first index");
             String w = "" + (char)c;
             ok = getBytes(w);
@@ -89,13 +95,17 @@ public class LZWStream {//not quite
         private String w;
         private Output24 dos;
 
+        private int inverted(int entry) {
+            return dictSize - entry - 1;
+        }
+
         @Override
         public void write(int b) throws IOException {
             String wc = w + (char)b;
             if (dictionary.containsKey(wc))
                 w = wc;
             else {
-                dos.write24(dictionary.get(w));//inverse e.g. 256 - (256 - x) = x
+                dos.write24(inverted(dictionary.get(w)));//inverse e.g. 256 - (256 - x) = x
                 // Add wc to the dictionary.
                 if(dictSize < (2 << 24))
                     dictionary.put(wc, dictSize++);
@@ -105,7 +115,7 @@ public class LZWStream {//not quite
 
         public void flush() throws IOException {
             restart();
-            super.flush();
+            out.flush();
         }
 
         public Output(OutputStream out) {

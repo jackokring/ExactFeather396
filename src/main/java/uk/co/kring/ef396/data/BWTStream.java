@@ -11,8 +11,18 @@ public class BWTStream {
 
     public static class Input extends FilterInputStream {
 
-        private byte[] buffer = new byte[K1 * K1];
+        private final byte[] buffer = new byte[K1 * K1];
         private int count = -1;
+
+        private void readCheck(byte[] buffer, int start, int length) throws IOException {
+            int at = 0;
+            int checked = 0;
+            if(length < 0 || start < 0) throw new IOException("Negative size specification");
+            while(length - at != (at = in.read(buffer, start + at, length - at))) {
+                if (checked == 5) throw new IOException("Read stream unavailable amount");
+                checked++;
+            }
+        }
 
         @Override
         public int read() throws IOException {
@@ -34,7 +44,7 @@ public class BWTStream {
                     int start = 0;
                     for(int i = 0; i < 256; i++) {
                         restart.restart();
-                        super.read(U, start, L[i]);
+                        readCheck(U, start, L[i]);
                         start += L[i];//next section
                     }
                 } else {
@@ -42,7 +52,7 @@ public class BWTStream {
                     if(count > buffer.length) throw new IOException("Invalid length for block size");
                     p = dis.readInt();//index
                     if(p > count) throw new IOException("Invalid index for block size");
-                    super.read(U);
+                    readCheck(U, 0, count);
                 }
                 Sais.unbwt(U, buffer, A, count, p);//un-transform
             }
@@ -57,7 +67,7 @@ public class BWTStream {
 
     public static class Output extends FilterOutputStream {
 
-        private byte[] buffer = new byte[K1 * K1];
+        private final byte[] buffer = new byte[K1 * K1];
         private int count = 0;
 
         @Override

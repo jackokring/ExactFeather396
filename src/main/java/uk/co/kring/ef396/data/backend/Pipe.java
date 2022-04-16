@@ -13,7 +13,7 @@ public enum Pipe {
     ZLE_GZIP(false,false, Runs.ZLE, true, false),//long run compression
     // before deflate (highly redundant data?)
     BWT_GZIP(false,true, Runs.NULL, true, false),//good
-    LZW(true,false, Runs.NULL, false, false),//24-bit dictionary indexing
+    LZW(true,false, Runs.NULL, false, false),//24-bit dictionary indexing inverted symbols
     // technically this is slow but does have full size in the 1MB block for dictionary per prefix
     // and the dictionary indexes keeps them as low as possible so GZIP cleans up.
     BWT_LZW_GZIP(true,true, Runs.NULL, true, true),

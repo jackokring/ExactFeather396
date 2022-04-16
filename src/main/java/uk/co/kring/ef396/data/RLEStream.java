@@ -12,9 +12,9 @@ public class RLEStream {
         @Override
         public int read() throws IOException {
             if(last == -1) {
-                last = super.read();
+                last = in.read();
                 if(last != -1) {
-                    count = super.read();
+                    count = in.read();
                     if(count == -1) throw new IOException("Malformed count EOF");
                 } else {
                     throw new IOException("Malformed byte EOF");
@@ -43,17 +43,17 @@ public class RLEStream {
             if(last == b) {//same
                 count++;
                 if(count == 255) {//overflow?
-                    super.write(count);//complete count
-                    super.write(b);//new set
+                    out.write(count);//complete count
+                    out.write(b);//new set
                     count = 0;//for increment to zero
                 }
             } else {
                 if(last != -1) {
-                    super.write(count);//zero basis last count
+                    out.write(count);//zero basis last count
                 }
                 last = b;//new char
                 count = 0;//one found so zero count
-                super.write(b);//write it
+                out.write(b);//write it
             }
         }
 

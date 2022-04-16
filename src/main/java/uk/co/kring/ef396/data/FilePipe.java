@@ -15,10 +15,9 @@ public enum FilePipe {
     GZIP("gz", Pipe.GZIP, null),
     RLE("rle", Pipe.RLE, null),
     SPARSE("spa", Pipe.ZLE_GZIP, null),//almost useless except on very sparse data
-    BGZ("bgz", Pipe.BWT_GZIP, null),
-    LZW("w24", Pipe.LZW, null),
-    BLWZ("blwz",Pipe.BWT_LZW_GZIP, null),
-    //TODO
+    BGZ("bgz", Pipe.BWT_GZIP, null),//quite a good compromise
+    LZW("w24", Pipe.LZW, null),//fast but not as effective, adapted for inverted symbols
+    BLWZ("blwz",Pipe.BWT_LZW_GZIP, null),//slower but packs symbol repeats as zeros for GZ
     PNG("png", Pipe.NULL, FilePipe::registerImageComponent),
     JPG("jpg", Pipe.NULL, FilePipe::registerImageComponent),
     NULL("", Pipe.NULL, null);
@@ -85,26 +84,26 @@ public enum FilePipe {
     }
 
     private static final HashMap<FilePipe,
-            HashMap<Class, CheckedFunction<TypedStream.Input, Object>>> ins = new HashMap<>();
+            HashMap<Class<?>, CheckedFunction<TypedStream.Input, Object>>> ins = new HashMap<>();
 
     private static final HashMap<FilePipe,
-            HashMap<Class, CheckedBiConsumer<TypedStream.Output, Object>>> outs = new HashMap<>();
+            HashMap<Class<?>, CheckedBiConsumer<TypedStream.Output, Object>>> outs = new HashMap<>();
 
     public static void registerInputComponent(FilePipe fp,
-                                              Class idx, CheckedFunction<TypedStream.Input, Object> transform) {
+                                              Class<?> idx, CheckedFunction<TypedStream.Input, Object> transform) {
         var x = ins.computeIfAbsent(fp,
                 (func) -> new HashMap<>());
         x.put(idx, transform);
     }
 
     public static void registerOutputComponent(FilePipe fp,
-                                               Class idx, CheckedBiConsumer<TypedStream.Output, Object> transform) {
+                                               Class<?> idx, CheckedBiConsumer<TypedStream.Output, Object> transform) {
         var x = outs.computeIfAbsent(fp,
                 (func) -> new HashMap<>());
         x.put(idx, transform);
     }
 
-    public static Optional<Object> readComponent(TypedStream.Input in, Class clazz) throws IOException {
+    public static Optional<Object> readComponent(TypedStream.Input in, Class<?> clazz) throws IOException {
         var x = ins.get(in.getFilePipe());
         if(x == null) return Optional.empty();
         var y = x.get(clazz);

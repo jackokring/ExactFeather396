@@ -184,6 +184,7 @@ public class Perl {
     }
 
     public boolean matches(String like) {
+        if(like == null) return false;//nothing in null matches to anything
         return Pattern.matches(literal, like);
     }
 }
