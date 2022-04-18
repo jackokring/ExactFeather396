@@ -10,6 +10,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.util.Arrays;
 
 public class Data {
 
@@ -23,9 +24,14 @@ public class Data {
         void run(String[] args) throws IOException;
     }
 
-    public static final String FILE = "FILE NAME";
+    public static final String FILE = "SAVE AS NAME";
     public static final String ARCH = "ARCHIVE NAME";
     public static final String COMMAND = "COMMAND STRING";
+    public static final String DIRS = "DIRECTORY NAME";
+    public static final String REPEATS = "...";
+
+    public static final String TAR = "tar cf - ";
+    public static final String UN_TAR = "tar xvf - ";
 
     public static void exitCode(int code) {
         if(code != 0) {
@@ -33,6 +39,14 @@ public class Data {
             System.err.println("Error in data tools causing premature exit.");
         }
         System.exit(code);
+    }
+
+    public static int tar(String[] dirs, OutputStream arch) throws IOException {
+        return execute(TAR + Arrays.stream(dirs).reduce((s, t) -> s + " " + t), System.in, arch);
+    }
+
+    public static int unTar(InputStream arch) throws IOException {
+        return execute(UN_TAR, arch, System.out);
     }
 
     public static int execute(String command, InputStream in, OutputStream out) throws IOException {
@@ -128,37 +142,44 @@ public class Data {
     }
 
     public enum Command {
-        //TODO use tar
-        ARCHIVE('a', "archive", (args) -> {  }, new String[]{""}),
-        EXTRACT('x', "extract", (args) -> {  }, new String[]{""}),
-
         //TODO create repo table hashes for signature store
-        REPO_GIT('g', "clone git signature repository", (args) -> {}, new String[]{""}),
-        REPO_NFT('n', "get NFT url for user", (args) -> { }, new String[]{""}),
+        REPO_GIT('g', "clone git signature repository",
+                (args) -> {}, new String[]{""}, false),
+        REPO_NFT('n', "get NFT url for user",
+                (args) -> { }, new String[]{""}, false),
 
         //TODO a mini game
         GAME('p', "play mini game", (args) -> {
             Game g = new Game();
             while(g.isVisible()) Thread.yield();
-        }, new String[]{""}),
+        }, new String[]{""}, false),
 
         //main functions
+        ARCHIVE('a', "archive", (args) -> {
+            String[] dirs = shift(args);
+            exitCode(tar(dirs,
+                    FilePipe.writeStream(FilePipe.getOutputStream(new File(args[0])))));
+        }, new String[]{ FILE, DIRS }, true),
+        EXTRACT('x', "extract", (args) -> {
+            exitCode(unTar(FilePipe.readStream(FilePipe.getInputStream(new File(args[0])))));
+        }, new String[]{ ARCH }, false),
         LOAD('l', "common load dialog", (args) -> {
             FilePipe.cloneStream(loadDialog(), System.out);
-        }, new String[]{ }),
+        }, new String[]{ }, false),
         SAVE('s', "common save dialog", (args) -> {
             FilePipe.cloneStream(System.in, saveDialog());
-        }, new String[]{ }),
+        }, new String[]{ }, false),
         COMPRESS('c', "compress file", (args) -> {
-            FilePipe.cloneStream(System.in, FilePipe.getOutputStream(new File(args[0])));
-        }, new String[]{ FILE }),
+            FilePipe.cloneStream(System.in,
+                    FilePipe.writeStream(FilePipe.getOutputStream(new File(args[0]))));
+        }, new String[]{ FILE }, false),
         EXPAND('e', "expand file", (args) -> {
             FilePipe.cloneStream(
                     FilePipe.readStream(FilePipe.getInputStream(new File(args[0]))), System.out);
-        }, new String[]{ ARCH }),
+        }, new String[]{ ARCH }, false),
         VERSION('v', "version information", (args) -> {
             System.out.println(version);
-        }, new String[]{ }),
+        }, new String[]{ }, false),
         HELP('h', "help with options", (args) -> {
             if(args == null) {
                 System.out.println("Try one of the following options for the first argument");
@@ -167,32 +188,34 @@ public class Data {
                 System.out.println("Help for option " + args[0]);
                 show(args[0], true);
             }
-        }, new String[]{ }),
+        }, new String[]{ }, false),
         USE('u', "use command process on file to file", (args) -> {
             exitCode(execute(args[2], FilePipe.readStream(FilePipe.getInputStream(new File(args[0]))),
                     FilePipe.writeStream(FilePipe.getOutputStream(new File(args[1])))));
-        }, new String[]{ ARCH, FILE, COMMAND }),
+        }, new String[]{ ARCH, FILE, COMMAND }, false),
         TRANSCODE('t', "transcode from file to file", (args) -> {
             FilePipe.cloneStream(FilePipe.readStream(FilePipe.getInputStream(new File(args[0]))),
                     FilePipe.writeStream(FilePipe.getOutputStream(new File(args[1]))));
-        }, new String[]{ ARCH, FILE }),
+        }, new String[]{ ARCH, FILE }, false),
         IMAGE('i', "image load and view", (args) -> {
             FilePipe.readComponent(FilePipe.getInputStream(new File(args[0])))
                     .ifPresent((image) -> {
                         imageCanvas((BufferedImage) image);//create if possible
                     });
-        }, new String[]{ ARCH });
+        }, new String[]{ ARCH }, false);
 
         private final char option;
         private final String description;
         private final Exec action;
         private final String[] params;
+        private final boolean repeats;
 
-        Command(char option, String description, Exec action, String[] params) {
+        Command(char option, String description, Exec action, String[] params, boolean repeats) {
             this.option = option;
             this.description = description;
             this.action = action;
             this.params = params;
+            this.repeats = repeats;
         }
 
         private static void show(String arg, boolean singular) throws IOException {
@@ -205,11 +228,19 @@ public class Data {
                     printed = false;
                     System.out.print(s);
                 }
-                System.out.println(">");// end
+                System.out.print("> ");// end
+                if(c.repeats) System.out.print(REPEATS);
+                System.out.println();//new line
                 if(c.description == null) throw new IOException("Needs documentation");
                 System.out.println("\t" + c.description);
             }
         }
+    }
+
+    public static String[] shift(String[] args) {
+        String[] s = new String[args.length - 1];
+        System.arraycopy(args, 1, s, 0, args.length - 1);
+        return s;
     }
 
     public static void main(String[] args) {
@@ -229,10 +260,8 @@ public class Data {
         if(args.length >= 1 && args[0].length() == 1) {
             for (Command c: Command.values()) {
                 if(args[0].charAt(0) == c.option) {
-                    String[] s = new String[args.length - 1];
-                    System.arraycopy(args, 1, s, 0, args.length - 1);
                     try {
-                        c.action.run(s);
+                        c.action.run(shift(args));
                     } catch(Exception e) {
                         System.err.println(e.getMessage());
                         exitCode(-1);//default err
