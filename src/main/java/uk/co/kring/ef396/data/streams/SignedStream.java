@@ -1,5 +1,6 @@
 package uk.co.kring.ef396.data.streams;
 
+import uk.co.kring.ef396.data.Data;
 import uk.co.kring.ef396.data.FilePipe;
 
 import java.io.*;
@@ -11,8 +12,8 @@ import java.util.Arrays;
 
 public class SignedStream {
 
-    private static final File pri = new File("~/.config/data/dsa");
-    private static final File pub = new File("~/.config/data/dsa.pub");
+    private static final File pri = new File("~/.config/" + Data.name + "/dsa");
+    private static final File pub = new File("~/.config/" + Data.name + "/dsa.pub");
 
     public static byte[] readConfig(File file) throws IOException {
         return FilePipe.getInputStream(file).readAllBytes();
