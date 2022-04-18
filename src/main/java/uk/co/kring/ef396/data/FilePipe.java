@@ -97,7 +97,7 @@ public enum FilePipe {
         void accept(T t, R r) throws IOException;
     }
 
-    //============= SINGULAR COMPONENT ========================
+    //============= SINGULAR COMPONENT REGISTRATION ========================
 
     private static final HashMap<FilePipe, CheckedFunction<TypedStream.Input, Object>> ins = new HashMap<>();
 
@@ -128,6 +128,8 @@ public enum FilePipe {
                                              CheckedFunction<TypedStream.Input, Object> transform) {
         outMan.put(fp, transform);
     }
+
+    //======================== COMPONENT HANDLERS ================================
 
     public static Optional<Object> readComponent(TypedStream.Input in) throws IOException {
         var x = ins.get(in.getFilePipe());
@@ -183,30 +185,42 @@ public enum FilePipe {
         ImageIO.write((BufferedImage)image, out.getFilePipe().extension, out);
     }
 
+    //============================ RASTER FORMAT =======================
+
     private static TypedStream.Input getImage(Object in, FilePipe fp) throws IOException {
         BufferedImage bim = (BufferedImage) in;
         //raster basis
         PipedOutputStream pos = new PipedOutputStream();
         DataOutputStream dos = new DataOutputStream(pos);
-
-        for(int y = 0; y < bim.getHeight(); y++) {
-            for(int x = 0; x < bim.getWidth(); x++) {
-                //TODO
+        new Thread(() -> {
+            try {
+                dos.writeInt(bim.getWidth());
+                dos.writeInt(bim.getHeight());
+                for (int y = 0; y < bim.getHeight(); y++) {
+                    for (int x = 0; x < bim.getWidth(); x++) {
+                        dos.writeInt(bim.getRGB(x, y));
+                    }
+                }
+            } catch(Exception e) {
+                throw new RuntimeException(e);
             }
-        }
+        }).start();
         return new TypedStream.Input(new PipedInputStream(pos), fp);
     }
 
-    private static Object putImage(TypedStream.Input out) throws IOException {
-        BufferedImage in = new BufferedImage(0, 0, BufferedImage.TYPE_4BYTE_ABGR);
+    private static Object putImage(TypedStream.Input in) throws IOException {
+        DataInputStream dis = new DataInputStream(in);
+        BufferedImage out = new BufferedImage(dis.readInt(), dis.readInt(), BufferedImage.TYPE_4BYTE_ABGR);
         //raster basis
-        for(int y = 0; y < in.getHeight(); y++) {
-            for(int x = 0; x < in.getWidth(); x++) {
-                //TODO
+        for(int y = 0; y < out.getHeight(); y++) {
+            for(int x = 0; x < out.getWidth(); x++) {
+                out.setRGB(x, y, dis.readInt());
             }
         }
-        return in;
+        return dis;
     }
+
+    //============ BUILT-IN IMAGE FORMATS ===============
 
     private static void registerImageComponent(FilePipe fp) {
         registerInputComponent(fp, FilePipe::getImage);
