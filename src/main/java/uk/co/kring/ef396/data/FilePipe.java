@@ -87,51 +87,59 @@ public enum FilePipe {
     }
 
     @FunctionalInterface
+    public interface CheckedBiFunction<T, X, R> {
+        R apply(T t, X x) throws IOException;
+    }
+
+    @FunctionalInterface
     public interface CheckedBiConsumer<T, R> {
         void accept(T t, R r) throws IOException;
     }
 
-    private static final HashMap<FilePipe,
-            HashMap<Class<?>, CheckedFunction<TypedStream.Input, Object>>> ins = new HashMap<>();
+    //============= SINGULAR COMPONENT ========================
 
-    private static final HashMap<FilePipe,
-            HashMap<Class<?>, CheckedBiConsumer<TypedStream.Output, Object>>> outs = new HashMap<>();
+    private static final HashMap<FilePipe, CheckedFunction<TypedStream.Input, Object>> ins = new HashMap<>();
 
-    public static void registerInputComponent(FilePipe fp,
-                                              Class<?> idx, CheckedFunction<TypedStream.Input, Object> transform) {
-        var x = ins.computeIfAbsent(fp,
-                (func) -> new HashMap<>());
-        x.put(idx, transform);
+    private static final HashMap<FilePipe, CheckedBiConsumer<TypedStream.Output, Object>> outs = new HashMap<>();
+
+    public static void registerInputComponent(FilePipe fp, CheckedFunction<TypedStream.Input, Object> transform) {
+        ins.put(fp, transform);
     }
 
-    public static void registerOutputComponent(FilePipe fp,
-                                               Class<?> idx, CheckedBiConsumer<TypedStream.Output, Object> transform) {
-        var x = outs.computeIfAbsent(fp,
-                (func) -> new HashMap<>());
-        x.put(idx, transform);
+    public static void registerOutputComponent(FilePipe fp, CheckedBiConsumer<TypedStream.Output, Object> transform) {
+        outs.put(fp, transform);
     }
 
-    public static Optional<Object> readComponent(TypedStream.Input in, Class<?> clazz) throws IOException {
+    private static final HashMap<FilePipe, CheckedBiFunction<Object, FilePipe, TypedStream.Input>> inMan
+            = new HashMap<>();
+
+    private static final HashMap<FilePipe, CheckedFunction<TypedStream.Output, Object>> outMan = new HashMap<>();
+
+    public static void registerInputMangler(FilePipe fp,
+                                            CheckedBiFunction<Object, FilePipe, TypedStream.Input> transform) {
+        inMan.put(fp, transform);
+    }
+
+    public static void registerOutputMangler(FilePipe fp, CheckedFunction<TypedStream.Output, Object> transform) {
+        outMan.put(fp, transform);
+    }
+
+    public static Optional<Object> readComponent(TypedStream.Input in) throws IOException {
         var x = ins.get(in.getFilePipe());
         if(x == null) return Optional.empty();
-        var y = x.get(clazz);
-        if(y == null) return Optional.empty();
-        return Optional.of(y.apply(in));
+        return Optional.of(x.apply(in));
     }
 
     public static void writeComponent(TypedStream.Output out, Object thing) throws IOException {
         var x = outs.get(out.getFilePipe());
         if(x == null) throw new IOException("No component writer for "
                 + out.getFilePipe().getClass().getCanonicalName());
-        var y = x.get(thing.getClass());
-        if(y == null) throw new IOException("No component writer for "
-                + thing.getClass().getCanonicalName());
-        y.accept(out, thing);
+        x.accept(out, thing);
     }
 
     //======================= IMAGE COMPONENT =========================
 
-    private static BufferedImage getImage(TypedStream.Input in) throws IOException {
+    private static Object getImage(TypedStream.Input in) throws IOException {
         return ImageIO.read(in);
     }
 
@@ -139,8 +147,34 @@ public enum FilePipe {
         ImageIO.write((BufferedImage)image, out.getFilePipe().extension, out);
     }
 
+    private static TypedStream.Input getImage(Object in, FilePipe fp) throws IOException {
+        BufferedImage bim = (BufferedImage) in;
+        //raster basis
+        PipedOutputStream pos = new PipedOutputStream();
+        DataOutputStream dos = new DataOutputStream(pos);
+
+        for(int y = 0; y < bim.getHeight(); y++) {
+            for(int x = 0; x < bim.getWidth(); x++) {
+                //TODO
+            }
+        }
+        return new TypedStream.Input(new PipedInputStream(pos), fp);
+    }
+
+    /*private static BufferedImage putImage(TypedStream.Output out) throws IOException {
+        BufferedImage in = new BufferedImage(0, 0, BufferedImage.TYPE_4BYTE_ABGR);
+        //raster basis
+        for(int y = 0; y < in.getHeight(); y++) {
+            for(int x = 0; x < in.getWidth(); x++) {
+                //TODO
+            }
+        }
+    } */
+
     private static void registerImageComponent(FilePipe fp) {
-        registerInputComponent(fp, BufferedImage.class, FilePipe::getImage);
-        registerOutputComponent(fp, BufferedImage.class, FilePipe::putImage);
+        registerInputComponent(fp, FilePipe::getImage);
+        registerInputMangler(fp, FilePipe::getImage);
+        registerOutputComponent(fp, FilePipe::putImage);
+        //registerOutputMangler(fp, FilePipe::putImage);
     }
 }

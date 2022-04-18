@@ -11,7 +11,7 @@ public class TypedStream {
 
         private final FilePipe fp;
 
-        protected Input(InputStream in, FilePipe fp) {
+        public Input(InputStream in, FilePipe fp) {
             super(in);
             this.fp = fp;
         }

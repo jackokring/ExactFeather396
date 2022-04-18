@@ -158,7 +158,7 @@ public class Data {
                     FilePipe.getOutputStream(new File(args[1]))));
         }, new String[]{ ARCH, FILE, COMMAND }),
         IMAGE('i', "image load", (args) -> {
-            FilePipe.readComponent(FilePipe.getInputStream(new File(args[0])), BufferedImage.class)
+            FilePipe.readComponent(FilePipe.getInputStream(new File(args[0])))
                     .ifPresent((image) -> {
                         imageCanvas((BufferedImage) image);//create if possible
                     });
