@@ -1,10 +1,10 @@
 package uk.co.kring.ef396.data;
 
+import uk.co.kring.ef396.data.components.Application;
+import uk.co.kring.ef396.data.components.ImageCanvas;
 import uk.co.kring.ef396.data.streams.TypedStream;
 
 import java.awt.*;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
@@ -12,13 +12,15 @@ import java.io.*;
 
 public class Data {
 
+    public static String jar;
+    public static String name;
+    public static String version;
+
     @FunctionalInterface
     public interface Exec {
 
         void run(String[] args) throws IOException;
     }
-
-    public static final String version = "1.0.0";
 
     public static final String FILE = "FILE NAME";
     public static final String ARCH = "ARCHIVE NAME";
@@ -77,38 +79,8 @@ public class Data {
     }
 
     public static void imageCanvas(BufferedImage image) {
-        Frame f = new Frame("Image");
-        f.addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent we) {
-                f.setVisible(false);
-            }
-        });
-        Canvas c = new Canvas();
-        c.addComponentListener(new ComponentListener() {
-            @Override
-            public void componentResized(ComponentEvent componentEvent) {
-                componentShown(componentEvent);//proxy
-            }
-
-            @Override
-            public void componentMoved(ComponentEvent componentEvent) {
-                //null
-            }
-
-            @Override
-            public void componentShown(ComponentEvent componentEvent) {
-                c.getGraphics().drawImage(image, 0, 0, c.getWidth(), c.getHeight(),
-                        0, 0, image.getWidth(), image.getHeight(), null);
-            }
-
-            @Override
-            public void componentHidden(ComponentEvent componentEvent) {
-                //null
-            }
-        });
-        f.add(c);
-        f.setVisible(true);
-        while(f.isVisible()) Thread.yield();//stay open to show
+        Application a = new Application(new ImageCanvas(image, "Image"));
+        while(a.isVisible()) Thread.yield();//stay open to show
     }
 
     public static TypedStream.Input loadDialog() throws IOException {
@@ -207,7 +179,7 @@ public class Data {
         private static void show(String arg, boolean singular) throws IOException {
             for (Command c: Command.values()) {
                 if(singular && !arg.equals("" + c.option)) continue;//skip
-                System.out.print("data " + c.option + " <");
+                System.out.print(name + " " + c.option + " <");
                 boolean printed = true;
                 for (String s: c.params) {
                     if(!printed) System.out.print("> <");
@@ -222,6 +194,19 @@ public class Data {
     }
 
     public static void main(String[] args) {
+        try {
+            jar = Data.class.getProtectionDomain()
+                    .getCodeSource()
+                    .getLocation()
+                    .toURI()
+                    .getPath();
+            name = jar.substring(jar.lastIndexOf("/") + 1);
+            int starts = name.lastIndexOf("-") + 1;
+            version = name.substring(starts, name.lastIndexOf("."));
+        } catch(Exception e) {
+            System.err.println(e.getMessage());
+            exitCode(-2);//unexpected naming problem
+        }
         if(args.length >= 1 && args[0].length() == 1) {
             for (Command c: Command.values()) {
                 if(args[0].charAt(0) == c.option) {
