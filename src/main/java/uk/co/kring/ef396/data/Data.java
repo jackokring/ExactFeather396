@@ -129,19 +129,23 @@ public class Data {
     public enum Command {
         ARCHIVE('a', "archive", (args) -> {  }, new String[]{""}),
         EXTRACT('x', "extract", (args) -> {  }, new String[]{""}),
-        LOAD('l', "load dialog", (args) -> {
+        REPO_GIT('g', "clone git signature repository", (args) -> {}, new String[]{""}),
+        REPO_NFT('n', "get NFT url for user", (args) -> { }, new String[]{""}),
+        GAME('p', "play mini game", (args) -> {}, new String[]{""}),
+
+        LOAD('l', "common load dialog", (args) -> {
             FilePipe.cloneStream(loadDialog(), System.out);
         }, new String[]{ }),
-        SAVE('s', "save dialog", (args) -> {
+        SAVE('s', "common save dialog", (args) -> {
             FilePipe.cloneStream(System.in, saveDialog());
         }, new String[]{ }),
-        COMPRESS('c', "compress", (args) -> {
+        COMPRESS('c', "compress file", (args) -> {
             FilePipe.cloneStream(System.in, FilePipe.getOutputStream(new File(args[0])));
         }, new String[]{ FILE }),
-        EXPAND('e', "expand", (args) -> {
+        EXPAND('e', "expand file", (args) -> {
             FilePipe.cloneStream(FilePipe.getInputStream(new File(args[0])), System.out);
         }, new String[]{ ARCH }),
-        VERSION('v', "version", (args) -> {
+        VERSION('v', "version information", (args) -> {
             System.out.println(version);
         }, new String[]{ }),
         HELP('h', "help with options", (args) -> {
@@ -153,11 +157,11 @@ public class Data {
                 show(args[0], true);
             }
         }, new String[]{ }),
-        USE('u', "use", (args) -> {
+        USE('u', "use command process on file to file", (args) -> {
             exitCode(execute(args[2], FilePipe.getInputStream(new File(args[0])),
                     FilePipe.getOutputStream(new File(args[1]))));
         }, new String[]{ ARCH, FILE, COMMAND }),
-        IMAGE('i', "image load", (args) -> {
+        IMAGE('i', "image load and view", (args) -> {
             FilePipe.readComponent(FilePipe.getInputStream(new File(args[0])))
                     .ifPresent((image) -> {
                         imageCanvas((BufferedImage) image);//create if possible
