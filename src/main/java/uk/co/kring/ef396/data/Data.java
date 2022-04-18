@@ -1,6 +1,7 @@
 package uk.co.kring.ef396.data;
 
 import uk.co.kring.ef396.data.components.Application;
+import uk.co.kring.ef396.data.components.Game;
 import uk.co.kring.ef396.data.components.ImageCanvas;
 import uk.co.kring.ef396.data.streams.TypedStream;
 
@@ -127,12 +128,21 @@ public class Data {
     }
 
     public enum Command {
+        //TODO use tar
         ARCHIVE('a', "archive", (args) -> {  }, new String[]{""}),
         EXTRACT('x', "extract", (args) -> {  }, new String[]{""}),
+
+        //TODO create repo table hashes for signature store
         REPO_GIT('g', "clone git signature repository", (args) -> {}, new String[]{""}),
         REPO_NFT('n', "get NFT url for user", (args) -> { }, new String[]{""}),
-        GAME('p', "play mini game", (args) -> {}, new String[]{""}),
 
+        //TODO a mini game
+        GAME('p', "play mini game", (args) -> {
+            Game g = new Game();
+            while(g.isVisible()) Thread.yield();
+        }, new String[]{""}),
+
+        //main functions
         LOAD('l', "common load dialog", (args) -> {
             FilePipe.cloneStream(loadDialog(), System.out);
         }, new String[]{ }),
@@ -162,6 +172,10 @@ public class Data {
             exitCode(execute(args[2], FilePipe.readStream(FilePipe.getInputStream(new File(args[0]))),
                     FilePipe.writeStream(FilePipe.getOutputStream(new File(args[1])))));
         }, new String[]{ ARCH, FILE, COMMAND }),
+        TRANSCODE('t', "transcode from file to file", (args) -> {
+            FilePipe.cloneStream(FilePipe.readStream(FilePipe.getInputStream(new File(args[0]))),
+                    FilePipe.writeStream(FilePipe.getOutputStream(new File(args[1]))));
+        }, new String[]{ ARCH, FILE }),
         IMAGE('i', "image load and view", (args) -> {
             FilePipe.readComponent(FilePipe.getInputStream(new File(args[0])))
                     .ifPresent((image) -> {
