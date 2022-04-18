@@ -1,4 +1,4 @@
-package uk.co.kring.ef396.data;
+package uk.co.kring.ef396.data.streams;
 
 import uk.co.kring.ef396.data.backend.Restart;
 import java.io.*;
@@ -34,17 +34,22 @@ public class LZWStream {//not quite
             if(ok == null) {
                 int k = inverted(dis.read24(), false);//inverse e.g. 256 - (256 - x) = x
                 String entry;
-                if (dictionary.containsKey(k))
+                if (dictionary.containsKey(k)) {
                     entry = dictionary.get(k);
-                else if (k == 0 /*dictSize*/)
+                } else if (k == dictSize) {// last entry not present
                     entry = w + w.charAt(0);
-                else
-                    throw new IllegalArgumentException("Bad compression dictionary index");
+                } else {
+                    throw new IOException("Bad dictionary index");
+                }
+                // Add w+entry[0] to the dictionary.
+                if(dictSize < (2 << 24)) {
+                    dictionary.put(dictSize++, w + entry.charAt(0));
+                } else if(k == dictSize) {
+                    //dictionary full so impossible for entry valid
+                    throw new IOException("Bad closed dictionary index");
+                }
                 ok = getBytes(entry);
                 count = 0;
-                // Add w+entry[0] to the dictionary.
-                if(dictSize < (2 << 24))
-                    dictionary.put(dictSize++, w + entry.charAt(0));
                 w = entry;
             }
             int tmp = ok[count++];

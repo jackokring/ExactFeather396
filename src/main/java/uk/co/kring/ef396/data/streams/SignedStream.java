@@ -1,4 +1,6 @@
-package uk.co.kring.ef396.data;
+package uk.co.kring.ef396.data.streams;
+
+import uk.co.kring.ef396.data.FilePipe;
 
 import java.io.*;
 import java.security.*;

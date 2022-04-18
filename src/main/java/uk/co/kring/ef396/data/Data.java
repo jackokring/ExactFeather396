@@ -1,5 +1,7 @@
 package uk.co.kring.ef396.data;
 
+import uk.co.kring.ef396.data.streams.TypedStream;
+
 import java.awt.*;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;

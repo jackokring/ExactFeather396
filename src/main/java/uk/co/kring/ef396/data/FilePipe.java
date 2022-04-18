@@ -1,6 +1,7 @@
 package uk.co.kring.ef396.data;
 
 import uk.co.kring.ef396.data.backend.Pipe;
+import uk.co.kring.ef396.data.streams.TypedStream;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

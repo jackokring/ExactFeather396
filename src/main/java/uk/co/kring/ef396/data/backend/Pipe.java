@@ -1,6 +1,6 @@
 package uk.co.kring.ef396.data.backend;
 
-import uk.co.kring.ef396.data.*;
+import uk.co.kring.ef396.data.streams.*;
 
 import java.io.*;
 import java.util.zip.GZIPInputStream;
