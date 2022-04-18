@@ -89,7 +89,7 @@ public class Data {
         fd.setDirectory("~");//home
         fd.setVisible(true);
         String file = fd.getFile();
-        return FilePipe.getInputStream(new File(file));
+        return FilePipe.readStream(FilePipe.getInputStream(new File(file)));
     }
 
     public static boolean dialog() {
@@ -121,7 +121,7 @@ public class Data {
         String file = fd.getFile();
         File f = new File(file);
         if(f.exists()) {
-            if(dialog()) return FilePipe.getOutputStream(f);
+            if(dialog()) return FilePipe.writeStream(FilePipe.getOutputStream(f));
         }
         throw new IOException("Can't save file as it already exists.");
     }
@@ -143,7 +143,8 @@ public class Data {
             FilePipe.cloneStream(System.in, FilePipe.getOutputStream(new File(args[0])));
         }, new String[]{ FILE }),
         EXPAND('e', "expand file", (args) -> {
-            FilePipe.cloneStream(FilePipe.getInputStream(new File(args[0])), System.out);
+            FilePipe.cloneStream(
+                    FilePipe.readStream(FilePipe.getInputStream(new File(args[0]))), System.out);
         }, new String[]{ ARCH }),
         VERSION('v', "version information", (args) -> {
             System.out.println(version);
@@ -158,8 +159,8 @@ public class Data {
             }
         }, new String[]{ }),
         USE('u', "use command process on file to file", (args) -> {
-            exitCode(execute(args[2], FilePipe.getInputStream(new File(args[0])),
-                    FilePipe.getOutputStream(new File(args[1]))));
+            exitCode(execute(args[2], FilePipe.readStream(FilePipe.getInputStream(new File(args[0]))),
+                    FilePipe.writeStream(FilePipe.getOutputStream(new File(args[1])))));
         }, new String[]{ ARCH, FILE, COMMAND }),
         IMAGE('i', "image load and view", (args) -> {
             FilePipe.readComponent(FilePipe.getInputStream(new File(args[0])))

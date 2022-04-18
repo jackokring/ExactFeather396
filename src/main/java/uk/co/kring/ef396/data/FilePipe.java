@@ -9,6 +9,7 @@ import java.io.*;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 public enum FilePipe {
@@ -19,8 +20,8 @@ public enum FilePipe {
     BGZ("bgz", Pipe.BWT_GZIP, null),//quite a good compromise
     LZW("w24", Pipe.LZW, null),//fast but not as effective, adapted for inverted symbols
     BLWZ("blwz",Pipe.BWT_LZW_GZIP, null),//slower but packs symbol repeats as zeros for GZ
-    PNG("png", Pipe.NULL, FilePipe::registerImageComponent),
-    JPG("jpg", Pipe.NULL, FilePipe::registerImageComponent),
+    PNG("png", Pipe.MANGLER, FilePipe::registerImageComponent),
+    JPG("jpg", Pipe.MANGLER, FilePipe::registerImageComponent),
     NULL("", Pipe.NULL, null);
 
     private final String extension;
@@ -57,11 +58,11 @@ public enum FilePipe {
     }
 
     public static TypedStream.Input getInputStream(Socket ip, FilePipe fp) throws IOException {
-        return new TypedStream.Input(ip.getInputStream(), fp);
+        return new TypedStream.Input(fp.uses.getStream(ip.getInputStream()), fp);
     }
 
     public static TypedStream.Output getOutputStream(Socket ip, FilePipe fp) throws IOException {
-        return new TypedStream.Output(ip.getOutputStream(), fp);
+        return new TypedStream.Output(fp.uses.getStream(ip.getOutputStream()), fp);
     }
 
     public static TypedStream.Input getInputStream(InputStream in, FilePipe fp) throws IOException {
@@ -102,25 +103,29 @@ public enum FilePipe {
 
     private static final HashMap<FilePipe, CheckedBiConsumer<TypedStream.Output, Object>> outs = new HashMap<>();
 
-    public static void registerInputComponent(FilePipe fp, CheckedFunction<TypedStream.Input, Object> transform) {
+    public static void registerInputComponent(FilePipe fp,
+                                              CheckedFunction<TypedStream.Input, Object> transform) {
         ins.put(fp, transform);
     }
 
-    public static void registerOutputComponent(FilePipe fp, CheckedBiConsumer<TypedStream.Output, Object> transform) {
+    public static void registerOutputComponent(FilePipe fp,
+                                               CheckedBiConsumer<TypedStream.Output, Object> transform) {
         outs.put(fp, transform);
     }
 
-    private static final HashMap<FilePipe, CheckedBiFunction<Object, FilePipe, TypedStream.Input>> inMan
-            = new HashMap<>();
+    private static final HashMap<FilePipe,
+            CheckedBiFunction<Object, FilePipe, TypedStream.Input>> inMan = new HashMap<>();
 
-    private static final HashMap<FilePipe, CheckedFunction<TypedStream.Output, Object>> outMan = new HashMap<>();
+    private static final HashMap<FilePipe,
+            CheckedFunction<TypedStream.Input, Object>> outMan = new HashMap<>();
 
     public static void registerInputMangler(FilePipe fp,
                                             CheckedBiFunction<Object, FilePipe, TypedStream.Input> transform) {
         inMan.put(fp, transform);
     }
 
-    public static void registerOutputMangler(FilePipe fp, CheckedFunction<TypedStream.Output, Object> transform) {
+    public static void registerOutputMangler(FilePipe fp,
+                                             CheckedFunction<TypedStream.Input, Object> transform) {
         outMan.put(fp, transform);
     }
 
@@ -130,11 +135,42 @@ public enum FilePipe {
         return Optional.of(x.apply(in));
     }
 
+    public static TypedStream.Input readStream(TypedStream.Input in) throws IOException {
+        if(in.getFilePipe().uses == Pipe.MANGLER) {
+            AtomicReference<TypedStream.Input> ret = new AtomicReference<>();
+            readComponent(in).ifPresent((comp) -> {
+                var x = inMan.get(in.getFilePipe());
+                try {
+                    if (x == null) throw new IOException();
+                    ret.set(x.apply(comp, in.getFilePipe()));
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            return ret.get();
+        } else {
+            return in;//pass through
+        }
+    }
+
     public static void writeComponent(TypedStream.Output out, Object thing) throws IOException {
         var x = outs.get(out.getFilePipe());
         if(x == null) throw new IOException("No component writer for "
                 + out.getFilePipe().getClass().getCanonicalName());
         x.accept(out, thing);
+    }
+
+    public static TypedStream.Output writeStream(TypedStream.Output out) throws IOException {
+        if(out.getFilePipe().uses == Pipe.MANGLER) {
+            var x = outMan.get(out.getFilePipe());
+            if(x == null) throw new IOException("Component not available");
+            PipedOutputStream pos = new PipedOutputStream();
+            Object obj = x.apply(new TypedStream.Input(new PipedInputStream(pos), out.getFilePipe()));
+            writeComponent(out, obj);
+            return new TypedStream.Output(pos, out.getFilePipe());
+        } else {
+            return out;
+        }
     }
 
     //======================= IMAGE COMPONENT =========================
@@ -161,7 +197,7 @@ public enum FilePipe {
         return new TypedStream.Input(new PipedInputStream(pos), fp);
     }
 
-    /*private static BufferedImage putImage(TypedStream.Output out) throws IOException {
+    private static Object putImage(TypedStream.Input out) throws IOException {
         BufferedImage in = new BufferedImage(0, 0, BufferedImage.TYPE_4BYTE_ABGR);
         //raster basis
         for(int y = 0; y < in.getHeight(); y++) {
@@ -169,12 +205,13 @@ public enum FilePipe {
                 //TODO
             }
         }
-    } */
+        return in;
+    }
 
     private static void registerImageComponent(FilePipe fp) {
         registerInputComponent(fp, FilePipe::getImage);
         registerInputMangler(fp, FilePipe::getImage);
         registerOutputComponent(fp, FilePipe::putImage);
-        //registerOutputMangler(fp, FilePipe::putImage);
+        registerOutputMangler(fp, FilePipe::putImage);
     }
 }

@@ -8,17 +8,18 @@ import java.util.zip.GZIPOutputStream;
 
 public enum Pipe {
 
-    GZIP(false,false, Runs.NULL, true, false),//generic deflate algorithm
-    RLE(false,false, Runs.RLE, false, false),//run length encoding
-    ZLE_GZIP(false,false, Runs.ZLE, true, false),//long run compression
+    GZIP(false,false, Runs.NULL, true, false, false),//generic deflate algorithm
+    RLE(false,false, Runs.RLE, false, false, false),//run length encoding
+    ZLE_GZIP(false,false, Runs.ZLE, true, false, false),//long run compression
     // before deflate (highly redundant data?)
-    BWT_GZIP(false,true, Runs.NULL, true, false),//good
-    LZW(true,false, Runs.NULL, false, false),//24-bit dictionary indexing inverted symbols
+    BWT_GZIP(false,true, Runs.NULL, true, false, false),//good
+    LZW(true,false, Runs.NULL, false, false, false),//24-bit dictionary indexing inverted symbols
     // technically this is slow but does have full size in the 1MB block for dictionary per prefix
     // and the dictionary indexes keeps them as low as possible so GZIP cleans up.
-    BWT_LZW_GZIP(true,true, Runs.NULL, true, true),
-    SIGN(false, false, Runs.NULL, false, true),
-    NULL(false,false, Runs.NULL, false, false);//straight data pipe
+    BWT_LZW_GZIP(true,true, Runs.NULL, true, true, false),
+    SIGN(false, false, Runs.NULL, false, true, false),
+    MANGLER(false,false, Runs.NULL, false, false, true),//mangle data pipe
+    NULL(false,false, Runs.NULL, false, false, false);//straight data pipe
 
     private final boolean check;
     private final boolean gzip;
@@ -26,16 +27,20 @@ public enum Pipe {
     private final boolean bwt;
     private final boolean lzw;
 
+    private final boolean mangle;
+
     public enum Runs {
         RLE(), ZLE(), NULL();
     }
 
-    Pipe(boolean lzw, boolean bwt, Runs runs, boolean gzip, boolean check) {
+    Pipe(boolean lzw, boolean bwt, Runs runs, boolean gzip, boolean check, boolean mangle) {
         this.lzw = lzw;
         this.bwt = bwt;
         this.runs = runs;
         this.gzip = gzip;
         this.check = check;
+
+        this.mangle = mangle;
     }
 
     public DataInputStream getStream(InputStream is) throws IOException {
