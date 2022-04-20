@@ -9,6 +9,11 @@ public class ImageCanvas extends Component {
 
     protected BufferedImage background;
     protected boolean lazy = false;
+    protected int scaling = 1024;
+
+    public int getScaling() {
+        return scaling;
+    }
 
     public ImageCanvas(BufferedImage image, String name) {
         background = image;

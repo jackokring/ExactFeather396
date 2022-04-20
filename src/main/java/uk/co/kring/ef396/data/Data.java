@@ -167,13 +167,11 @@ public class Data {
         REPO_NFT('n', "get NFT url for user",
                 (args) -> { }, new String[]{""}, false),
 
-        //TODO a mini game
+        //main functions
         GAME('m', "play mini game", (args) -> {
             Game g = new Game();
             while(g.isVisible()) Thread.yield();
-        }, new String[]{""}, false),
-
-        //main functions
+        }, new String[]{ }, false),
         REPO_GIT('g', "clone git signature repository", (args) -> {
             exitCode(execute(GIT + args[0] + " "    //Oops, a space
                     + SignedStream.git, null, null), Error.GIT);
