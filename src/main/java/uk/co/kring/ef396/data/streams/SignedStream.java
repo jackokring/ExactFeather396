@@ -14,7 +14,7 @@ public class SignedStream {
 
     private static final File pri = new File("~/.config/" + Data.name + "/dsa");
     private static final File pub = new File("~/.config/" + Data.name + "/dsa.pub");
-    private static final File git = new File("~/.config/" + Data.name + "/repo");
+    public static final File git = new File("~/.config/" + Data.name + "/repo");
 
     public static boolean checkGit() {
         File gdot = new File(git, ".git");

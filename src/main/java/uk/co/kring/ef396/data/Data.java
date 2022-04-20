@@ -4,6 +4,7 @@ import uk.co.kring.ef396.data.components.Application;
 import uk.co.kring.ef396.data.components.ExecButton;
 import uk.co.kring.ef396.data.components.Game;
 import uk.co.kring.ef396.data.components.ImageCanvas;
+import uk.co.kring.ef396.data.streams.SignedStream;
 import uk.co.kring.ef396.data.streams.TypedStream;
 
 import javax.sound.sampled.AudioInputStream;
@@ -174,8 +175,8 @@ public class Data {
 
         //main functions
         REPO_GIT('g', "clone git signature repository", (args) -> {
-            exitCode(execute(GIT + args[0]
-                    + "~/.config/" + Data.name + "/repo", null, null), Error.GIT);
+            exitCode(execute(GIT + args[0] + " "    //Oops, a space
+                    + SignedStream.git, null, null), Error.GIT);
         }, new String[]{ GIT_URL }, false),
         AUDIO('p', "play audio", (args) -> {
             audioCanvas((AudioInputStream) FilePipe.readComponent(FilePipe.getInputStream(new File(args[0]))));//create if possible
