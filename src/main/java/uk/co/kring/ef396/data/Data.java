@@ -33,10 +33,12 @@ public class Data {
     public static final String COMMAND = "COMMAND STRING";
     public static final String DIRS = "DIRECTORY NAME";
     public static final String VERSION_LIKE = "VERSION CODE";
+    public static final String GIT_URL = "GIT REPOSITORY";
     public static final String REPEATS = "...";
 
     public static final String TAR = "tar cf - ";
     public static final String UN_TAR = "tar xvf - ";
+    public static final String GIT = "git clone ";
 
     public static void exitCode(Error code) {
         System.err.print("[" + code.ordinal() + "] ");
@@ -62,6 +64,8 @@ public class Data {
         InputStream is = p.getInputStream();
         InputStream es = p.getErrorStream();
         OutputStream os = p.getOutputStream();
+        if(in == null) in = System.in;
+        if(out == null) out = System.out;
         FilePipe.Task j1 = FilePipe.cloneStream(in, os);
         FilePipe.Task j2 = FilePipe.cloneStream(is, out);
         FilePipe.Task j3 = FilePipe.cloneStream(es, System.err);
@@ -147,7 +151,8 @@ public class Data {
         USED("Used command made an error"),
         TAR("Tar"),
         UN_TAR("Un-tar"),
-        BAD_VERSION("Version error");
+        BAD_VERSION("Version error"),
+        GIT("Git clone");
 
         private final String text;
 
@@ -158,8 +163,6 @@ public class Data {
 
     public enum Command {
         //TODO create repo table hashes for signature store
-        REPO_GIT('g', "clone git signature repository",
-                (args) -> {}, new String[]{""}, false),
         REPO_NFT('n', "get NFT url for user",
                 (args) -> { }, new String[]{""}, false),
 
@@ -170,6 +173,10 @@ public class Data {
         }, new String[]{""}, false),
 
         //main functions
+        REPO_GIT('g', "clone git signature repository", (args) -> {
+            exitCode(execute(GIT + args[0]
+                    + "~/.config/" + Data.name + "/repo", null, null), Error.GIT);
+        }, new String[]{ GIT_URL }, false),
         AUDIO('p', "play audio", (args) -> {
             audioCanvas((AudioInputStream) FilePipe.readComponent(FilePipe.getInputStream(new File(args[0]))));//create if possible
         }, new String[] { ARCH }, false),
