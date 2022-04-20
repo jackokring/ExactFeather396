@@ -4,6 +4,10 @@ import uk.co.kring.ef396.data.backend.Pipe;
 import uk.co.kring.ef396.data.streams.TypedStream;
 
 import javax.imageio.ImageIO;
+import javax.sound.sampled.AudioFileFormat;
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.Socket;
@@ -22,6 +26,16 @@ public enum FilePipe {
     BLWZ("blwz",Pipe.BWT_LZW_GZIP, true, null),//slower but packs symbol repeats as zeros for GZ
     PNG("png", Pipe.MANGLER, false, FilePipe::registerImageComponent),
     JPG("jpg", Pipe.MANGLER, false, FilePipe::registerImageComponent),
+    WAVE(AudioFileFormat.Type.WAVE.getExtension(), Pipe.NULL, false,
+            FilePipe::registerAudioInputStreamComponent),
+    AIFF(AudioFileFormat.Type.AIFF.getExtension(), Pipe.NULL, false,
+            FilePipe::registerAudioInputStreamComponent),
+    AIFC(AudioFileFormat.Type.AIFC.getExtension(), Pipe.NULL, false,
+            FilePipe::registerAudioInputStreamComponent),
+    AU(AudioFileFormat.Type.AU.getExtension(), Pipe.NULL, false,
+            FilePipe::registerAudioInputStreamComponent),
+    SND(AudioFileFormat.Type.SND.getExtension(), Pipe.NULL, false,
+            FilePipe::registerAudioInputStreamComponent),
     NULL("", Pipe.NULL, false, null);
 
     private final String extension;
@@ -232,6 +246,50 @@ public enum FilePipe {
         ImageIO.write((BufferedImage)image, out.getFilePipe().extension, out);
     }
 
+    //======================= AUDIO COMPONENT ==========================
+
+    public enum Format {
+        WAVE(AudioFileFormat.Type.WAVE),
+        AIFF(AudioFileFormat.Type.AIFF),
+        AIFC(AudioFileFormat.Type.AIFC),
+        AU(AudioFileFormat.Type.AU),
+        SND(AudioFileFormat.Type.SND);
+
+        private final String ext;
+        private final AudioFileFormat.Type aff;
+
+        Format(AudioFileFormat.Type aff) {
+            this.ext = aff.getExtension();
+            this.aff = aff;
+        }
+
+        public final static AudioFormat CD = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED,
+                44100, 16, 2, 4, 44100, false);
+
+        public static AudioFileFormat.Type getFileFormat(FilePipe fp) {
+            for (Format f: Format.values()) {
+                if(f.ext.equals(fp.extension)) return f.aff;
+            }
+            return null;
+        }
+    }
+
+    private static Object getAudio(TypedStream.Input in) throws IOException {
+        try {
+            return AudioSystem.getAudioInputStream(in);
+        } catch(Exception e) {
+            throw new IOException(e);
+        }
+    }
+
+    private static void putAudio(TypedStream.Output out, Object audio) throws IOException {
+        try {
+            AudioSystem.write((AudioInputStream) audio, Format.getFileFormat(out.getFilePipe()), out);
+        } catch(Exception e) {
+            throw new IOException(e);
+        }
+    }
+
     //============================ RASTER FORMAT =======================
 
     private static TypedStream.Input getImage(Object in, FilePipe fp) throws IOException {
@@ -264,7 +322,7 @@ public enum FilePipe {
                 out.setRGB(x, y, dis.readInt());
             }
         }
-        return dis;
+        return out;//return raster image
     }
 
     //============ BUILT-IN IMAGE FORMATS ===============
@@ -274,5 +332,10 @@ public enum FilePipe {
         registerInputMangler(fp, FilePipe::getImage);
         registerOutputComponent(fp, FilePipe::putImage);
         registerOutputMangler(fp, FilePipe::putImage);
+    }
+
+    private static void registerAudioInputStreamComponent(FilePipe fp) {
+        registerInputComponent(fp, FilePipe::getAudio);
+        registerOutputComponent(fp, FilePipe::putAudio);
     }
 }
