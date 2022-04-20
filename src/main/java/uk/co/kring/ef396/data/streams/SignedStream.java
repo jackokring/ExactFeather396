@@ -14,6 +14,21 @@ public class SignedStream {
 
     private static final File pri = new File("~/.config/" + Data.name + "/dsa");
     private static final File pub = new File("~/.config/" + Data.name + "/dsa.pub");
+    private static final File git = new File("~/.config/" + Data.name + "/repo");
+
+    public static boolean checkGit() {
+        File gdot = new File(git, ".git");
+        return git.exists() && git.isDirectory()
+                && gdot.exists() && gdot.isDirectory();
+    }
+
+    public static void doGit(PublicKey pk) {
+        if(checkGit()) {
+            byte[] bytes = pubKey(pk);
+            //git actions
+            //TODO
+        }
+    }
 
     public static byte[] readConfig(File file) throws IOException {
         InputStream is = new FileInputStream(file);
@@ -30,16 +45,20 @@ public class SignedStream {
 
     public static PublicKey pubKey(File file) throws NoSuchAlgorithmException,
             InvalidKeySpecException, IOException {
-        X509EncodedKeySpec keySpec = new X509EncodedKeySpec(readConfig(file));
-        KeyFactory keyFactory = KeyFactory.getInstance("DSA");
-        return keyFactory.generatePublic(keySpec);
+        //load git check
+        PublicKey pk = pubKey(readConfig(file));
+        doGit(pk);
+        return pk;
     }
 
     public static PublicKey pubKey(byte[] key) throws NoSuchAlgorithmException,
-            InvalidKeySpecException, IOException {
+            InvalidKeySpecException {
+        //file git check
         X509EncodedKeySpec keySpec = new X509EncodedKeySpec(key);
         KeyFactory keyFactory = KeyFactory.getInstance("DSA");
-        return keyFactory.generatePublic(keySpec);
+        PublicKey pk = keyFactory.generatePublic(keySpec);
+        doGit(pk);
+        return pk;
     }
 
     private static PrivateKey priKey(File file) throws NoSuchAlgorithmException,
@@ -50,7 +69,13 @@ public class SignedStream {
     }
 
     public static void pubKey(File file, PublicKey input) throws IOException {
+        //save git check
+        doGit(input);
         writeConfig(input.getEncoded(), file);
+    }
+
+    public static byte[] pubKey(PublicKey input) {
+        return input.getEncoded();
     }
 
     public static void priKey(File file, PrivateKey input) throws IOException {
@@ -196,7 +221,7 @@ public class SignedStream {
                     throw new IOException("Key generation error");
                 }
             }
-            byte[] pubBytes = puk.getEncoded();
+            byte[] pubBytes = pubKey(puk);
             writeLenBytes(this.out, pubBytes);
             count = 0;
             //now ready for streaming
