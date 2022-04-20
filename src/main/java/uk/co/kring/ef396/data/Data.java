@@ -1,10 +1,14 @@
 package uk.co.kring.ef396.data;
 
 import uk.co.kring.ef396.data.components.Application;
+import uk.co.kring.ef396.data.components.ExecButton;
 import uk.co.kring.ef396.data.components.Game;
 import uk.co.kring.ef396.data.components.ImageCanvas;
 import uk.co.kring.ef396.data.streams.TypedStream;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -67,9 +71,29 @@ public class Data {
         return p.exitValue();
     }
 
-    public static void imageCanvas(BufferedImage image) {
+    public static void imageCanvas(BufferedImage image) throws IOException {
         Application a = new Application(new ImageCanvas(image, "Image"));
         while(a.isVisible()) Thread.yield();//stay open to show
+    }
+
+    public static Clip playAudioClip(AudioInputStream audio) throws IOException {
+        Clip clip;
+        try {
+            clip = AudioSystem.getClip();
+            // Open audio clip and load samples from the audio input stream.
+            clip.open(audio);
+            clip.start();
+        } catch(Exception e) {
+            throw new IOException(e);
+        }
+        return clip;
+    }
+
+    public static void audioCanvas(AudioInputStream audio) throws IOException {
+        Application a = new Application(new ExecButton("Audio Stop", null));
+        Clip c = playAudioClip(audio);
+        while(a.isVisible()) Thread.yield();//stay open to show
+        c.stop();
     }
 
     public static TypedStream.Input loadDialog() throws IOException {
@@ -145,11 +169,10 @@ public class Data {
             while(g.isVisible()) Thread.yield();
         }, new String[]{""}, false),
 
-        //TODO
-        AUDIO('p', "play audio",
-                (args) -> {}, new String[] {""}, false),
-
         //main functions
+        AUDIO('p', "play audio", (args) -> {
+            audioCanvas((AudioInputStream) FilePipe.readComponent(FilePipe.getInputStream(new File(args[0]))));//create if possible
+        }, new String[] { ARCH }, false),
         OK_VERSION('o', "check version is at least required", (args) -> {
             String[] v = version.split(new Perl(".").get());
             String[] t = args[0].split(new Perl(".").get());
@@ -214,10 +237,7 @@ public class Data {
                     FilePipe.writeStream(FilePipe.getOutputStream(new File(args[1]))));
         }, new String[]{ ARCH, FILE }, false),
         IMAGE('i', "image load and view", (args) -> {
-            FilePipe.readComponent(FilePipe.getInputStream(new File(args[0])))
-                    .ifPresent((image) -> {
-                        imageCanvas((BufferedImage) image);//create if possible
-                    });
+            imageCanvas((BufferedImage) FilePipe.readComponent(FilePipe.getInputStream(new File(args[0]))));//create if possible
         }, new String[]{ ARCH }, false);
 
         private final char option;

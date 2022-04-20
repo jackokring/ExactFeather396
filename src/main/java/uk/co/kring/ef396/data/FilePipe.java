@@ -13,7 +13,6 @@ import java.io.*;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 public enum FilePipe {
@@ -26,15 +25,15 @@ public enum FilePipe {
     BLWZ("blwz",Pipe.BWT_LZW_GZIP, true, null),//slower but packs symbol repeats as zeros for GZ
     PNG("png", Pipe.MANGLER, false, FilePipe::registerImageComponent),
     JPG("jpg", Pipe.MANGLER, false, FilePipe::registerImageComponent),
-    WAVE(AudioFileFormat.Type.WAVE.getExtension(), Pipe.NULL, false,
+    WAVE(AudioFileFormat.Type.WAVE.getExtension(), Pipe.MANGLER, false,
             FilePipe::registerAudioInputStreamComponent),
-    AIFF(AudioFileFormat.Type.AIFF.getExtension(), Pipe.NULL, false,
+    AIFF(AudioFileFormat.Type.AIFF.getExtension(), Pipe.MANGLER, false,
             FilePipe::registerAudioInputStreamComponent),
-    AIFC(AudioFileFormat.Type.AIFC.getExtension(), Pipe.NULL, false,
+    AIFC(AudioFileFormat.Type.AIFC.getExtension(), Pipe.MANGLER, false,
             FilePipe::registerAudioInputStreamComponent),
-    AU(AudioFileFormat.Type.AU.getExtension(), Pipe.NULL, false,
+    AU(AudioFileFormat.Type.AU.getExtension(), Pipe.MANGLER, false,
             FilePipe::registerAudioInputStreamComponent),
-    SND(AudioFileFormat.Type.SND.getExtension(), Pipe.NULL, false,
+    SND(AudioFileFormat.Type.SND.getExtension(), Pipe.MANGLER, false,
             FilePipe::registerAudioInputStreamComponent),
     NULL("", Pipe.NULL, false, null);
 
@@ -193,7 +192,7 @@ public enum FilePipe {
 
     //======================== COMPONENT HANDLERS ================================
 
-    public static Optional<Object> readComponent(TypedStream.Input in) throws IOException {
+    public static Object readComponent(TypedStream.Input in) throws IOException {
         var x = ins.get(in.getFilePipe());
         if(x == null) return Optional.empty();
         return Optional.of(x.apply(in));
@@ -201,16 +200,8 @@ public enum FilePipe {
 
     public static TypedStream.Input readStream(TypedStream.Input in) throws IOException {
         if(in.getFilePipe().uses.isMangler()) {
-            AtomicReference<TypedStream.Input> ret = new AtomicReference<>();
-            readComponent(in).ifPresent((comp) -> {
-                var x = inMan.get(in.getFilePipe());
-                try {
-                    ret.set(x.apply(comp, in.getFilePipe()));
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            });
-            return ret.get();
+            var x = inMan.get(in.getFilePipe());
+            return x.apply(readComponent(in), in.getFilePipe());
         } else {
             return in;//pass through
         }
