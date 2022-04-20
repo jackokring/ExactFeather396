@@ -290,6 +290,28 @@ public enum FilePipe {
         }
     }
 
+    //============================ AUDIO RASTER FORMAT ========================
+
+    private static TypedStream.Input getAudio(Object in, FilePipe fp) throws IOException {
+        AudioInputStream is;
+        try {
+            is = AudioSystem.getAudioInputStream(Format.CD, (AudioInputStream) in);
+        } catch(Exception e) {
+            throw new IOException(e);
+        }
+        return new TypedStream.Input(is, fp);
+    }
+
+    private static Object putAudio(TypedStream.Input in) throws IOException {
+        AudioInputStream out;
+        try {
+            out = AudioSystem.getAudioInputStream(new BufferedInputStream(in));//mark support
+        } catch(Exception e) {
+            throw new IOException(e);
+        }
+        return out;//return raster audio
+    }
+
     //============================ RASTER FORMAT =======================
 
     private static TypedStream.Input getImage(Object in, FilePipe fp) throws IOException {
@@ -297,19 +319,23 @@ public enum FilePipe {
         //raster basis
         PipedOutputStream pos = new PipedOutputStream();
         DataOutputStream dos = new DataOutputStream(pos);
-        new Thread(() -> {
-            try {
-                dos.writeInt(bim.getWidth());
-                dos.writeInt(bim.getHeight());
-                for (int y = 0; y < bim.getHeight(); y++) {
-                    for (int x = 0; x < bim.getWidth(); x++) {
-                        dos.writeInt(bim.getRGB(x, y));
+        Task t = new Task() {
+            @Override
+            public void run() {
+                try {
+                    dos.writeInt(bim.getWidth());
+                    dos.writeInt(bim.getHeight());
+                    for (int y = 0; y < bim.getHeight(); y++) {
+                        for (int x = 0; x < bim.getWidth(); x++) {
+                            dos.writeInt(bim.getRGB(x, y));
+                        }
                     }
+                } catch (IOException e) {
+                    setError(e);
                 }
-            } catch(Exception e) {
-                throw new RuntimeException(e);
             }
-        }).start();
+        };
+        t.start();
         return new TypedStream.Input(new PipedInputStream(pos), fp);
     }
 
@@ -336,6 +362,8 @@ public enum FilePipe {
 
     private static void registerAudioInputStreamComponent(FilePipe fp) {
         registerInputComponent(fp, FilePipe::getAudio);
+        registerInputMangler(fp, FilePipe::getAudio);//CD standard
         registerOutputComponent(fp, FilePipe::putAudio);
+        registerOutputMangler(fp, FilePipe::putAudio);//actually any valid CD expected?
     }
 }
