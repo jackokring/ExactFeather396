@@ -32,7 +32,7 @@ public class LZWStream {//not quite
         @Override
         public int read() throws IOException {
             if(ok == null) {
-                int k = inverted(dis.read24(), false);//inverse e.g. 256 - (256 - x) = x
+                int k = inverted(dis.read24(), dictSize >= (1 << 24));//inverse e.g. 256 - (256 - x) = x
                 String entry;
                 if (dictionary.containsKey(k)) {
                     entry = dictionary.get(k);
@@ -42,7 +42,7 @@ public class LZWStream {//not quite
                     throw new IOException("Bad dictionary index");
                 }
                 // Add w+entry[0] to the dictionary.
-                if(dictSize < (2 << 24)) {
+                if(dictSize < (1 << 24)) {
                     dictionary.put(dictSize++, w + entry.charAt(0));
                 } else if(k == dictSize) {
                     //dictionary full so impossible for entry valid
@@ -112,7 +112,7 @@ public class LZWStream {//not quite
             else {
                 dos.write24(inverted(dictionary.get(w)));//inverse e.g. 256 - (256 - x) = x
                 // Add wc to the dictionary.
-                if(dictSize < (2 << 24))
+                if(dictSize < (1 << 24))
                     dictionary.put(wc, dictSize++);
                 w = "" + (char)b;
             }
