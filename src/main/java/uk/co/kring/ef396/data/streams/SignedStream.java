@@ -105,6 +105,10 @@ public class SignedStream {
                 } catch (Exception f) {
                     throw new IOException("Signature verification error");
                 }
+                // higher packet versions here?
+            } else {
+                // packet format middles?
+                evade = true;//prevent end not signed
             }
         }
 
