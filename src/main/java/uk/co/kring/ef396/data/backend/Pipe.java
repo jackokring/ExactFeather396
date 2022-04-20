@@ -43,6 +43,10 @@ public enum Pipe {
         this.mangle = mangle;
     }
 
+    public boolean isMangler() {
+        return mangle;
+    }
+
     public DataInputStream getStream(InputStream is) throws IOException {
         if(check) is = new SignedStream.Input(is);
         if(gzip) is = new GZIPInputStream(is, 65536);

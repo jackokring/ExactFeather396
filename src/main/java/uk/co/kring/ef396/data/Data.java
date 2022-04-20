@@ -33,12 +33,14 @@ public class Data {
     public static final String TAR = "tar cf - ";
     public static final String UN_TAR = "tar xvf - ";
 
-    public static void exitCode(int code) {
-        if(code != 0) {
-            System.err.print("[" + code + "] ");
-            System.err.println("Error in data tools causing premature exit.");
-        }
-        System.exit(code);
+    public static void exitCode(Error code) {
+        System.err.print("[" + code.ordinal() + "] ");
+        System.err.println(code.text + " error in " + name + " tools causing premature exit.");
+        System.exit(code.ordinal());
+    }
+
+    public static void exitCode(int exit, Error code) {
+        if(exit != 0) exitCode(code);
     }
 
     public static int tar(String[] dirs, OutputStream arch) throws IOException {
@@ -55,41 +57,12 @@ public class Data {
         InputStream is = p.getInputStream();
         InputStream es = p.getErrorStream();
         OutputStream os = p.getOutputStream();
-        Thread j1 = new Thread(() -> {
-            try {
-                FilePipe.cloneStream(in, os);
-            } catch (IOException e) {
-                System.err.println(e.getMessage());
-                throw new RuntimeException("Input stream failure read.");
-            }
-        });
-        j1.start();
-        Thread j2 = new Thread(() -> {
-            try {
-                FilePipe.cloneStream(is, out);
-            } catch (IOException e) {
-                System.err.println(e.getMessage());
-                throw new RuntimeException("Output stream failure write.");
-            }
-        });
-        j2.start();
-        Thread j3 = new Thread(() -> {
-            try {
-                FilePipe.cloneStream(es, System.err);
-            } catch (IOException e) {
-                System.err.println(e.getMessage());
-                throw new RuntimeException("Error stream failure write.");
-            }
-        });
-        j3.start();
-        try {// have to join to prevent stream problems on exit value and no stream clone completion
-            j1.join();
-            j2.join();
-            j3.join();
-        } catch(Exception e) {
-            System.err.println(e.getMessage());
-            throw new IOException("Process join error.");
-        }
+        FilePipe.Task j1 = FilePipe.cloneStream(in, os);
+        FilePipe.Task j2 = FilePipe.cloneStream(is, out);
+        FilePipe.Task j3 = FilePipe.cloneStream(es, System.err);
+        j1.rejoin();
+        j2.rejoin();
+        j3.rejoin();
         return p.exitValue();
     }
 
@@ -141,6 +114,22 @@ public class Data {
         throw new IOException("Can't save file as it already exists.");
     }
 
+    public enum Error {
+        NONE("No"),
+        DOCUMENTATION("Documentation"),
+        DEFAULT("Unimplemented catch"),
+        URL("Unexpected URI format for name"),
+        USED("Used command made an error"),
+        TAR("Tar"),
+        UN_TAR("Un-tar");
+
+        private final String text;
+
+        Error(String text) {
+            this.text = text;
+        }
+    }
+
     public enum Command {
         //TODO create repo table hashes for signature store
         REPO_GIT('g', "clone git signature repository",
@@ -157,25 +146,34 @@ public class Data {
         //main functions
         ARCHIVE('a', "archive", (args) -> {
             String[] dirs = shift(args);
-            exitCode(tar(dirs,
-                    FilePipe.writeStream(FilePipe.getOutputStream(new File(args[0])))));
+            TypedStream.Output os = FilePipe.getOutputStream(new File(args[0]));
+            if(os.getFilePipe().isTarable()) {
+                exitCode(tar(dirs, FilePipe.writeStream(os)), Error.TAR);
+            } else {
+                exitCode(Error.TAR);
+            }
         }, new String[]{ FILE, DIRS }, true),
         EXTRACT('x', "extract", (args) -> {
-            exitCode(unTar(FilePipe.readStream(FilePipe.getInputStream(new File(args[0])))));
+            TypedStream.Input is = FilePipe.getInputStream(new File(args[0]));
+            if(is.getFilePipe().isTarable()) {
+                exitCode(unTar(FilePipe.readStream(is)), Error.UN_TAR);
+            } else {
+                exitCode(Error.UN_TAR);
+            }
         }, new String[]{ ARCH }, false),
         LOAD('l', "common load dialog", (args) -> {
-            FilePipe.cloneStream(loadDialog(), System.out);
+            FilePipe.cloneStream(loadDialog(), System.out).rejoin();
         }, new String[]{ }, false),
         SAVE('s', "common save dialog", (args) -> {
-            FilePipe.cloneStream(System.in, saveDialog());
+            FilePipe.cloneStream(System.in, saveDialog()).rejoin();
         }, new String[]{ }, false),
         COMPRESS('c', "compress file", (args) -> {
             FilePipe.cloneStream(System.in,
-                    FilePipe.writeStream(FilePipe.getOutputStream(new File(args[0]))));
+                    FilePipe.writeStream(FilePipe.getOutputStream(new File(args[0])))).rejoin();
         }, new String[]{ FILE }, false),
         EXPAND('e', "expand file", (args) -> {
             FilePipe.cloneStream(
-                    FilePipe.readStream(FilePipe.getInputStream(new File(args[0]))), System.out);
+                    FilePipe.readStream(FilePipe.getInputStream(new File(args[0]))), System.out).rejoin();
         }, new String[]{ ARCH }, false),
         VERSION('v', "version information", (args) -> {
             System.out.println(version);
@@ -191,7 +189,7 @@ public class Data {
         }, new String[]{ }, false),
         USE('u', "use command process on file to file", (args) -> {
             exitCode(execute(args[2], FilePipe.readStream(FilePipe.getInputStream(new File(args[0]))),
-                    FilePipe.writeStream(FilePipe.getOutputStream(new File(args[1])))));
+                    FilePipe.writeStream(FilePipe.getOutputStream(new File(args[1])))), Error.USED);
         }, new String[]{ ARCH, FILE, COMMAND }, false),
         TRANSCODE('t', "transcode from file to file", (args) -> {
             FilePipe.cloneStream(FilePipe.readStream(FilePipe.getInputStream(new File(args[0]))),
@@ -255,7 +253,7 @@ public class Data {
             version = name.substring(starts, name.lastIndexOf("."));
         } catch(Exception e) {
             System.err.println(e.getMessage());
-            exitCode(-2);//unexpected naming problem
+            exitCode(Error.URL);//unexpected naming problem
         }
         if(args.length >= 1 && args[0].length() == 1) {
             for (Command c: Command.values()) {
@@ -264,7 +262,7 @@ public class Data {
                         c.action.run(shift(args));
                     } catch(Exception e) {
                         System.err.println(e.getMessage());
-                        exitCode(-1);//default err
+                        exitCode(Error.DEFAULT);//default err
                     }
                     return;//assuming no exit code
                 }
@@ -273,7 +271,7 @@ public class Data {
             try {
                 Command.HELP.action.run(null);//doesn't need it
             } catch(Exception e) {
-                exitCode(1);//documentation
+                exitCode(Error.DOCUMENTATION);//documentation
             }
         }
     }

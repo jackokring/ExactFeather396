@@ -14,23 +14,29 @@ import java.util.function.Consumer;
 
 public enum FilePipe {
 
-    GZIP("gz", Pipe.GZIP, null),
-    RLE("rle", Pipe.RLE, null),
-    SPARSE("spa", Pipe.ZLE_GZIP, null),//almost useless except on very sparse data
-    BGZ("bgz", Pipe.BWT_GZIP, null),//quite a good compromise
-    LZW("w24", Pipe.LZW, null),//fast but not as effective, adapted for inverted symbols
-    BLWZ("blwz",Pipe.BWT_LZW_GZIP, null),//slower but packs symbol repeats as zeros for GZ
-    PNG("png", Pipe.MANGLER, FilePipe::registerImageComponent),
-    JPG("jpg", Pipe.MANGLER, FilePipe::registerImageComponent),
-    NULL("", Pipe.NULL, null);
+    GZIP("gz", Pipe.GZIP, true, null),
+    RLE("rle", Pipe.RLE, false, null),
+    SPARSE("spa", Pipe.ZLE_GZIP, false, null),//almost useless except on very sparse data
+    BGZ("bgz", Pipe.BWT_GZIP, true, null),//quite a good compromise
+    LZW("w24", Pipe.LZW, false, null),//fast but not as effective, adapted for inverted symbols
+    BLWZ("blwz",Pipe.BWT_LZW_GZIP, true, null),//slower but packs symbol repeats as zeros for GZ
+    PNG("png", Pipe.MANGLER, false, FilePipe::registerImageComponent),
+    JPG("jpg", Pipe.MANGLER, false, FilePipe::registerImageComponent),
+    NULL("", Pipe.NULL, false, null);
 
     private final String extension;
     private final Pipe uses;
+    private final boolean tarable;
 
-    FilePipe(String extension, Pipe uses, Consumer<FilePipe> transforms) {
+    FilePipe(String extension, Pipe uses, boolean tarable, Consumer<FilePipe> transforms) {
         this.extension = extension;
         this.uses = uses;
+        this.tarable = tarable;
         if(transforms != null) transforms.accept(this);
+    }
+
+    public boolean isTarable() {
+        return tarable;
     }
 
     public boolean matches(String name) {
@@ -73,11 +79,34 @@ public enum FilePipe {
         return new TypedStream.Output(fp.uses.getStream(out), fp);
     }
 
-    public static void cloneStream(InputStream in, OutputStream out) throws IOException {
-        int b = -1;
-        while((b = in.read()) != -1)  {
-            out.write(b);
+    public static class Task extends Thread {
+
+        public Task(Runnable r) {
+            super(r);
         }
+
+        public void rejoin() {//remove unnecessary interrupted condition
+            try {
+                join();
+            } catch (Exception e) {
+                //ignore
+            }
+        }
+    }
+
+    public static Task cloneStream(InputStream in, OutputStream out) {
+        Task thread = new Task(() -> {
+            int b = -1;
+            try {
+                while ((b = in.read()) != -1) {
+                    out.write(b);
+                }
+            } catch(Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+        thread.start();
+        return thread;
     }
 
     //====================== COMPONENT AUTOMATICS =========================
@@ -138,7 +167,7 @@ public enum FilePipe {
     }
 
     public static TypedStream.Input readStream(TypedStream.Input in) throws IOException {
-        if(in.getFilePipe().uses == Pipe.MANGLER) {
+        if(in.getFilePipe().uses.isMangler()) {
             AtomicReference<TypedStream.Input> ret = new AtomicReference<>();
             readComponent(in).ifPresent((comp) -> {
                 var x = inMan.get(in.getFilePipe());
@@ -163,7 +192,7 @@ public enum FilePipe {
     }
 
     public static TypedStream.Output writeStream(TypedStream.Output out) throws IOException {
-        if(out.getFilePipe().uses == Pipe.MANGLER) {
+        if(out.getFilePipe().uses.isMangler()) {
             var x = outMan.get(out.getFilePipe());
             if(x == null) throw new IOException("Component not available");
             PipedOutputStream pos = new PipedOutputStream();
