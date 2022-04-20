@@ -1,7 +1,7 @@
 package uk.co.kring.ef396.data.streams;
 
 import uk.co.kring.ef396.data.Data;
-import uk.co.kring.ef396.data.FilePipe;
+import uk.co.kring.ef396.data.backend.Secure;
 
 import java.io.*;
 import java.security.*;
@@ -16,11 +16,16 @@ public class SignedStream {
     private static final File pub = new File("~/.config/" + Data.name + "/dsa.pub");
 
     public static byte[] readConfig(File file) throws IOException {
-        return FilePipe.getInputStream(file).readAllBytes();
+        InputStream is = new FileInputStream(file);
+        byte[] bytes = is.readAllBytes();
+        is.close();
+        return bytes;
     }
 
     private static void writeConfig(byte[] key, File file) throws IOException {
-        FilePipe.getOutputStream(file).write(key);
+        OutputStream os = new FileOutputStream(file);
+        os.write(key);
+        os.close();
     }
 
     public static PublicKey pubKey(File file) throws NoSuchAlgorithmException,
@@ -52,11 +57,13 @@ public class SignedStream {
         writeConfig(input.getEncoded(), file);
     }
 
-    public static class Input extends FilterInputStream {
+    public static class Input extends FilterInputStream implements Secure {
 
         private PublicKey puk;
         private MessageDigest md;
         private int count = 0;
+        private byte[] d;
+        private boolean evade = true;
         private byte[] buffer = new byte[1024];
 
         @Override
@@ -82,17 +89,22 @@ public class SignedStream {
             count = new DataInputStream(this.in).readInt();
             if(count < 0 || count > buffer.length) throw new IOException("Bad length EOF");
             readCheck(buffer, 0, count);
+            if(d != null) md.update(d, 0, d.length);//chain
             md.update(buffer, 0, count);//check
-            byte[] d = md.digest();
+            d = md.digest();
             byte[] e = readLenBytes(this.in);
             if(!Arrays.equals(d, e)) {
                 throw new IOException("Checksum error");
             }
-            try {
-                byte[] s = readLenBytes(this.in);
-                if(!verify(s, puk)) throw new IOException();
-            } catch(Exception f) {
-                throw new IOException("Signature verification error");
+            int i = in.read();
+            if(i != 0) {//zero is baulk no sign block
+                evade = false;
+                try {
+                    byte[] s = readLenBytes(this.in);
+                    if (!verify(s, puk)) throw new IOException();
+                } catch (Exception f) {
+                    throw new IOException("Signature verification error");
+                }
             }
         }
 
@@ -106,6 +118,17 @@ public class SignedStream {
             }
             count = 0;
         }
+
+        @Override
+        public final boolean checkOK() {
+            return !evade;
+        }
+
+        @Override
+        public final void close() throws IOException {
+            super.close();
+            if(!checkOK()) throw new SecurityException("Evasion of signature");
+        }
     }
 
     public static class Output extends FilterOutputStream {
@@ -113,6 +136,7 @@ public class SignedStream {
         private PrivateKey pk;
         private MessageDigest md;
         private int count = 0;
+        private byte[] d;
         private final byte[] buffer = new byte[1024];
 
         @Override
@@ -127,16 +151,23 @@ public class SignedStream {
             if(count == buffer.length || end) {
                 new DataOutputStream(this.out).writeInt(count);
                 out.write(buffer, 0, count);
+                if(d != null) md.update(d, 0, d.length);//chain
                 md.update(buffer, 0, count);
                 count = 0;
-                byte[] d = md.digest();
+                d = md.digest();
                 writeLenBytes(this.out, d);
-                try {
-                    d = sign(d, pk);
-                } catch(Exception e) {
-                    throw new IOException("Signing error");
+                if(!end) {
+                    // last sign only
+                    out.write(0);
+                } else {
+                    out.write(1);
+                    try {
+                        d = sign(d, pk);
+                    } catch (Exception e) {
+                        throw new IOException("Signing error");
+                    }
+                    writeLenBytes(this.out, d);
                 }
-                writeLenBytes(this.out, d);
             }
         }
 
