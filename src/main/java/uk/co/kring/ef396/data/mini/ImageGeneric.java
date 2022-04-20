@@ -1,6 +1,6 @@
 package uk.co.kring.ef396.data.mini;
 
-import uk.co.kring.ef396.data.components.ImageCanvas;
+import uk.co.kring.ef396.data.components.GameCanvas;
 
 import java.awt.image.BufferedImage;
 
@@ -23,7 +23,7 @@ public enum ImageGeneric {
         return size * p / q;
     }
 
-    public void draw(ImageCanvas ic, int x, int y, int idx) {//1024 range, 16 px sprites
+    public void draw(GameCanvas ic, int x, int y, int idx) {//1024 range, 16 px sprites
         int is = ic.getScaling();
         int sc = getScale();
         int xs = ic.getWidth() / is;
