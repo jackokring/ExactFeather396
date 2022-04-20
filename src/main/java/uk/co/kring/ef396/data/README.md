@@ -6,9 +6,7 @@ It does involve getting a stream `getInputStream`, and then either getting the c
 
 ## TODO
 
-* Audio
 * Other multi-part container components.
 * Maybe even time evolving components.
-* Lower level file container or temp to `tar`.
 * A better sign/verify mechanism based on git repositories.
 * 
