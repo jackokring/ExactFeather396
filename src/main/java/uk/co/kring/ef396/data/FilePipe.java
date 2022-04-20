@@ -63,48 +63,67 @@ public enum FilePipe {
         return new TypedStream.Output(p.uses.getStream(new FileOutputStream(name)), p);
     }
 
-    public static TypedStream.Input getInputStream(Socket ip, FilePipe fp) throws IOException {
-        return new TypedStream.Input(fp.uses.getStream(ip.getInputStream()), fp);
+    public static TypedStream.Input getInputStream(Socket ip) throws IOException {
+        return getInputStream(ip.getInputStream());
     }
 
     public static TypedStream.Output getOutputStream(Socket ip, FilePipe fp) throws IOException {
-        return new TypedStream.Output(fp.uses.getStream(ip.getOutputStream()), fp);
+        return getOutputStream(ip.getOutputStream(), fp);
     }
 
-    public static TypedStream.Input getInputStream(InputStream in, FilePipe fp) throws IOException {
+    public static TypedStream.Input getInputStream(InputStream in) throws IOException {
+        DataInputStream dis = new DataInputStream(in);
+        String ext = dis.readUTF();
+        FilePipe fp = filePipeForName("." + ext);
         return new TypedStream.Input(fp.uses.getStream(in), fp);
     }
 
     public static TypedStream.Output getOutputStream(OutputStream out, FilePipe fp) throws IOException {
-        return new TypedStream.Output(fp.uses.getStream(out), fp);
+        DataOutputStream dos = new DataOutputStream(out);
+        dos.writeUTF(fp.extension);
+        return new TypedStream.Output(fp.uses.getStream(dos), fp);
     }
 
     public static class Task extends Thread {
 
-        public Task(Runnable r) {
-            super(r);
+        IOException error = null;
+
+        public void setError(IOException e) {
+            error = e;
         }
 
-        public void rejoin() {//remove unnecessary interrupted condition
+        public Task() {
+            super();
+        }
+
+        public void rejoin() throws IOException {//remove unnecessary interrupted condition
             try {
                 join();
             } catch (Exception e) {
-                //ignore
+                if(error == null) {
+                    error = new IOException("Interrupted");
+                } else {
+                    error = new IOException(error);
+                }
             }
+            if(error != null) throw error;
         }
     }
 
-    public static Task cloneStream(InputStream in, OutputStream out) {
-        Task thread = new Task(() -> {
-            int b = -1;
-            try {
-                while ((b = in.read()) != -1) {
-                    out.write(b);
+    public static Task cloneStream(InputStream in, OutputStream out) throws IOException {
+        Task thread = new Task() {
+            @Override
+            public void run() {
+                int b = -1;
+                try {
+                    while ((b = in.read()) != -1) {
+                        out.write(b);
+                    }
+                } catch (IOException e) {
+                    setError(e);
                 }
-            } catch(Exception e) {
-                throw new RuntimeException(e);
             }
-        });
+        };
         thread.start();
         return thread;
     }
@@ -172,7 +191,6 @@ public enum FilePipe {
             readComponent(in).ifPresent((comp) -> {
                 var x = inMan.get(in.getFilePipe());
                 try {
-                    if (x == null) throw new IOException();
                     ret.set(x.apply(comp, in.getFilePipe()));
                 } catch (Exception e) {
                     throw new RuntimeException(e);

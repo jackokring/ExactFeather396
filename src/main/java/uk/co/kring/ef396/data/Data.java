@@ -28,6 +28,7 @@ public class Data {
     public static final String ARCH = "ARCHIVE NAME";
     public static final String COMMAND = "COMMAND STRING";
     public static final String DIRS = "DIRECTORY NAME";
+    public static final String VERSION_LIKE = "VERSION CODE";
     public static final String REPEATS = "...";
 
     public static final String TAR = "tar cf - ";
@@ -121,7 +122,8 @@ public class Data {
         URL("Unexpected URI format for name"),
         USED("Used command made an error"),
         TAR("Tar"),
-        UN_TAR("Un-tar");
+        UN_TAR("Un-tar"),
+        BAD_VERSION("Version error");
 
         private final String text;
 
@@ -138,12 +140,28 @@ public class Data {
                 (args) -> { }, new String[]{""}, false),
 
         //TODO a mini game
-        GAME('p', "play mini game", (args) -> {
+        GAME('m', "play mini game", (args) -> {
             Game g = new Game();
             while(g.isVisible()) Thread.yield();
         }, new String[]{""}, false),
 
+        //TODO
+        AUDIO('p', "play audio",
+                (args) -> {}, new String[] {""}, false),
+
         //main functions
+        OK_VERSION('o', "check version is at least required", (args) -> {
+            String[] v = version.split(new Perl(".").get());
+            String[] t = args[0].split(new Perl(".").get());
+            boolean ok = true;
+            for (int i = 0; i < v.length; i++) {
+                if(Integer.getInteger(v[i]) < Integer.getInteger(t[i])) {
+                    ok = false;
+                    break;
+                }
+            }
+            exitCode(ok ? 0 : 1, Error.BAD_VERSION);
+        }, new String[] { VERSION_LIKE }, false),
         ARCHIVE('a', "archive", (args) -> {
             String[] dirs = shift(args);
             TypedStream.Output os = FilePipe.getOutputStream(new File(args[0]));
@@ -260,11 +278,11 @@ public class Data {
                 if(args[0].charAt(0) == c.option) {
                     try {
                         c.action.run(shift(args));
+                        //exitCode(Error.NONE);
                     } catch(Exception e) {
                         System.err.println(e.getMessage());
                         exitCode(Error.DEFAULT);//default err
                     }
-                    return;//assuming no exit code
                 }
             }
         } else {
