@@ -84,7 +84,7 @@ public class Data {
 
     public static void imageCanvas(BufferedImage image) {
         Application a = new Application(new ImageCanvas(image, "Image"));
-        while(a.isVisible()) Thread.yield();//stay open to show
+        a.whileOpenHalt();
     }
 
     public static Clip playAudioClip(AudioInputStream audio) throws IOException {
@@ -103,7 +103,7 @@ public class Data {
     public static void audioCanvas(AudioInputStream audio) throws IOException {
         Application a = new Application(new ExecButton("Audio Stop", null));
         Clip c = playAudioClip(audio);
-        while(a.isVisible()) Thread.yield();//stay open to show
+        a.whileOpenHalt();
         c.stop();
     }
 

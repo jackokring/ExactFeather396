@@ -25,4 +25,8 @@ public class Application extends Frame {
         }
         setVisible(true);
     }
+
+    public void whileOpenHalt() {
+        while(isVisible()) Thread.yield();//stay open to show
+    }
 }
