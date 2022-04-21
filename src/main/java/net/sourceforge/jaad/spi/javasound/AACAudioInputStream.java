@@ -15,7 +15,7 @@ class AACAudioInputStream extends AsynchronousAudioInputStream {
 	private AudioFormat audioFormat = null;
 	private byte[] saved;
 
-	AACAudioInputStream(InputStream in, AudioFormat format, long length) throws IOException {
+	public AACAudioInputStream(InputStream in, AudioFormat format, long length) throws IOException {
 		super(in, format, length);
 		adts = new ADTSDemultiplexer(in);
 		decoder = new Decoder(adts.getDecoderSpecificInfo());

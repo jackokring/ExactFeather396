@@ -206,9 +206,16 @@ public class SignedStream {
             }
         }
 
+        @Override
         public void flush() throws IOException {
             flusher(true);
             super.flush();
+        }
+
+        @Override
+        public void close() throws IOException {//likely is the super definition
+            flush();
+            out.close();
         }
 
         public Output(OutputStream out) throws IOException {
