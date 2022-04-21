@@ -25,9 +25,11 @@ public class Data {
 
     @FunctionalInterface
     public interface Exec {
-
+        //primary command execution interface
         void run(String[] args) throws IOException;
     }
+
+    //========================== HELP TEXT LITERALS ==================
 
     public static final String FILE = "SAVE AS NAME";
     public static final String ARCH = "ARCHIVE NAME";
@@ -37,9 +39,13 @@ public class Data {
     public static final String GIT_URL = "GIT REPOSITORY";
     public static final String REPEATS = "...";
 
+    //======================== EXECUTE LITERALS ========================
+
     public static final String TAR = "tar cf - ";
     public static final String UN_TAR = "tar xvf - ";
     public static final String GIT = "git clone ";
+
+    //======================= EXITS =========================
 
     public static void exitCode(Error code) {
         if(code != Error.NONE) {
@@ -57,6 +63,13 @@ public class Data {
         }
     }
 
+    public static void exitCode(Error code, Exception e) {
+        System.err.println(e.getMessage());
+        exitCode(code);
+    }
+
+    //====================== TAR / UN-TAR ===============================
+
     public static int tar(String[] dirs, OutputStream arch) throws IOException {
         return execute(TAR + Arrays.stream(dirs).reduce((s, t) -> s + " " + t), System.in, arch);
     }
@@ -64,6 +77,8 @@ public class Data {
     public static int unTar(InputStream arch) throws IOException {
         return execute(UN_TAR, arch, System.out);
     }
+
+    //========================== PROCESS EXECUTE ================================
 
     public static int execute(String command, InputStream in, OutputStream out) throws IOException {
         ProcessBuilder builder = new ProcessBuilder(command);
@@ -82,10 +97,14 @@ public class Data {
         return p.exitValue();
     }
 
+    //============================= IMAGE ================================
+
     public static void imageCanvas(BufferedImage image) {
         Application a = new Application(new ImageCanvas(image, "Image"));
         a.whileOpenHalt();
     }
+
+    //============================== AUDIO ==============================
 
     public static Clip playAudioClip(AudioInputStream audio) throws IOException {
         Clip clip;
@@ -106,6 +125,8 @@ public class Data {
         a.whileOpenHalt();
         c.stop();
     }
+
+    //============================== DIALOGS ===============================
 
     public static TypedStream.Input loadDialog() throws IOException {
         FileDialog fd = new FileDialog((Frame) null, "Load", FileDialog.LOAD);
@@ -150,6 +171,8 @@ public class Data {
         throw new IOException("Can't save file as it already exists.");
     }
 
+    //=========================== ERROR CODES ==========================
+
     public enum Error {
         NONE("No"),
         DOCUMENTATION("Documentation"),
@@ -160,7 +183,8 @@ public class Data {
         UN_TAR("Un-tar archival"),
         BAD_VERSION("Version error"),
         GIT("Git clone"),
-        NOT_MULTI("Tar archiving is not applicable");
+        NOT_MULTI("Tar archiving is not applicable"),
+        COMPONENT("Component not available");
 
         private final String text;
 
@@ -169,11 +193,10 @@ public class Data {
         }
     }
 
-    public enum Command {
-        //TODO create repo table hashes for signature store
-        REPO_NFT('n', "get NFT url for user",
-                (args) -> { }, new String[]{""}, false),
+    //========================== COMMAND SPECIFICATIONS ============================
 
+    public enum Command {
+        //'bdfjknqrwyz' <== left??
         //main functions
         GAME('m', "play mini game", (args) -> {
             Game g = new Game();
@@ -184,7 +207,8 @@ public class Data {
                     + SignedStream.git, null, null), Error.GIT);
         }, new String[]{ GIT_URL }, false),
         AUDIO('p', "play audio", (args) -> {
-            audioCanvas((AudioInputStream) FilePipe.readComponent(FilePipe.getInputStream(new File(args[0]))));//create if possible
+            audioCanvas((AudioInputStream)
+                    FilePipe.readComponent(FilePipe.getInputStream(new File(args[0]))));//create if possible
         }, new String[] { ARCH }, false),
         OK_VERSION('o', "check version is at least required", (args) -> {
             String[] v = version.split(new Perl(".").get());
@@ -222,7 +246,8 @@ public class Data {
             FilePipe.cloneStream(System.in, saveDialog(), true).rejoin();
         }, new String[]{ }, false),
         COMPRESS('c', "compress file", (args) -> {
-            FilePipe.cloneStream(System.in, FilePipe.writeStream(FilePipe.getOutputStream(new File(args[0]))),
+            FilePipe.cloneStream(System.in,
+                    FilePipe.writeStream(FilePipe.getOutputStream(new File(args[0]))),
                     true).rejoin();
         }, new String[]{ FILE }, false),
         EXPAND('e', "expand file", (args) -> {
@@ -250,7 +275,8 @@ public class Data {
                     FilePipe.writeStream(FilePipe.getOutputStream(new File(args[1]))), true);
         }, new String[]{ ARCH, FILE }, false),
         IMAGE('i', "image load and view", (args) -> {
-            imageCanvas((BufferedImage) FilePipe.readComponent(FilePipe.getInputStream(new File(args[0]))));//create if possible
+            imageCanvas((BufferedImage)
+                    FilePipe.readComponent(FilePipe.getInputStream(new File(args[0]))));//create if possible
         }, new String[]{ ARCH }, false);
 
         private final char option;
@@ -286,11 +312,15 @@ public class Data {
         }
     }
 
+    //============================== UTILS ======================================
+
     public static String[] shift(String[] args) {
         String[] s = new String[args.length - 1];
         System.arraycopy(args, 1, s, 0, args.length - 1);
         return s;
     }
+
+    //============================== ENTRY OF PROGRAM =============================
 
     public static void main(String[] args) {
         try {
@@ -312,9 +342,10 @@ public class Data {
                     try {
                         c.action.run(shift(args));
                         exitCode(Error.NONE);
+                    } catch(ClassCastException cast) {
+                        exitCode(Error.COMPONENT, cast);
                     } catch(Exception e) {
-                        System.err.println(e.getMessage());
-                        exitCode(Error.DEFAULT);//default err
+                        exitCode(Error.DEFAULT, e);//default err
                     }
                 }
             }
@@ -322,7 +353,7 @@ public class Data {
             try {
                 Command.HELP.action.run(null);//doesn't need it
             } catch(Exception e) {
-                exitCode(Error.DOCUMENTATION);//documentation
+                exitCode(Error.DOCUMENTATION, e);//documentation
             }
         }
     }
