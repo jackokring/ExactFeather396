@@ -12,7 +12,6 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.Socket;
 import java.util.HashMap;
-import java.util.Optional;
 import java.util.function.Consumer;
 
 public enum FilePipe {
@@ -68,12 +67,12 @@ public enum FilePipe {
 
     public static TypedStream.Input getInputStream(File name) throws IOException {
         FilePipe p = filePipeForName(name.getName());
-        return new TypedStream.Input(p.uses.getStream(new FileInputStream(name)), p);
+        return new TypedStream.Input(p.uses.getStream(new FileInputStream(name)), p, null);
     }
 
     public static TypedStream.Output getOutputStream(File name) throws IOException {
         FilePipe p = filePipeForName(name.getName());
-        return new TypedStream.Output(p.uses.getStream(new FileOutputStream(name)), p);
+        return new TypedStream.Output(p.uses.getStream(new FileOutputStream(name)), p, null);
     }
 
     public static TypedStream.Input getInputStream(Socket ip) throws IOException {
@@ -88,14 +87,16 @@ public enum FilePipe {
         DataInputStream dis = new DataInputStream(in);
         String ext = dis.readUTF();
         FilePipe fp = filePipeForName("." + ext);
-        return new TypedStream.Input(fp.uses.getStream(in), fp);
+        return new TypedStream.Input(fp.uses.getStream(in), fp, null);
     }
 
     public static TypedStream.Output getOutputStream(OutputStream out, FilePipe fp) throws IOException {
         DataOutputStream dos = new DataOutputStream(out);
         dos.writeUTF(fp.extension);
-        return new TypedStream.Output(fp.uses.getStream(dos), fp);
+        return new TypedStream.Output(fp.uses.getStream(dos), fp, null);
     }
+
+    //========================= CLONE ==============================
 
     public static class Task extends Thread {
 
@@ -103,6 +104,9 @@ public enum FilePipe {
 
         public void setError(IOException e) {
             error = e;
+        }
+        public IOException getError() {
+            return error;
         }
 
         public Task() {
@@ -123,7 +127,8 @@ public enum FilePipe {
         }
     }
 
-    public static Task cloneStream(InputStream in, OutputStream out) throws IOException {
+    public static Task cloneStream(InputStream in, OutputStream out,
+                                   boolean closeOut) {
         Task thread = new Task() {
             @Override
             public void run() {
@@ -132,6 +137,8 @@ public enum FilePipe {
                     while ((b = in.read()) != -1) {
                         out.write(b);
                     }
+                    in.close();
+                    if(closeOut) out.close();
                 } catch (IOException e) {
                     setError(e);
                 }
@@ -194,8 +201,8 @@ public enum FilePipe {
 
     public static Object readComponent(TypedStream.Input in) throws IOException {
         var x = ins.get(in.getFilePipe());
-        if(x == null) return Optional.empty();
-        return Optional.of(x.apply(in));
+        if(x == null) return null;
+        return x.apply(in);
     }
 
     public static TypedStream.Input readStream(TypedStream.Input in) throws IOException {
@@ -219,9 +226,10 @@ public enum FilePipe {
             var x = outMan.get(out.getFilePipe());
             if(x == null) throw new IOException("Component not available");
             PipedOutputStream pos = new PipedOutputStream();
-            Object obj = x.apply(new TypedStream.Input(new PipedInputStream(pos), out.getFilePipe()));
+            Object obj = x.apply(new TypedStream.Input(
+                    new PipedInputStream(pos), out.getFilePipe(), null));
             writeComponent(out, obj);
-            return new TypedStream.Output(pos, out.getFilePipe());
+            return new TypedStream.Output(pos, out.getFilePipe(), out.getTask());
         } else {
             return out;
         }
@@ -290,7 +298,7 @@ public enum FilePipe {
         } catch(Exception e) {
             throw new IOException(e);
         }
-        return new TypedStream.Input(is, fp);
+        return new TypedStream.Input(is, fp, null);
     }
 
     private static Object putAudio(TypedStream.Input in) throws IOException {
@@ -321,22 +329,22 @@ public enum FilePipe {
                             dos.writeInt(bim.getRGB(x, y));
                         }
                     }
+                    dos.close();
                 } catch (IOException e) {
                     setError(e);
                 }
             }
         };
         t.start();
-        return new TypedStream.Input(new PipedInputStream(pos), fp);
+        return new TypedStream.Input(new PipedInputStream(pos), fp, t);
     }
 
     private static Object putImage(TypedStream.Input in) throws IOException {
-        DataInputStream dis = new DataInputStream(in);
-        BufferedImage out = new BufferedImage(dis.readInt(), dis.readInt(), BufferedImage.TYPE_4BYTE_ABGR);
+        BufferedImage out = new BufferedImage(in.readInt(), in.readInt(), BufferedImage.TYPE_4BYTE_ABGR);
         //raster basis
         for(int y = 0; y < out.getHeight(); y++) {
             for(int x = 0; x < out.getWidth(); x++) {
-                out.setRGB(x, y, dis.readInt());
+                out.setRGB(x, y, in.readInt());
             }
         }
         return out;//return raster image

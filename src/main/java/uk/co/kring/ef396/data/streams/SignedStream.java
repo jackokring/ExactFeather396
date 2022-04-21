@@ -61,9 +61,9 @@ public class SignedStream {
         return pk;
     }
 
-    private static PrivateKey priKey(File file) throws NoSuchAlgorithmException,
+    private static PrivateKey priKey() throws NoSuchAlgorithmException,
             InvalidKeySpecException, IOException {
-        PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(readConfig(file));
+        PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(readConfig(pri));
         KeyFactory keyFactory = KeyFactory.getInstance("DSA");
         return keyFactory.generatePrivate(keySpec);
     }
@@ -78,18 +78,18 @@ public class SignedStream {
         return input.getEncoded();
     }
 
-    public static void priKey(File file, PrivateKey input) throws IOException {
-        writeConfig(input.getEncoded(), file);
+    public static void priKey(PrivateKey input) throws IOException {
+        writeConfig(input.getEncoded(), pri);
     }
 
     public static class Input extends FilterInputStream implements Secure {
 
-        private PublicKey puk;
-        private MessageDigest md;
-        private int count = 0;
+        private final PublicKey puk;
+        private final MessageDigest md;
+        private int count;
         private byte[] d;
         private boolean evade = true;
-        private byte[] buffer = new byte[1024];
+        private final byte[] buffer = new byte[1024];
 
         @Override
         public int read() throws IOException {
@@ -100,11 +100,11 @@ public class SignedStream {
             return buffer[buffer.length - count - 1];
         }
 
-        private void readCheck(byte[] buffer, int start, int length) throws IOException {
-            int at = 0;
+        private void readCheck(byte[] buffer, int length) throws IOException {
             int checked = 0;
-            if(length < 0 || start < 0) throw new IOException("Negative size specification");
-            while(length - at != (at = super.read(buffer, start + at, length - at))) {
+            if(length < 0) throw new IOException("Negative size specification");
+            int at = 0;
+            while(length - at != (at = super.read(buffer, at, length - at))) {
                 if (checked == 5) throw new IOException("Read stream unavailable amount");
                 checked++;
             }
@@ -113,7 +113,7 @@ public class SignedStream {
         public void readBuffer() throws IOException {
             count = new DataInputStream(this.in).readInt();
             if(count < 0 || count > buffer.length) throw new IOException("Bad length EOF");
-            readCheck(buffer, 0, count);
+            readCheck(buffer, count);
             if(d != null) md.update(d, 0, d.length);//chain
             md.update(buffer, 0, count);//check
             d = md.digest();
@@ -155,8 +155,14 @@ public class SignedStream {
 
         @Override
         public final void close() throws IOException {
-            super.close();
-            if(!checkOK()) throw new SecurityException("Evasion of signature");
+            boolean exit = checkOK();
+            try {
+                in.close();
+            } catch(IOException e) {
+                exit = false;
+            }
+            if(!exit) throw new IOException(
+                    new SecurityException("Possible evasion of signature on closure"));
         }
     }
 
@@ -164,7 +170,7 @@ public class SignedStream {
 
         private PrivateKey pk;
         private MessageDigest md;
-        private int count = 0;
+        private int count;
         private byte[] d;
         private final byte[] buffer = new byte[1024];
 
@@ -210,12 +216,12 @@ public class SignedStream {
             PublicKey puk;
             try {
                 md = MessageDigest.getInstance("SHA-256");
-                pk = priKey(pri);
+                pk = priKey();
                 puk = pubKey(pub);
             } catch(Exception e) {
                 try {
                     KeyPair kp = getKeys();
-                    priKey(pri, pk = kp.getPrivate());//save
+                    priKey(pk = kp.getPrivate());//save
                     pubKey(pub, puk = kp.getPublic());//save
                 } catch(Exception f) {
                     throw new IOException("Key generation error");

@@ -7,31 +7,59 @@ import java.io.*;
 public class TypedStream {
 
 
-    public static class Input extends FilterInputStream {
+    public static class Input extends DataInputStream {
 
         private final FilePipe fp;
+        private final FilePipe.Task task;
 
-        public Input(InputStream in, FilePipe fp) {
+        public Input(InputStream in, FilePipe fp, FilePipe.Task task) {
             super(in);
             this.fp = fp;
+            this.task = task;
         }
 
         public final FilePipe getFilePipe() {
             return fp;
+        }
+
+        public final FilePipe.Task getTask() {
+            return task;
+        }
+
+        @Override
+        public int read() throws IOException {
+            if(getTask() != null && getTask().getError() != null) {
+                throw getTask().getError();
+            }
+            return in.read();
         }
     }
 
-    public static class Output extends FilterOutputStream {
+    public static class Output extends DataOutputStream {
 
         private final FilePipe fp;
+        private final FilePipe.Task task;
 
-        public Output(OutputStream out, FilePipe fp) {
+        public Output(OutputStream out, FilePipe fp, FilePipe.Task task) {
             super(out);
             this.fp = fp;
+            this.task = task;
         }
 
         public final FilePipe getFilePipe() {
             return fp;
+        }
+
+        public final FilePipe.Task getTask() {
+            return task;
+        }
+
+        @Override
+        public void write(int b) throws IOException {
+            if(getTask() != null && getTask().getError() != null) {
+                throw getTask().getError();
+            }
+            out.write(b);
         }
     }
 }

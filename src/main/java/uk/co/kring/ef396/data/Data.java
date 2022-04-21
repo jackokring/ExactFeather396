@@ -42,13 +42,19 @@ public class Data {
     public static final String GIT = "git clone ";
 
     public static void exitCode(Error code) {
-        System.err.print("[" + code.ordinal() + "] ");
-        System.err.println(code.text + " error in " + name + " tools causing premature exit.");
+        if(code != Error.NONE) {
+            System.err.print("[" + code.ordinal() + "] ");
+            System.err.println(code.text + " error in " + name + " tools causing premature exit.");
+        }
         System.exit(code.ordinal());
     }
 
     public static void exitCode(int exit, Error code) {
-        if(exit != 0) exitCode(code);
+        if(exit != 0) {
+            exitCode(code);
+        } else {
+            exitCode(Error.NONE);
+        }
     }
 
     public static int tar(String[] dirs, OutputStream arch) throws IOException {
@@ -67,16 +73,16 @@ public class Data {
         OutputStream os = p.getOutputStream();
         if(in == null) in = System.in;
         if(out == null) out = System.out;
-        FilePipe.Task j1 = FilePipe.cloneStream(in, os);
-        FilePipe.Task j2 = FilePipe.cloneStream(is, out);
-        FilePipe.Task j3 = FilePipe.cloneStream(es, System.err);
+        FilePipe.Task j1 = FilePipe.cloneStream(in, os, true);
+        FilePipe.Task j2 = FilePipe.cloneStream(is, out, false);
+        FilePipe.Task j3 = FilePipe.cloneStream(es, System.err, false);
         j1.rejoin();
         j2.rejoin();
         j3.rejoin();
         return p.exitValue();
     }
 
-    public static void imageCanvas(BufferedImage image) throws IOException {
+    public static void imageCanvas(BufferedImage image) {
         Application a = new Application(new ImageCanvas(image, "Image"));
         while(a.isVisible()) Thread.yield();//stay open to show
     }
@@ -110,7 +116,7 @@ public class Data {
         return FilePipe.readStream(FilePipe.getInputStream(new File(file)));
     }
 
-    public static boolean dialog() {
+    public static boolean replaceDialog() {
         Dialog ok = new Dialog((Frame) null, "Replace", true);
         final boolean[] closed = {false};
         ok.addWindowListener(new WindowAdapter() {
@@ -139,7 +145,7 @@ public class Data {
         String file = fd.getFile();
         File f = new File(file);
         if(f.exists()) {
-            if(dialog()) return FilePipe.writeStream(FilePipe.getOutputStream(f));
+            if(replaceDialog()) return FilePipe.writeStream(FilePipe.getOutputStream(f));
         }
         throw new IOException("Can't save file as it already exists.");
     }
@@ -150,10 +156,11 @@ public class Data {
         DEFAULT("Unimplemented catch"),
         URL("Unexpected URI format for name"),
         USED("Used command made an error"),
-        TAR("Tar"),
-        UN_TAR("Un-tar"),
+        TAR("Tar archival"),
+        UN_TAR("Un-tar archival"),
         BAD_VERSION("Version error"),
-        GIT("Git clone");
+        GIT("Git clone"),
+        NOT_MULTI("Tar archiving is not applicable");
 
         private final String text;
 
@@ -197,7 +204,7 @@ public class Data {
             if(os.getFilePipe().isTarable()) {
                 exitCode(tar(dirs, FilePipe.writeStream(os)), Error.TAR);
             } else {
-                exitCode(Error.TAR);
+                exitCode(Error.NOT_MULTI);
             }
         }, new String[]{ FILE, DIRS }, true),
         EXTRACT('x', "extract", (args) -> {
@@ -205,22 +212,22 @@ public class Data {
             if(is.getFilePipe().isTarable()) {
                 exitCode(unTar(FilePipe.readStream(is)), Error.UN_TAR);
             } else {
-                exitCode(Error.UN_TAR);
+                exitCode(Error.NOT_MULTI);
             }
         }, new String[]{ ARCH }, false),
         LOAD('l', "common load dialog", (args) -> {
-            FilePipe.cloneStream(loadDialog(), System.out).rejoin();
+            FilePipe.cloneStream(loadDialog(), System.out, false).rejoin();
         }, new String[]{ }, false),
         SAVE('s', "common save dialog", (args) -> {
-            FilePipe.cloneStream(System.in, saveDialog()).rejoin();
+            FilePipe.cloneStream(System.in, saveDialog(), true).rejoin();
         }, new String[]{ }, false),
         COMPRESS('c', "compress file", (args) -> {
-            FilePipe.cloneStream(System.in,
-                    FilePipe.writeStream(FilePipe.getOutputStream(new File(args[0])))).rejoin();
+            FilePipe.cloneStream(System.in, FilePipe.writeStream(FilePipe.getOutputStream(new File(args[0]))),
+                    true).rejoin();
         }, new String[]{ FILE }, false),
         EXPAND('e', "expand file", (args) -> {
-            FilePipe.cloneStream(
-                    FilePipe.readStream(FilePipe.getInputStream(new File(args[0]))), System.out).rejoin();
+            FilePipe.cloneStream(FilePipe.readStream(FilePipe.getInputStream(new File(args[0]))),
+                    System.out, false).rejoin();
         }, new String[]{ ARCH }, false),
         VERSION('v', "version information", (args) -> {
             System.out.println(version);
@@ -240,7 +247,7 @@ public class Data {
         }, new String[]{ ARCH, FILE, COMMAND }, false),
         TRANSCODE('t', "transcode from file to file", (args) -> {
             FilePipe.cloneStream(FilePipe.readStream(FilePipe.getInputStream(new File(args[0]))),
-                    FilePipe.writeStream(FilePipe.getOutputStream(new File(args[1]))));
+                    FilePipe.writeStream(FilePipe.getOutputStream(new File(args[1]))), true);
         }, new String[]{ ARCH, FILE }, false),
         IMAGE('i', "image load and view", (args) -> {
             imageCanvas((BufferedImage) FilePipe.readComponent(FilePipe.getInputStream(new File(args[0]))));//create if possible
@@ -304,7 +311,7 @@ public class Data {
                 if(args[0].charAt(0) == c.option) {
                     try {
                         c.action.run(shift(args));
-                        //exitCode(Error.NONE);
+                        exitCode(Error.NONE);
                     } catch(Exception e) {
                         System.err.println(e.getMessage());
                         exitCode(Error.DEFAULT);//default err
