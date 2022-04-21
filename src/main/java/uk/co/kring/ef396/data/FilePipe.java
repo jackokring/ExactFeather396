@@ -1,5 +1,13 @@
 package uk.co.kring.ef396.data;
 
+import net.sourceforge.jaad.aac.Decoder;
+import net.sourceforge.jaad.aac.SampleBuffer;
+import net.sourceforge.jaad.adts.ADTSDemultiplexer;
+import net.sourceforge.jaad.mp4.MP4Container;
+import net.sourceforge.jaad.mp4.api.AudioTrack;
+import net.sourceforge.jaad.mp4.api.Frame;
+import net.sourceforge.jaad.mp4.api.Movie;
+import net.sourceforge.jaad.mp4.api.Track;
 import uk.co.kring.ef396.data.backend.Pipe;
 import uk.co.kring.ef396.data.streams.TypedStream;
 
@@ -12,6 +20,7 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.Socket;
 import java.util.HashMap;
+import java.util.List;
 import java.util.function.Consumer;
 
 public enum FilePipe {
@@ -34,6 +43,10 @@ public enum FilePipe {
             FilePipe::registerAudioInputStreamComponent),
     SND(AudioFileFormat.Type.SND.getExtension(), Pipe.MANGLER, false,
             FilePipe::registerAudioInputStreamComponent),
+    M4A("m4a", Pipe.MANGLER, false,
+            FilePipe::registerMAAudioInputStreamComponent),
+    AAC("aac", Pipe.MANGLER, false,
+            FilePipe::registerAAudioInputStreamComponent),
     NULL("", Pipe.NULL, false, null);
 
     private final String extension;
@@ -288,6 +301,58 @@ public enum FilePipe {
         }
     }
 
+    //============================ AAC COMPONENT =======================
+
+    private static Object getAAudio(TypedStream.Input in) throws IOException {
+        byte[] b = null;
+        try {
+            ADTSDemultiplexer adts = new ADTSDemultiplexer(in);
+            byte[] decoderSpecificInfo = adts.getDecoderSpecificInfo();
+            Decoder dec = new Decoder(decoderSpecificInfo);
+            SampleBuffer buf = new SampleBuffer();
+            byte[] frame;
+            while((frame = adts.readNextFrame()) != null) {
+                dec.decodeFrame(frame, buf);
+                byte[] audio = buf.getData();
+                //TODO
+                boolean e = buf.isBigEndian();
+            }
+            return new AudioInputStream(new ByteArrayInputStream(b), X, b.length);
+        } catch(Exception e) {
+            throw new IOException(e);
+        }
+    }
+
+    private static Object getMAAudio(TypedStream.Input in) throws IOException {
+        byte[] b = null;
+        try {
+            MP4Container container = new MP4Container(in);
+            Movie movie = container.getMovie();
+            List<Track> tracks = movie.getTracks(AudioTrack.AudioCodec.AAC);
+            if(tracks.size()>0) {
+                Track track = tracks.get(0);
+                byte[] decoderSpecificInfo = track.getDecoderSpecificInfo();
+                Decoder dec = new Decoder(decoderSpecificInfo);
+                SampleBuffer buf = new SampleBuffer();
+                Frame frame;
+                while((frame = track.readNextFrame()) != null) {
+                    dec.decodeFrame(frame.getData(), buf);
+                    byte[] audio = buf.getData();
+                    //TODO
+                    boolean e = buf.isBigEndian();
+                }
+                return new AudioInputStream(new ByteArrayInputStream(b), X, b.length);
+            }
+        } catch(Exception e) {
+            throw new IOException(e);
+        }
+        throw new IOException("No m4a decode default track zero");
+    }
+
+    private static void putAAudio(TypedStream.Output out, Object audio) throws IOException {
+        throw new IOException("No aac write support");
+    }
+
     //============================ RASTER FORMAT =======================
 
     private static TypedStream.Input getImage(Object in, FilePipe fp) throws IOException {
@@ -381,5 +446,17 @@ public enum FilePipe {
         registerInputMangler(fp, FilePipe::getAudio);//CD standard
         registerOutputComponent(fp, FilePipe::putAudio);
         registerOutputMangler(fp, FilePipe::putAudio);//actually any valid CD expected?
+    }
+
+    private static void registerAAudioInputStreamComponent(FilePipe fp) {
+        registerInputComponent(fp, FilePipe::getAAudio);
+        registerInputMangler(fp, FilePipe::getAudio);//CD standard
+        registerOutputComponent(fp, FilePipe::putAAudio);
+    }
+
+    private static void registerMAAudioInputStreamComponent(FilePipe fp) {
+        registerInputComponent(fp, FilePipe::getMAAudio);
+        registerInputMangler(fp, FilePipe::getAudio);//CD standard
+        registerOutputComponent(fp, FilePipe::putAAudio);
     }
 }
