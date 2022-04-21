@@ -200,7 +200,7 @@ public class Data {
         //main functions
         GAME('m', "play mini game", (args) -> {
             Game g = new Game();
-            while(g.isVisible()) Thread.yield();
+            g.whileOpenHalt();
         }, new String[]{ }, false),
         REPO_GIT('g', "clone git signature repository", (args) -> {
             exitCode(execute(GIT + args[0] + " "    //Oops, a space
