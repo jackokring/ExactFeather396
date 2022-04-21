@@ -167,9 +167,11 @@ public enum FilePipe {
 
     //============= SINGULAR COMPONENT REGISTRATION ========================
 
-    private static final HashMap<FilePipe, CheckedFunction<TypedStream.Input, Object>> ins = new HashMap<>();
+    private static final HashMap<FilePipe,
+            CheckedFunction<TypedStream.Input, Object>> ins = new HashMap<>();
 
-    private static final HashMap<FilePipe, CheckedBiConsumer<TypedStream.Output, Object>> outs = new HashMap<>();
+    private static final HashMap<FilePipe,
+            CheckedBiConsumer<TypedStream.Output, Object>> outs = new HashMap<>();
 
     public static void registerInputComponent(FilePipe fp,
                                               CheckedFunction<TypedStream.Input, Object> transform) {
@@ -201,13 +203,14 @@ public enum FilePipe {
 
     public static Object readComponent(TypedStream.Input in) throws IOException {
         var x = ins.get(in.getFilePipe());
-        if(x == null) return null;
+        if(x == null) throw new IOException("No component reader");
         return x.apply(in);
     }
 
     public static TypedStream.Input readStream(TypedStream.Input in) throws IOException {
         if(in.getFilePipe().uses.isMangler()) {
             var x = inMan.get(in.getFilePipe());
+            if(x == null) throw new IOException("No component read mangler");
             return x.apply(readComponent(in), in.getFilePipe());
         } else {
             return in;//pass through
@@ -216,15 +219,14 @@ public enum FilePipe {
 
     public static void writeComponent(TypedStream.Output out, Object thing) throws IOException {
         var x = outs.get(out.getFilePipe());
-        if(x == null) throw new IOException("No component writer for "
-                + out.getFilePipe().getClass().getCanonicalName());
+        if(x == null) throw new IOException("No component writer");
         x.accept(out, thing);
     }
 
     public static TypedStream.Output writeStream(TypedStream.Output out) throws IOException {
         if(out.getFilePipe().uses.isMangler()) {
             var x = outMan.get(out.getFilePipe());
-            if(x == null) throw new IOException("Component not available");
+            if(x == null) throw new IOException("No component write mangler");
             PipedOutputStream pos = new PipedOutputStream();
             Object obj = x.apply(new TypedStream.Input(
                     new PipedInputStream(pos), out.getFilePipe(), null));
@@ -262,14 +264,11 @@ public enum FilePipe {
             this.aff = aff;
         }
 
-        public final static AudioFormat CD = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED,
-                44100, 16, 2, 4, 44100, false);
-
-        public static AudioFileFormat.Type getFileFormat(FilePipe fp) {
+        public static AudioFileFormat.Type getFileFormat(FilePipe fp) throws IOException {
             for (Format f: Format.values()) {
                 if(f.ext.equals(fp.extension)) return f.aff;
             }
-            return null;
+            throw new IOException("Bad audio format");
         }
     }
 
@@ -287,28 +286,6 @@ public enum FilePipe {
         } catch(Exception e) {
             throw new IOException(e);
         }
-    }
-
-    //============================ AUDIO RASTER FORMAT ========================
-
-    private static TypedStream.Input getAudio(Object in, FilePipe fp) throws IOException {
-        AudioInputStream is;
-        try {
-            is = AudioSystem.getAudioInputStream(Format.CD, (AudioInputStream) in);
-        } catch(Exception e) {
-            throw new IOException(e);
-        }
-        return new TypedStream.Input(is, fp, null);
-    }
-
-    private static Object putAudio(TypedStream.Input in) throws IOException {
-        AudioInputStream out;
-        try {
-            out = AudioSystem.getAudioInputStream(new BufferedInputStream(in));//mark support
-        } catch(Exception e) {
-            throw new IOException(e);
-        }
-        return out;//return raster audio
     }
 
     //============================ RASTER FORMAT =======================
@@ -348,6 +325,46 @@ public enum FilePipe {
             }
         }
         return out;//return raster image
+    }
+
+    //============================ AUDIO RASTER FORMAT ========================
+
+    public final static AudioFormat X = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED,
+            44100, 16, 2, 4, 44100, true);
+
+    private static TypedStream.Input getAudio(Object in, FilePipe fp) throws IOException {
+        AudioInputStream is = AudioSystem.getAudioInputStream(X, (AudioInputStream) in);//standardize format;
+        PipedOutputStream pos = new PipedOutputStream();
+        Task t = new Task() {
+            @Override
+            public void run() {
+                try {
+                    byte[] frame = new byte[X.getFrameSize()];
+                    while (is.read(frame) != -1) {
+                        pos.write(frame);//ordering? should be big-endian interleaved CD audio
+                    }
+                    is.close();
+                    pos.close();
+                } catch (IOException e) {
+                    setError(e);
+                }
+            }
+        };
+        t.start();
+        return new TypedStream.Input(new PipedInputStream(pos), fp, t);
+    }
+
+    private static Object putAudio(TypedStream.Input in) throws IOException {
+        AudioInputStream out;
+        byte[] b = in.readAllBytes();
+        in.close();
+        try {
+            //adding header
+            out = new AudioInputStream(new ByteArrayInputStream(b), X, b.length);
+        } catch(Exception e) {
+            throw new IOException(e);
+        }
+        return out;//return raster audio
     }
 
     //============ BUILT-IN IMAGE FORMATS ===============
