@@ -24,8 +24,36 @@ public enum Keys {
     //Then use Qjoypad.
 
     private final int key;
+    private boolean pressed = false;
+    private boolean last = false;
 
     Keys(int event) {
         this.key = event;
+    }
+
+    public int getKeyCode() {
+        return key;
+    }
+
+    public void pressKey() {
+        last = pressed;
+        pressed = true;
+    }
+
+    public void releaseKey() {
+        last = pressed;
+        pressed = false;
+    }
+
+    public boolean getKey() {
+        return pressed;
+    }
+
+    public boolean downKey() {
+        return pressed && !last;
+    }
+
+    public boolean upKey() {
+        return !pressed && last;
     }
 }

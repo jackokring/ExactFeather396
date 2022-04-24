@@ -39,15 +39,15 @@ public class Application extends Frame {
         dispose();
     }
 
-    public void indirectDraw(Graphics g) {
+    public void indirectDrawAll(Graphics g) {
         paint(g);
     }
 
-    public void draw() {
+    public void drawAll() {
         Graphics g = bs.getDrawGraphics();
         do {
             if(g != null) {
-                indirectDraw(g);
+                indirectDrawAll(g);
                 g.dispose();
                 bs.show();
             }

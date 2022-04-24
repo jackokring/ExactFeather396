@@ -15,6 +15,13 @@ public class LocalDataStream {
             in.close();
         }
 
+        public String safeReadUTF(int sizeMax) throws IOException {
+            int length = readUnsignedShort();
+            if(length > sizeMax) throw new IOException("Invalid stream type");
+            byte[] b = readNBytes(length);
+            return new String(b);
+        }
+
         public Input(InputStream in) {
             super(in);
         }

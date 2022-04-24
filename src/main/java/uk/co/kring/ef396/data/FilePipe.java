@@ -2,6 +2,7 @@ package uk.co.kring.ef396.data;
 
 import net.sourceforge.jaad.spi.javasound.AACAudioFileReader;
 import uk.co.kring.ef396.data.backend.Pipe;
+import uk.co.kring.ef396.data.streams.LocalDataStream;
 import uk.co.kring.ef396.data.streams.TypedStream;
 
 import javax.imageio.ImageIO;
@@ -89,14 +90,18 @@ public enum FilePipe {
     }
 
     public static TypedStream.Input getInputStream(InputStream in) throws IOException {
-        DataInputStream dis = new DataInputStream(in);
-        String ext = dis.readUTF();
+        LocalDataStream.Input dis = new LocalDataStream.Input(in);
+        int length = 0;
+        for (FilePipe s: values()) {
+            if(s.extension.length() > length) length = s.extension.length();
+        }
+        String ext = dis.safeReadUTF(length);//baulk on bad type early
         FilePipe fp = filePipeForName("." + ext);
         return new TypedStream.Input(fp.uses.getStream(in), fp, null);
     }
 
     public static TypedStream.Output getOutputStream(OutputStream out, FilePipe fp) throws IOException {
-        DataOutputStream dos = new DataOutputStream(out);
+        LocalDataStream.Output dos = new LocalDataStream.Output(out);
         dos.writeUTF(fp.extension);
         return new TypedStream.Output(fp.uses.getStream(dos), fp, null);
     }
@@ -107,10 +112,10 @@ public enum FilePipe {
 
         IOException error = null;
 
-        public void setError(IOException e) {
+        public synchronized void setError(IOException e) {
             error = e;
         }
-        public IOException getError() {
+        public synchronized IOException getError() {
             return error;
         }
 
@@ -142,8 +147,8 @@ public enum FilePipe {
                     while ((b = in.read()) != -1) {
                         out.write(b);
                     }
-                    in.close();
                     if(closeOut) out.close();
+                    in.close();
                 } catch (IOException e) {
                     setError(e);
                 }
@@ -314,7 +319,7 @@ public enum FilePipe {
         BufferedImage bim = (BufferedImage) in;
         //raster basis
         PipedOutputStream pos = new PipedOutputStream();
-        DataOutputStream dos = new DataOutputStream(pos);
+        LocalDataStream.Output dos = new LocalDataStream.Output(pos);
         Task t = new Task() {
             @Override
             public void run() {
@@ -326,7 +331,7 @@ public enum FilePipe {
                             dos.writeInt(bim.getRGB(x, y));
                         }
                     }
-                    dos.close();
+                    dos.closeActual();//as object to stream
                 } catch (IOException e) {
                     setError(e);
                 }
@@ -344,6 +349,7 @@ public enum FilePipe {
                 out.setRGB(x, y, in.readInt());
             }
         }
+        in.close();
         return out;//return raster image
     }
 
@@ -376,7 +382,7 @@ public enum FilePipe {
 
     private static Object putAudio(TypedStream.Input in) throws IOException {
         AudioInputStream out;
-        byte[] b = in.readAllBytes();
+        byte[] b = in.readAllBytes();//all file?
         in.close();
         try {
             //adding header

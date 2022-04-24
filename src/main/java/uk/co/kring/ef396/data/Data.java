@@ -71,16 +71,18 @@ public class Data {
     //====================== TAR / UN-TAR ===============================
 
     public static int tar(String[] dirs, OutputStream arch) throws IOException {
-        return execute(TAR + Arrays.stream(dirs).reduce((s, t) -> s + " " + t), System.in, arch);
+        return execute(TAR + Arrays.stream(dirs).reduce((s, t) -> s + " " + t),
+                System.in, arch,true);
     }
 
     public static int unTar(InputStream arch) throws IOException {
-        return execute(UN_TAR, arch, System.out);
+        return execute(UN_TAR, arch, System.out, true);
     }
 
     //========================== PROCESS EXECUTE ================================
 
-    public static int execute(String command, InputStream in, OutputStream out) throws IOException {
+    public static int execute(String command, InputStream in, OutputStream out,
+                              boolean closeOut) throws IOException {
         ProcessBuilder builder = new ProcessBuilder(command);
         Process p = builder. /* directory(new File("~")). */ start();
         InputStream is = p.getInputStream();
@@ -89,8 +91,8 @@ public class Data {
         if(in == null) in = System.in;
         if(out == null) out = System.out;
         FilePipe.Task j1 = FilePipe.cloneStream(in, os, true);
-        FilePipe.Task j2 = FilePipe.cloneStream(is, out, false);
-        FilePipe.Task j3 = FilePipe.cloneStream(es, System.err, false);
+        FilePipe.Task j2 = FilePipe.cloneStream(is, out, closeOut);
+        FilePipe.Task j3 = FilePipe.cloneStream(es, System.err, false);//leave errors open
         j1.rejoin();
         j2.rejoin();
         j3.rejoin();
@@ -139,7 +141,8 @@ public class Data {
     }
 
     public static boolean replaceDialog() {
-        Dialog ok = new Dialog((Frame) null, "Replace", true);
+        Dialog ok = new Dialog((Frame) null, "Replace");
+        ok.setModalityType(Dialog.DEFAULT_MODALITY_TYPE);
         ok.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent we) {
                 ok.setVisible(false);
@@ -199,7 +202,7 @@ public class Data {
         }, new String[]{ }, false),
         REPO_GIT('g', "clone git signature repository", (args) -> {
             exitCode(execute(GIT + args[0] + " "    //Oops, a space
-                    + SignedStream.git, null, null), Error.GIT);
+                    + SignedStream.git, null, null, false), Error.GIT);
         }, new String[]{ GIT_URL }, false),
         AUDIO('p', "play audio", (args) -> {
             audioCanvas((AudioInputStream)
@@ -263,7 +266,8 @@ public class Data {
         }, new String[]{ }, false),
         USE('u', "use command process on file to file", (args) -> {
             exitCode(execute(args[2], FilePipe.readStream(FilePipe.getInputStream(new File(args[0]))),
-                    FilePipe.writeStream(FilePipe.getOutputStream(new File(args[1])))), Error.USED);
+                    FilePipe.writeStream(FilePipe.getOutputStream(new File(args[1]))),
+                    true), Error.USED);
         }, new String[]{ ARCH, FILE, COMMAND }, false),
         TRANSCODE('t', "transcode from file to file", (args) -> {
             FilePipe.cloneStream(FilePipe.readStream(FilePipe.getInputStream(new File(args[0]))),
@@ -289,6 +293,7 @@ public class Data {
         }
 
         private static void show(String arg, boolean singular) throws IOException {
+            System.out.println("Note that git, tar and netpbm are dependencies.");
             for (Command c: Command.values()) {
                 if(singular && !arg.equals("" + c.option)) continue;//skip
                 System.out.print(name + " " + c.option + " <");

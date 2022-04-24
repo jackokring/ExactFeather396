@@ -1,9 +1,5 @@
 package uk.co.kring.ef396.data.mini;
 
-import uk.co.kring.ef396.data.components.GameCanvas;
-
-import java.awt.image.BufferedImage;
-
 public enum ImageGeneric {
 
     PLAYER(Group.PLAYER, 0, 16, 1, 1);
@@ -19,27 +15,19 @@ public enum ImageGeneric {
         this.q = q;
     }
 
-    public int getScale() {//essentially gets collision height and width
-        return size * p / q;
+    public int getFrame() {
+        return frame;
     }
 
-    public void draw(GameCanvas ic, int x, int y, int idx) {//1024 range, 16 px sprites
-        int is = ic.getScaling();
-        int sc = getScale();
-        int xs = ic.getWidth() / is;
-        x *= xs;
-        int ys = ic.getHeight() / is;
-        y *= ys;
-        BufferedImage image = kind.getImage();
-        int sx = (frame + idx) * size;
-        int sy = (sx / image.getWidth());
-        sx -= sy * image.getWidth();
-        sy *= size;
-        ic.getGraphics()
-                .drawImage(image, x, y,
-                        x + sc * xs - 1, y + sc * ys - 1,
-                        sx, sy,
-                        sx + size - 1, sy + size - 1,
-                        null);
+    public int getSize() {
+        return size;
+    }
+
+    public Group getKind() {
+        return kind;
+    }
+
+    public int getScale() {//essentially gets collision height and width
+        return size * p / q;
     }
 }
