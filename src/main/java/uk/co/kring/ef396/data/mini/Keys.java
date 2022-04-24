@@ -26,6 +26,10 @@ public enum Keys {
     private final int key;
     private boolean pressed = false;
     private boolean last = false;
+    private static int vx, vy;
+    public static final int velMax = 1024;
+    public static final int invAccel = 64;//divide vel from top by
+    public static final int invDecel = 64;//divide by exponential
 
     Keys(int event) {
         this.key = event;
@@ -54,5 +58,35 @@ public enum Keys {
 
     public boolean offKey() {
         return last && !getKey();
+    }
+
+    public static int axisX() {
+        int x = 0;
+        if(Keys.LEFT.getKey()) x--;
+        if(Keys.RIGHT.getKey()) x++;
+        if(x == 0) {
+            vx /= invDecel;
+        } else {
+            int max = velMax - ((vx < 0) ? -vx : vx);
+            if (-velMax < vx && vx < velMax) {
+                vx += max / invAccel * x;
+            }
+        }
+        return vx;
+    }
+
+    public static int axisY() {
+        int y = 0;
+        if(Keys.UP.getKey()) y--;
+        if(Keys.DOWN.getKey()) y++;
+        if(y == 0) {
+            vy /= invDecel;
+        } else {
+            int max = velMax - ((vy < 0) ? -vy : vy);
+            if (-velMax < vy && vy < velMax) {
+                vy += max / invAccel * y;
+            }
+        }
+        return vy;
     }
 }
