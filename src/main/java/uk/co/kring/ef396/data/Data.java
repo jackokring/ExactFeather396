@@ -133,29 +133,24 @@ public class Data {
         fd.setFilenameFilter((dir, name) -> FilePipe.filePipeForName(name) != FilePipe.NULL);
         fd.setDirectory("~");//home
         fd.setVisible(true);
-        String file = fd.getFile();
-        return FilePipe.readStream(FilePipe.getInputStream(new File(file)));
+        File file = new File(fd.getFile());
+        if(fileAndNotDirectory(file)) return FilePipe.readStream(FilePipe.getInputStream(file));
+        throw new IOException("Bad filename");
     }
 
     public static boolean replaceDialog() {
         Dialog ok = new Dialog((Frame) null, "Replace", true);
-        final boolean[] closed = {false};
         ok.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent we) {
-                closed[0] = true;
                 ok.setVisible(false);
             }
         });
-        Label text = new Label("File exists. Replace file? Close for No or Cancel.");
-        Button yes = new Button("OK");
-        yes.addActionListener(actionEvent -> {
-            //default false
-            ok.setVisible(false);//close
-        });
-        ok.add(text);
-        ok.add(yes);
+        Label text = new Label("File exists. Replace file? Close for No or Cancel. OK replaces file.");
+        ExecButton yes = new ExecButton("OK", null);//default parent hide action
+        ok.add(text, BorderLayout.CENTER);
+        ok.add(yes, BorderLayout.PAGE_END);
         ok.setVisible(true);//modal
-        return !closed[0];
+        return yes.getClicked();
     }
 
     public static TypedStream.Output saveDialog() throws IOException {
@@ -165,10 +160,10 @@ public class Data {
         fd.setVisible(true);
         String file = fd.getFile();
         File f = new File(file);
-        if(f.exists()) {
+        if(fileAndNotDirectory(f)) {
             if(replaceDialog()) return FilePipe.writeStream(FilePipe.getOutputStream(f));
         }
-        throw new IOException("Can't save file as it already exists.");
+        throw new IOException("Can't save file");
     }
 
     //=========================== ERROR CODES ==========================
@@ -318,6 +313,10 @@ public class Data {
         String[] s = new String[args.length - 1];
         System.arraycopy(args, 1, s, 0, args.length - 1);
         return s;
+    }
+
+    public static boolean fileAndNotDirectory(File file) {
+        return file.exists() && !file.isDirectory();
     }
 
     //============================== ENTRY OF PROGRAM =============================

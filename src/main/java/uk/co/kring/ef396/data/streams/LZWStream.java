@@ -71,6 +71,11 @@ public class LZWStream {//not quite
             ok = getBytes(w);
         }
 
+        @Override
+        public void close() throws IOException {
+            dis.close();
+        }
+
         public Input(InputStream in) throws IOException {
             super(in);
             create();
@@ -121,6 +126,11 @@ public class LZWStream {//not quite
         public void flush() throws IOException {
             restart();
             out.flush();
+        }
+
+        @Override
+        public void close() throws IOException {
+            dos.close();
         }
 
         public Output(OutputStream out) {

@@ -27,7 +27,7 @@ public class BWTStream {
         @Override
         public int read() throws IOException {
             if(count < 0) {
-                DataInputStream dis = new DataInputStream(this.in);
+                LocalDataStream.Input dis = new LocalDataStream.Input(this.in);
                 int p;
                 int[] L = new int[256];
                 byte[] U = new byte[buffer.length];
@@ -86,7 +86,7 @@ public class BWTStream {
 
         public void flusher() throws IOException {
             if(count > 0) {
-                DataOutputStream dos = new DataOutputStream(this.out);
+                LocalDataStream.Output dos = new LocalDataStream.Output(this.out);
                 int[] L = new int[256];
                 byte[] U = new byte[buffer.length];
                 int[] A = new int[buffer.length];

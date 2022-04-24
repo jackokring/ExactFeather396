@@ -1,10 +1,24 @@
 package uk.co.kring.ef396.data.components;
 
+import java.awt.*;
+
 public class Game extends Application {
-
-    private static final ExecButton button = new ExecButton("Start", null);
-
     public Game() {
-        super(button);
+        super(null);
+    }
+
+    @Override
+    public void indirectDraw(Graphics g) {
+        //basic buffer
+    }
+
+    public void gameLoop() {
+
+    }
+
+    @Override
+    public void whileOpenHalt() {
+        gameLoop();
+        super.whileOpenHalt();
     }
 }

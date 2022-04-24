@@ -7,10 +7,21 @@ import java.util.function.Consumer;
 
 public class ExecButton extends Button {
 
+    private boolean clicked = false;
+
+    public boolean getClicked() {
+        return clicked;
+    }
+
+    public void setClicked() {
+        clicked = true;
+    }
+
     public ExecButton(String label, Consumer<ActionEvent> onClick) {
         setLabel(label);
         if(onClick == null) {
             addActionListener(actionEvent -> {
+                setClicked();
                 getParent().setVisible(false);//auto close exit
             });
         } else {
