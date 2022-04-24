@@ -11,6 +11,9 @@ import java.awt.image.BufferedImage;
 public class Game extends Application implements KeyListener {
 
     public final int scaling = 1024;//virtual resolution
+    public final int frameMillis = 50;
+
+    protected boolean running = true;
 
     public Game() {
         super(null);
@@ -60,8 +63,23 @@ public class Game extends Application implements KeyListener {
         return false;
     }
 
-    public void gameLoop() {
+    public void processLoop(int frames) {
 
+    }
+
+    public void gameLoop() {
+        while(running) {
+            long ms = System.currentTimeMillis();
+            long latest;
+            while ((latest = System.currentTimeMillis()) - ms < frameMillis) Thread.yield();
+            int frames = (int) (latest - ms) / frameMillis;
+            processLoop(frames);
+            ms += frames * frameMillis;//update number of frames
+        }
+    }
+
+    public void setExit() {
+        running = false;
     }
 
     @Override
