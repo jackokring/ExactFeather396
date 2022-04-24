@@ -6,15 +6,13 @@ import uk.co.kring.ef396.data.streams.LocalDataStream;
 import uk.co.kring.ef396.data.streams.TypedStream;
 
 import javax.imageio.ImageIO;
-import javax.sound.sampled.AudioFileFormat;
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.function.Consumer;
+import java.util.zip.DataFormatException;
 
 public enum FilePipe {
 
@@ -128,7 +126,7 @@ public enum FilePipe {
                 join();
             } catch (Exception e) {
                 if(error == null) {
-                    error = new IOException("Interrupted");
+                    error = new IOException(new InterruptedException("Interrupted"));
                 } else {
                     error = new IOException(error);
                 }
@@ -213,14 +211,14 @@ public enum FilePipe {
 
     public static Object readComponent(TypedStream.Input in) throws IOException {
         var x = ins.get(in.getFilePipe());
-        if(x == null) throw new IOException("No component reader");
+        if(x == null) Data.io(new DataFormatException("No component reader"));
         return x.apply(in);
     }
 
     public static TypedStream.Input readStream(TypedStream.Input in) throws IOException {
         if(in.getFilePipe().uses.isMangler()) {
             var x = inMan.get(in.getFilePipe());
-            if(x == null) throw new IOException("No component read mangler");
+            if(x == null) Data.io(new DataFormatException("No component read mangler"));
             return x.apply(readComponent(in), in.getFilePipe());
         } else {
             return in;//pass through
@@ -229,14 +227,14 @@ public enum FilePipe {
 
     public static void writeComponent(TypedStream.Output out, Object thing) throws IOException {
         var x = outs.get(out.getFilePipe());
-        if(x == null) throw new IOException("No component writer");
+        if(x == null) Data.io(new DataFormatException("No component writer"));
         x.accept(out, thing);
     }
 
     public static TypedStream.Output writeStream(TypedStream.Output out) throws IOException {
         if(out.getFilePipe().uses.isMangler()) {
             var x = outMan.get(out.getFilePipe());
-            if(x == null) throw new IOException("No component write mangler");
+            if(x == null) Data.io(new DataFormatException("No component write mangler"));
             PipedOutputStream pos = new PipedOutputStream();
             Object obj = x.apply(new TypedStream.Input(
                     new PipedInputStream(pos), out.getFilePipe(), null));
@@ -278,7 +276,8 @@ public enum FilePipe {
             for (Format f: Format.values()) {
                 if(f.ext.equals(fp.extension)) return f.aff;
             }
-            throw new IOException("Bad audio format");
+            Data.io(new UnsupportedAudioFileException("Bad audio format"));
+            return null;
         }
     }
 
@@ -286,7 +285,8 @@ public enum FilePipe {
         try {
             return AudioSystem.getAudioInputStream(in);
         } catch(Exception e) {
-            throw new IOException(e);
+            Data.io(e);
+            return null;
         }
     }
 
@@ -294,7 +294,7 @@ public enum FilePipe {
         try {
             AudioSystem.write((AudioInputStream) audio, Format.getFileFormat(out.getFilePipe()), out);
         } catch(Exception e) {
-            throw new IOException(e);
+            Data.io(e);
         }
     }
 
@@ -305,12 +305,13 @@ public enum FilePipe {
         try {
             return aac.getAudioInputStream(in);
         } catch(Exception e) {
-            throw new IOException(e);
+            Data.io(e);
+            return null;
         }
     }
 
     private static void putAAudio(TypedStream.Output out, Object audio) throws IOException {
-        throw new IOException("No aac write support");
+        Data.io(new UnsupportedEncodingException("No AAC format"));
     }
 
     //============================ RASTER FORMAT =======================

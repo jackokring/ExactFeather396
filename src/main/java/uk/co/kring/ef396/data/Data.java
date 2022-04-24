@@ -120,7 +120,7 @@ public class Data {
             clip.open(audio);
             clip.start();
         } catch(Exception e) {
-            io(new IllegalArgumentException(new UnsupportedAudioFileException("Problem audio")));
+            io(new IllegalArgumentException("Problem audio"));
         }
         return clip;
     }
