@@ -40,6 +40,26 @@ public class Game extends Application implements KeyListener {
                     null);
     }
 
+    public boolean collides(ImageGeneric ig1, int x1, int y1,
+                                 ImageGeneric ig2, int x2, int y2, int bound) {//bound flex
+        int spriteSize1 = ig1.getScale();
+        int spriteSize2 = ig2.getScale();
+        int xMin = Math.max(x1, x2) + bound;
+        int xMax1 = x1 + spriteSize1;
+        int xMax2 = x2 + spriteSize2;
+        int xMax = Math.min(xMax1, xMax2) - bound;
+        if (xMax > xMin) {
+            float yMin = Math.max(y1, y2) + bound;
+            float yMax1 = y1 + spriteSize1;
+            float yMax2 = y2 + spriteSize2;
+            float yMax = Math.min(yMax1, yMax2) - bound;
+            if (yMax > yMin) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void gameLoop() {
 
     }
