@@ -43,11 +43,16 @@ public class Application extends Frame {
         paint(g);
     }
 
-    public void drawAll() {
+    public void drawPause(Graphics g) {
+
+    }
+
+    public void drawAll(boolean pause) {
         Graphics g = bs.getDrawGraphics();
         do {
             if(g != null) {
                 indirectDrawAll(g);
+                if(pause) drawPause(g);
                 g.dispose();
                 bs.show();
             }

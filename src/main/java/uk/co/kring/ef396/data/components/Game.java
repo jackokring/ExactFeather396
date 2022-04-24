@@ -14,6 +14,7 @@ public class Game extends Application implements KeyListener {
     public final int frameMillis = 50;
 
     protected boolean running = true;
+    protected boolean paused = true;
 
     public Game() {
         super(null);
@@ -22,7 +23,20 @@ public class Game extends Application implements KeyListener {
 
     @Override
     public void indirectDrawAll(Graphics g) {
-        //basic buffer
+        //basic buffer draw
+    }
+
+    public void moveAll(int frames) {
+        //move all
+    }
+
+    @Override
+    public void drawPause(Graphics g) {
+        //on pause HUD
+    }
+
+    public void doMenuKeys() {
+        //if paused intercept cursor etc.
     }
 
     public void drawOne(Graphics g, ImageGeneric ig, int x, int y, int idx) {
@@ -63,8 +77,13 @@ public class Game extends Application implements KeyListener {
         return false;
     }
 
-    public void processLoop(int frames) {
-
+    public void process(int frames) {
+        if(!paused) {
+            moveAll(frames);
+        } else {
+            doMenuKeys();
+        }
+        drawAll(paused);
     }
 
     public void gameLoop() {
@@ -73,13 +92,27 @@ public class Game extends Application implements KeyListener {
             long latest;
             while ((latest = System.currentTimeMillis()) - ms < frameMillis) Thread.yield();
             int frames = (int) (latest - ms) / frameMillis;
-            processLoop(frames);
+            process(frames);
             ms += frames * frameMillis;//update number of frames
+            if(Keys.SYS_PAUSE_P.getKey()) togglePaused();
+            if(Keys.SYS_ADMIN_ENTER.getKey()) setExit();
         }
     }
 
     public void setExit() {
-        running = false;
+        if(!paused) {
+            paused = true;
+        } else {
+            running = false;
+        }
+    }
+
+    public void togglePaused() {
+        if(!paused) {
+            paused = true;
+        } else {
+            paused = false;
+        }
     }
 
     @Override
