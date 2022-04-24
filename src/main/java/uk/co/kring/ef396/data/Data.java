@@ -10,6 +10,7 @@ import uk.co.kring.ef396.data.streams.TypedStream;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -64,7 +65,10 @@ public class Data {
     }
 
     public static void exitCode(Error code, Exception e) {
-        System.err.println(e.getMessage());
+        while(e != null) {
+            System.err.println(e.getMessage());
+            if(e.getCause() != null && e.getCause() instanceof Exception f) e = f;
+        }
         exitCode(code);
     }
 
@@ -109,14 +113,14 @@ public class Data {
     //============================== AUDIO ==============================
 
     public static Clip playAudioClip(AudioInputStream audio) throws IOException {
-        Clip clip;
+        Clip clip = null;
         try {
             clip = AudioSystem.getClip();
             // Open audio clip and load samples from the audio input stream.
             clip.open(audio);
             clip.start();
         } catch(Exception e) {
-            throw new IOException(e);
+            io(new IllegalArgumentException(new UnsupportedAudioFileException("Problem audio")));
         }
         return clip;
     }
@@ -137,7 +141,8 @@ public class Data {
         fd.setVisible(true);
         File file = new File(fd.getFile());
         if(fileAndNotDirectory(file)) return FilePipe.readStream(FilePipe.getInputStream(file));
-        throw new IOException("Bad filename");
+        io(new IllegalArgumentException("Bad filename"));
+        return null;
     }
 
     public static boolean replaceDialog() {
@@ -166,7 +171,8 @@ public class Data {
         if(fileAndNotDirectory(f)) {
             if(replaceDialog()) return FilePipe.writeStream(FilePipe.getOutputStream(f));
         }
-        throw new IOException("Can't save file");
+        io(new IllegalArgumentException("Can't save file"));
+        return null;
     }
 
     //=========================== ERROR CODES ==========================
@@ -182,7 +188,8 @@ public class Data {
         BAD_VERSION("Version error"),
         GIT("Git clone"),
         NOT_MULTI("Tar archiving is not applicable"),
-        COMPONENT("Component not available");
+        COMPONENT("Component not available"),
+        IO("IO stream exception");
 
         private final String text;
 
@@ -306,7 +313,7 @@ public class Data {
                 System.out.print("> ");// end
                 if(c.repeats) System.out.print(REPEATS);
                 System.out.println();//new line
-                if(c.description == null) throw new IOException("Needs documentation");
+                if(c.description == null) io(new IllegalArgumentException("Needs documentation"));
                 System.out.println("\t" + c.description);
             }
         }
@@ -322,6 +329,10 @@ public class Data {
 
     public static boolean fileAndNotDirectory(File file) {
         return file.exists() && !file.isDirectory();
+    }
+
+    public static void io(Exception e) throws IOException {
+        throw new IOException(e);
     }
 
     //============================== ENTRY OF PROGRAM =============================
@@ -348,6 +359,8 @@ public class Data {
                         exitCode(Error.NONE);
                     } catch(ClassCastException cast) {
                         exitCode(Error.COMPONENT, cast);
+                    } catch(IOException io) {
+                        exitCode(Error.IO, io);
                     } catch(Exception e) {
                         exitCode(Error.DEFAULT, e);//default err
                     }

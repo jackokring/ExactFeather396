@@ -36,24 +36,23 @@ public enum Keys {
     }
 
     public void pressKey() {
-        last = pressed;
         pressed = true;
     }
 
     public void releaseKey() {
-        last = pressed;
         pressed = false;
     }
 
     public boolean getKey() {
+        last = pressed;
         return pressed;
     }
 
-    public boolean downKey() {
-        return pressed && !last;
+    public boolean onKey() {
+        return !last && getKey();
     }
 
-    public boolean upKey() {
-        return !pressed && last;
+    public boolean offKey() {
+        return last && !getKey();
     }
 }
