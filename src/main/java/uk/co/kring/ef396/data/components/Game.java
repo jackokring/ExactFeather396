@@ -1,5 +1,6 @@
 package uk.co.kring.ef396.data.components;
 
+import uk.co.kring.ef396.data.mini.GameState;
 import uk.co.kring.ef396.data.mini.ImageGeneric;
 import uk.co.kring.ef396.data.mini.Keys;
 
@@ -15,11 +16,16 @@ public class Game extends Application implements KeyListener {
 
     protected boolean running = true;
     protected boolean paused = true;
+    protected GameState state = GameState.INIT;
 
     public Game() {
         super(null);
         addKeyListener(this);
         Keys.setComboCanBeUsed(false);
+    }
+
+    public void setGameState(GameState state) {
+        this.state = state;
     }
 
     @Override

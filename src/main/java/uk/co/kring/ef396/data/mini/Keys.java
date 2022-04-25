@@ -95,8 +95,10 @@ public enum Keys {
     }
 
     public static Combo getCombo() {
+        Combo c = combo;
+        //reset after obtain
         if(combo.exit) resetComboAsUsed();
-        return combo;
+        return c;
     }
 
     public boolean getKey() {
