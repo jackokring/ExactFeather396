@@ -9,7 +9,8 @@ import java.io.OutputStream;
 public class Shell {
 
     //shell abstractions for command executive
-    public static int exec(String command, InputStream in, OutputStream out, boolean closeOut) throws IOException {
-        return Data.execute(command, in, out, closeOut);
+    public static int exec(String command, InputStream in, OutputStream out,
+                           boolean closeIn, boolean closeOut) throws IOException {
+        return Data.execute(command, in, out, closeIn, closeOut);
     }
 }

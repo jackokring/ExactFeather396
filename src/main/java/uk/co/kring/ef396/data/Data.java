@@ -134,6 +134,7 @@ public class Data {
         Clip c = playAudioClip(audio);
         a.whileOpenHalt();
         c.stop();
+        audio.close();
     }
 
     //============================== DIALOGS ===============================

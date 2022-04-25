@@ -212,7 +212,9 @@ public enum FilePipe {
     public static Object readComponent(TypedStream.Input in) throws IOException {
         var x = ins.get(in.getFilePipe());
         if(x == null) Data.io(new DataFormatException("No component reader"));
-        return x.apply(in);
+        Object temp = x.apply(in);
+        in.close();//close
+        return temp;
     }
 
     public static TypedStream.Input readStream(TypedStream.Input in) throws IOException {
@@ -229,6 +231,7 @@ public enum FilePipe {
         var x = outs.get(out.getFilePipe());
         if(x == null) Data.io(new DataFormatException("No component writer"));
         x.accept(out, thing);
+        out.close();//write output
     }
 
     public static TypedStream.Output writeStream(TypedStream.Output out) throws IOException {
@@ -350,7 +353,6 @@ public enum FilePipe {
                 out.setRGB(x, y, in.readInt());
             }
         }
-        in.close();
         return out;//return raster image
     }
 
