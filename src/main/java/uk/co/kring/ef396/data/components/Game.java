@@ -19,6 +19,7 @@ public class Game extends Application implements KeyListener {
     public Game() {
         super(null);
         addKeyListener(this);
+        Keys.setComboCanBeUsed(false);
     }
 
     @Override
@@ -102,6 +103,7 @@ public class Game extends Application implements KeyListener {
     public void setExit() {
         if(!paused) {
             paused = true;
+            Keys.setComboCanBeUsed(false);
         } else {
             running = false;
         }
@@ -110,8 +112,10 @@ public class Game extends Application implements KeyListener {
     public void togglePaused() {
         if(!paused) {
             paused = true;
+            Keys.setComboCanBeUsed(false);
         } else {
             paused = false;
+            Keys.setComboCanBeUsed(true);
         }
     }
 

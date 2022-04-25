@@ -23,13 +23,34 @@ public enum Keys {
 
     //Then use Qjoypad.
 
+    public enum Combo {
+        NONE(null, null, true, true);
+
+        private final Combo old;
+        private final Keys key;
+        private final boolean onOff;
+        private final boolean axisOK;
+
+        Combo(Combo old, Keys key, boolean onOff, boolean axisOK) {
+            this.old = old;
+            this.key = key;
+            this.onOff = onOff;
+            this.axisOK = axisOK;
+        }
+    }
+
     private final int key;
     private boolean pressed = false;
     private boolean last = false;
+    private int repeats;
+
     private static int vx, vy;
     public static final int velMax = 1024;
     public static final int invAccel = 64;//divide vel from top by
     public static final int invDecel = 64;//divide by exponential
+
+    private static Combo combo = Combo.NONE;
+    private static boolean comboUsed = false;
 
     Keys(int event) {
         this.key = event;
@@ -41,15 +62,47 @@ public enum Keys {
 
     public void pressKey() {
         pressed = true;
+        repeats = (int)System.currentTimeMillis();
+        if(comboUsed) for(Combo c: Combo.values()) {
+            if(c.old != combo) continue;
+            if(c.key == this && c.onOff) {
+                combo = c;
+                break;
+            }
+        }
     }
 
     public void releaseKey() {
         pressed = false;
+        if(comboUsed) for(Combo c: Combo.values()) {
+            if(c.old != combo) continue;
+            if(c.key == this && !c.onOff) {
+                combo = c;
+                break;
+            }
+        }
+    }
+
+    public static void setComboCanBeUsed(boolean comboUsed) {
+        Keys.comboUsed = comboUsed;
+        if(!comboUsed) resetComboAsUsed();
+    }
+
+    public static void resetComboAsUsed() {
+        combo = Combo.NONE;
+    }
+
+    public static Combo getCombo() {
+        return combo;
     }
 
     public boolean getKey() {
         last = pressed;
         return pressed;
+    }
+
+    public boolean getKeyRepeats() {
+        return getKey() && ((System.currentTimeMillis() - repeats & 256) == 0);
     }
 
     public boolean onKey() {
@@ -62,8 +115,10 @@ public enum Keys {
 
     public static int axisX() {
         int x = 0;
-        if(Keys.LEFT.getKey()) x--;
-        if(Keys.RIGHT.getKey()) x++;
+        if(combo.axisOK) {
+            if (Keys.LEFT.getKey()) x--;
+            if (Keys.RIGHT.getKey()) x++;
+        }
         if(x == 0) {
             vx /= invDecel;
         } else {
@@ -77,8 +132,10 @@ public enum Keys {
 
     public static int axisY() {
         int y = 0;
-        if(Keys.UP.getKey()) y--;
-        if(Keys.DOWN.getKey()) y++;
+        if(combo.axisOK) {
+            if (Keys.UP.getKey()) y--;
+            if (Keys.DOWN.getKey()) y++;
+        }
         if(y == 0) {
             vy /= invDecel;
         } else {
