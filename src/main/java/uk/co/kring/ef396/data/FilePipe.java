@@ -1,6 +1,9 @@
 package uk.co.kring.ef396.data;
 
 import net.sourceforge.jaad.spi.javasound.AACAudioFileReader;
+import org.jetbrains.annotations.NotNull;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import uk.co.kring.ef396.data.backend.Pipe;
 import uk.co.kring.ef396.data.streams.LocalDataStream;
 import uk.co.kring.ef396.data.streams.TypedStream;
@@ -10,6 +13,7 @@ import javax.sound.sampled.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.function.Consumer;
 import java.util.zip.DataFormatException;
@@ -38,6 +42,7 @@ public enum FilePipe {
             FilePipe::registerAAudioInputStreamComponent),
     AAC("aac", Pipe.MANGLER, false,
             FilePipe::registerAAudioInputStreamComponent),
+    JSON("json", Pipe.NULL, false, FilePipe::registerJsonComponent),
     NULL("", Pipe.NULL, false, null);
 
     private final String extension;
@@ -267,6 +272,22 @@ public enum FilePipe {
         ImageIO.write((BufferedImage)image, out.getFilePipe().extension, out);
     }
 
+    //========================= JSON COMPONENT =========================
+
+    private static Object getJson(TypedStream.Input in) throws IOException {
+        try {
+            return new JSONParser().parse(new InputStreamReader(in));
+        } catch(Exception e) {
+            Data.io(e);
+            return null;
+        }
+    }
+
+    private static void putJson(TypedStream.Output out, Object json) throws IOException {
+        JSONObject jason = (JSONObject) json;
+        out.write(jason.toJSONString().getBytes(StandardCharsets.UTF_8));
+    }
+
     //======================= AUDIO COMPONENT ==========================
 
     public enum Format {
@@ -425,5 +446,10 @@ public enum FilePipe {
         registerInputComponent(fp, FilePipe::getAAudio);
         registerInputMangler(fp, FilePipe::getAudio);//CD standard
         registerOutputComponent(fp, FilePipe::putAAudio);
+    }
+
+    private static void registerJsonComponent(FilePipe fp) {
+        registerInputComponent(fp, FilePipe::getJson);
+        registerOutputComponent(fp, FilePipe::putJson);
     }
 }
