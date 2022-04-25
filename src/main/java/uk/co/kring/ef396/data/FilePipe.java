@@ -109,6 +109,7 @@ public enum FilePipe {
     public static class Task extends Thread {
 
         IOException error = null;
+        boolean running = true;
 
         public synchronized void setError(IOException e) {
             error = e;
@@ -119,6 +120,14 @@ public enum FilePipe {
 
         public Task() {
             super();
+        }
+
+        public void stopMaybe() {
+            running = false;
+        }
+
+        public boolean shouldStop() {
+            return !running;
         }
 
         public void rejoin() throws IOException {//remove unnecessary interrupted condition

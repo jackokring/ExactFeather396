@@ -97,13 +97,18 @@ public class Data {
         OutputStream os = p.getOutputStream();
         if(in == null) in = System.in;
         if(out == null) out = System.out;
-        FilePipe.cloneStream(in, os, true);
+        FilePipe.Task j1 = FilePipe.cloneStream(in, os, true);
         FilePipe.Task j2 = FilePipe.cloneStream(is, out, closeOut);
         FilePipe.Task j3 = FilePipe.cloneStream(es, System.err, false);//leave errors open
         //j1.rejoin();//all input absorbed? Not an error
         j2.rejoin();//no output from process left so done producing
-        if(closeIn) in.close();
+        if(closeIn) {
+            in.close();//might not have absorbed all input
+            //clone consumer eventually stops?
+            os.close();//should even kill a blocking write with an exception
+        }
         j3.rejoin();//all errors placed for view
+        j1.rejoin();//might even throw
         return p.exitValue();
     }
 
