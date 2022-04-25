@@ -24,18 +24,20 @@ public enum Keys {
     //Then use Qjoypad.
 
     public enum Combo {
-        NONE(null, null, true, true);
+        NONE(null, null, true, true, true);
 
         private final Combo old;
         private final Keys key;
         private final boolean onOff;
         private final boolean axisOK;
+        private final boolean exit;
 
-        Combo(Combo old, Keys key, boolean onOff, boolean axisOK) {
+        Combo(Combo old, Keys key, boolean onOff, boolean axisOK, boolean exit) {
             this.old = old;
             this.key = key;
             this.onOff = onOff;
             this.axisOK = axisOK;
+            this.exit = exit;
         }
     }
 
@@ -93,6 +95,7 @@ public enum Keys {
     }
 
     public static Combo getCombo() {
+        if(combo.exit) resetComboAsUsed();
         return combo;
     }
 

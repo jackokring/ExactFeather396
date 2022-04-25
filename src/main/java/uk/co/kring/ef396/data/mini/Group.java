@@ -13,6 +13,10 @@ public enum Group {
     BAD_FIRE(null),
     FX(null);
 
+    public enum Collide {
+
+    }
+
     private final BufferedImage image;
 
     Group(String image) {
