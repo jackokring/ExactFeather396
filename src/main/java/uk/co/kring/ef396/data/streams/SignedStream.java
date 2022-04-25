@@ -83,48 +83,47 @@ public class SignedStream {
 
     public static class Input extends FilterInputStream {
 
-        private final PublicKey puk, me2;
-        private final PrivateKey me;
-        private final MessageDigest md;
+        private PublicKey puk;
+        private MessageDigest md;
+        private Signature s;
 
         @Override
         public int read() throws IOException {
             int b = in.read();
             md.update((byte)b);
+            try {
+                s.update((byte) b);
+            } catch(Exception e) {
+                Data.io(e);
+            }
             return b;
         }
 
         public Input(InputStream in) throws IOException {
             super(in);
             try {
+                s = Signature.getInstance("DSA");
                 md = MessageDigest.getInstance("SHA-256");
                 puk = pubKey(readLenBytes(this.in));
-                me = priKey();
-                me2 = pubKey(pub);
+                s.initVerify(puk);
             } catch(Exception e) {
-                throw new IOException("Bad public key in stream");
+                Data.io(e);
             }
         }
 
         @Override
         public final void close() throws IOException {
+            byte[] sig = readLenBytes(in);
+            md.update(sig);
             byte[] hash = readLenBytes(in);
-            byte[] sign = readLenBytes(in);
             byte[] dig = md.digest();
+            if(!Arrays.equals(hash, dig)) throw new IOException("Invalid hash");
             try {
-                if (verify(sign, puk)) {
-                    boolean match = true;
-                    if(!Arrays.equals(hash, dig)) throw new IOException("Invalid hash");
-                    if(puk.equals(me2)) {
-                       //extra checks for self
-                       byte[] b = sign(dig, me);
-                       if(!Arrays.equals(b, sign)) throw new IOException("Signature cloned integrity problem");
-                       //ok it's me almost for sure
-                    }
-                }
+                if(!s.verify(sig)) throw new IOException("Signature integrity problem");
             } catch(Exception e) {
-                throw new IOException("Signature verification problem");
+                Data.io(e);
             }
+            in.close();
         }
     }
 
@@ -132,21 +131,29 @@ public class SignedStream {
 
         private PrivateKey pk;
         private MessageDigest md;
+        private Signature s;
 
         @Override
         public void write(int b) throws IOException {
             md.update((byte)b);
+            try {
+                s.update((byte) b);
+            } catch(Exception e) {
+                Data.io(e);
+            }
         }
 
         @Override
         public void close() throws IOException {//likely is the super definition
-            byte[] b = md.digest();
+            byte[] sig = null;
             try {
-                writeLenBytes(out, b);
-                writeLenBytes(out, sign(b, pk));
-            } catch (Exception e) {
-                throw new IOException("Signing exception");
+                sig = s.sign();
+            } catch(Exception e) {
+                Data.io(e);
             }
+            writeLenBytes(out, sig);
+            md.update(sig);
+            writeLenBytes(out, md.digest());
             out.close();
         }
 
@@ -167,7 +174,15 @@ public class SignedStream {
                 }
             }
             byte[] pubBytes = pubKey(puk);
+            md.digest(pubBytes);
             writeLenBytes(this.out, pubBytes);
+            try {
+                s = Signature.getInstance("DSA");
+                s.initSign(pk);
+                s.update(pubBytes);
+            } catch(Exception e) {
+                Data.io(e);
+            }
             //now ready for streaming
         }
     }
@@ -181,7 +196,12 @@ public class SignedStream {
     public static byte[] readLenBytes(InputStream in) throws IOException {
         LocalDataStream.Input dis = new LocalDataStream.Input(in);
         int len = dis.readInt();
-        byte[] b = new byte[len];
+        byte[] b = null;
+        try {
+             b = new byte[len];
+        } catch(Exception e) {
+            Data.io(e);
+        }
         if(dis.read(b) != len) throw new IOException("Bad length EOF");
         return b;
     }
@@ -192,20 +212,5 @@ public class SignedStream {
         KeyPairGenerator keyGenerator = KeyPairGenerator.getInstance("DSA");
         keyGenerator.initialize(1024);
         return keyGenerator.genKeyPair();
-    }
-
-    public static byte[] sign(byte[] input, PrivateKey key) throws NoSuchAlgorithmException,
-            InvalidKeyException, SignatureException {
-        Signature s = Signature.getInstance("DSA");
-        s.initSign(key);
-        s.update(input);
-        return s.sign();
-    }
-
-    public static boolean verify(byte[] input, PublicKey key) throws NoSuchAlgorithmException,
-            InvalidKeyException, SignatureException {
-        Signature s = Signature.getInstance("DSA");
-        s.initVerify(key);
-        return s.verify(input);
     }
 }
