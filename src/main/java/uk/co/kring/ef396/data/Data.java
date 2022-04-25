@@ -10,7 +10,6 @@ import uk.co.kring.ef396.data.streams.TypedStream;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
-import javax.sound.sampled.UnsupportedAudioFileException;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -23,6 +22,8 @@ public class Data {
     public static String jar;
     public static String name;
     public static String version;
+
+    public static boolean verbose = false;
 
     @FunctionalInterface
     public interface Exec {
@@ -38,6 +39,7 @@ public class Data {
     public static final String DIRS = "DIRECTORY NAME";
     public static final String VERSION_LIKE = "VERSION CODE";
     public static final String GIT_URL = "GIT REPOSITORY";
+    public static final String OPTION = "OPTION";
     public static final String REPEATS = "...";
 
     //======================== EXECUTE LITERALS ========================
@@ -67,6 +69,7 @@ public class Data {
     public static void exitCode(Error code, Exception e) {
         while(e != null) {
             System.err.println(e.getMessage());
+            if(verbose) e.printStackTrace();
             if(e.getCause() != null && e.getCause() instanceof Exception f) e = f;
         }
         exitCode(code);
@@ -76,17 +79,17 @@ public class Data {
 
     public static int tar(String[] dirs, OutputStream arch) throws IOException {
         return execute(TAR + Arrays.stream(dirs).reduce((s, t) -> s + " " + t),
-                System.in, arch,true);
+                System.in, arch,true, true);
     }
 
     public static int unTar(InputStream arch) throws IOException {
-        return execute(UN_TAR, arch, System.out, true);
+        return execute(UN_TAR, arch, System.out, true, true);
     }
 
     //========================== PROCESS EXECUTE ================================
 
     public static int execute(String command, InputStream in, OutputStream out,
-                              boolean closeOut) throws IOException {
+                              boolean closeIn, boolean closeOut) throws IOException {
         ProcessBuilder builder = new ProcessBuilder(command);
         Process p = builder. /* directory(new File("~")). */ start();
         InputStream is = p.getInputStream();
@@ -94,12 +97,13 @@ public class Data {
         OutputStream os = p.getOutputStream();
         if(in == null) in = System.in;
         if(out == null) out = System.out;
-        FilePipe.Task j1 = FilePipe.cloneStream(in, os, true);
+        FilePipe.cloneStream(in, os, true);
         FilePipe.Task j2 = FilePipe.cloneStream(is, out, closeOut);
         FilePipe.Task j3 = FilePipe.cloneStream(es, System.err, false);//leave errors open
-        j1.rejoin();
-        j2.rejoin();
-        j3.rejoin();
+        //j1.rejoin();//all input absorbed? Not an error
+        j2.rejoin();//no output from process left so done producing
+        if(closeIn) in.close();
+        j3.rejoin();//all errors placed for view
         return p.exitValue();
     }
 
@@ -120,7 +124,7 @@ public class Data {
             clip.open(audio);
             clip.start();
         } catch(Exception e) {
-            io(new IllegalArgumentException("Problem audio"));
+            io(e);
         }
         return clip;
     }
@@ -201,15 +205,18 @@ public class Data {
     //========================== COMMAND SPECIFICATIONS ============================
 
     public enum Command {
-        //'bdfjknqrwyz' <== left??
+        //'bfjknqrwyz' <== left??
         //main functions
+        DEBUG('d', "debug errors", (args) -> {
+            main(shift(args));
+        }, new String[] { OPTION }, true),
         GAME('m', "play mini game", (args) -> {
             Game g = new Game();
             g.whileOpenHalt();
         }, new String[]{ }, false),
         REPO_GIT('g', "clone git signature repository", (args) -> {
             exitCode(execute(GIT + args[0] + " "    //Oops, a space
-                    + SignedStream.git, null, null, false), Error.GIT);
+                    + SignedStream.git, null, null, false, false), Error.GIT);
         }, new String[]{ GIT_URL }, false),
         AUDIO('p', "play audio", (args) -> {
             audioCanvas((AudioInputStream)
@@ -274,7 +281,7 @@ public class Data {
         USE('u', "use command process on file to file", (args) -> {
             exitCode(execute(args[2], FilePipe.readStream(FilePipe.getInputStream(new File(args[0]))),
                     FilePipe.writeStream(FilePipe.getOutputStream(new File(args[1]))),
-                    true), Error.USED);
+                    true, true), Error.USED);
         }, new String[]{ ARCH, FILE, COMMAND }, false),
         TRANSCODE('t', "transcode from file to file", (args) -> {
             FilePipe.cloneStream(FilePipe.readStream(FilePipe.getInputStream(new File(args[0]))),
