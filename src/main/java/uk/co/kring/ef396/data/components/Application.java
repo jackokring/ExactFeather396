@@ -50,11 +50,13 @@ public class Application extends Frame {
     public void drawAll(boolean pause) {
         Graphics g = bs.getDrawGraphics();
         do {
-            if(g != null) {
+            try {
                 indirectDrawAll(g);
                 if(pause) drawPause(g);
                 g.dispose();
                 bs.show();
+            } catch(Exception e) {
+                //maybe null pointer but faster
             }
         } while (bs.contentsLost());
     }

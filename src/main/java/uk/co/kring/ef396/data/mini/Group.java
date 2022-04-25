@@ -14,7 +14,23 @@ public enum Group {
     FX(null);
 
     public enum Collide {
+        DEAD(PLAYER, new Group[] { BADDIES, BAD_FIRE, GOOD_FIRE });
 
+        private final Group what;
+        private final Group[] with;
+
+        Collide(Group what, Group[] with) {
+            this.what = what;
+            this.with = with;
+        }
+
+        public Group what() {
+            return what;
+        }
+
+        public Group[] with() {
+            return with;
+        }
     }
 
     private final BufferedImage image;

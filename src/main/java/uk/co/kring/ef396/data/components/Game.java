@@ -1,6 +1,7 @@
 package uk.co.kring.ef396.data.components;
 
 import uk.co.kring.ef396.data.mini.GameState;
+import uk.co.kring.ef396.data.mini.Group;
 import uk.co.kring.ef396.data.mini.ImageGeneric;
 import uk.co.kring.ef396.data.mini.Keys;
 
@@ -8,6 +9,7 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
+import java.util.LinkedList;
 
 public class Game extends Application implements KeyListener {
 
@@ -17,9 +19,15 @@ public class Game extends Application implements KeyListener {
     protected boolean running = true;
     protected boolean paused = true;
     protected GameState state = GameState.INIT;
+    private Class<LinkedList<Sprite>[]> spec;
+    protected final LinkedList<Sprite>[] displayList
+            = (LinkedList<Sprite>[]) new Object[Group.values().length];
 
     public Game() {
         super(null);
+        for(int i = 0; i < displayList.length; i++) {
+            displayList[i] = new LinkedList<>();
+        }
         addKeyListener(this);
         Keys.setComboCanBeUsed(false);
     }
@@ -31,6 +39,16 @@ public class Game extends Application implements KeyListener {
     @Override
     public void indirectDrawAll(Graphics g) {
         //basic buffer draw
+        for(int i = 0; i < Group.values().length; i++) {
+            for(Sprite s: displayList[i]) {
+                drawOne(g, s);
+            }
+        }
+    }
+
+    @Override
+    public void paint(Graphics g) {
+        //nothing
     }
 
     public void moveAll(int frames) {
@@ -46,14 +64,17 @@ public class Game extends Application implements KeyListener {
         //if paused intercept cursor etc.
     }
 
-    public void drawOne(Graphics g, ImageGeneric ig, int x, int y, int idx) {
+    public void drawOne(Graphics g, Sprite sprite) {
+        ImageGeneric ig = sprite.getImageGeneric();
         int spriteSize = ig.getScale();
         int virtualX = getWidth() / scaling;
+        int x = sprite.getX();
         x *= virtualX;
         int virtualY = getHeight() / scaling;
+        int y = sprite.getY();
         y *= virtualY;
         BufferedImage image = ig.getKind().getImage();
-        int spriteIndex = (ig.getFrame() + idx) * ig.getSize();
+        int spriteIndex = sprite.getIdx() * ig.getSize();
         int spriteDown = (spriteIndex / image.getWidth());
         spriteIndex -= spriteDown * image.getWidth();
         spriteDown *= ig.getSize();
@@ -64,24 +85,39 @@ public class Game extends Application implements KeyListener {
                     null);
     }
 
-    public boolean collides(ImageGeneric ig1, int x1, int y1,
-                                 ImageGeneric ig2, int x2, int y2, int bound) {//bound flex
-        int spriteSize1 = ig1.getScale();
-        int spriteSize2 = ig2.getScale();
-        int xMin = Math.max(x1, x2) + bound;
-        int xMax1 = x1 + spriteSize1;
-        int xMax2 = x2 + spriteSize2;
+    public boolean collides(Sprite sprite1, Sprite sprite2) {//bound flex
+        int spriteSize1 = sprite1.getImageGeneric().getScale();
+        int spriteSize2 = sprite2.getImageGeneric().getScale();
+        int bound = sprite1.getBound() + sprite2.getBound();
+        int xMin = Math.max(sprite1.getX(), sprite2.getX()) + bound;
+        int xMax1 = sprite1.getX() + spriteSize1;
+        int xMax2 = sprite2.getX() + spriteSize2;
         int xMax = Math.min(xMax1, xMax2) - bound;
         if (xMax > xMin) {
-            float yMin = Math.max(y1, y2) + bound;
-            float yMax1 = y1 + spriteSize1;
-            float yMax2 = y2 + spriteSize2;
+            float yMin = Math.max(sprite1.getY(), sprite2.getY()) + bound;
+            float yMax1 = sprite1.getY() + spriteSize1;
+            float yMax2 = sprite2.getY() + spriteSize2;
             float yMax = Math.min(yMax1, yMax2) - bound;
             if (yMax > yMin) {
                 return true;
             }
         }
         return false;
+    }
+
+    public void collide() {
+        for(Group.Collide col: Group.Collide.values()) {
+            for(Sprite s: displayList[col.what().ordinal()]) {
+                for(Group group: col.with()) {
+                    for (Sprite p : displayList[group.ordinal()]) {
+                        if(collides(s, p) && s.collided(p, col)) {
+                            //requested removal
+                            //TODO
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public void process(int frames) {
@@ -91,6 +127,7 @@ public class Game extends Application implements KeyListener {
             doMenuKeys();
         }
         drawAll(paused);
+        collide();
     }
 
     public void gameLoop() {
