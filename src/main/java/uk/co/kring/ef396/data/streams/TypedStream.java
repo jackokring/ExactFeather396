@@ -11,6 +11,15 @@ public class TypedStream {
 
         private final FilePipe fp;
         private final FilePipe.Task task;
+        private boolean streamed = false;
+
+        public void setStreamed() {
+            streamed = true;
+        }
+
+        public boolean isStreamed() {
+            return streamed;
+        }
 
         public Input(InputStream in, FilePipe fp, FilePipe.Task task) {
             super(in);
@@ -39,6 +48,15 @@ public class TypedStream {
 
         private final FilePipe fp;
         private final FilePipe.Task task;
+        private boolean streamed = false;
+
+        public void setStreamed() {
+            streamed = true;
+        }
+
+        public boolean isStreamed() {
+            return streamed;
+        }
 
         public Output(OutputStream out, FilePipe fp, FilePipe.Task task) {
             super(out);

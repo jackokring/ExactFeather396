@@ -31,6 +31,6 @@ public enum ImageGeneric {
     }
 
     public int getBound(int idx) {
-        return boundMap.applyAsInt(idx);
+        return boundMap.applyAsInt(idx) * p / q;
     }
 }

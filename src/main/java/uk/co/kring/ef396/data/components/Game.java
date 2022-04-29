@@ -36,6 +36,14 @@ public class Game extends Application implements KeyListener {
         this.state = state;
     }
 
+    public GameState getGameState() {
+        return state;
+    }
+
+    private GameState processGameState(GameState gameState) {
+        return gameState;
+    }
+
     @Override
     public void indirectDrawAll(Graphics g) {
         //basic buffer draw
@@ -128,6 +136,7 @@ public class Game extends Application implements KeyListener {
         }
         drawAll(paused);
         collide();
+        setGameState(processGameState(getGameState()));//state machine
     }
 
     public void gameLoop() {

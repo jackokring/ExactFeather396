@@ -224,9 +224,12 @@ public enum FilePipe {
 
     public static Object readComponent(TypedStream.Input in) throws IOException {
         var x = ins.get(in.getFilePipe());
+        if(in.isStreamed()) Data.io(new UnsupportedOperationException("Can not stream twice"));
         if(x == null) Data.io(new DataFormatException("No component reader"));
         Object temp = x.apply(in);
-        in.close();//close
+        if(temp instanceof InputStream) {
+            in.setStreamed();
+        }
         return temp;
     }
 
@@ -242,9 +245,12 @@ public enum FilePipe {
 
     public static void writeComponent(TypedStream.Output out, Object thing) throws IOException {
         var x = outs.get(out.getFilePipe());
+        if(out.isStreamed()) Data.io(new UnsupportedOperationException("Can not stream twice"));
         if(x == null) Data.io(new DataFormatException("No component writer"));
         x.accept(out, thing);
-        out.close();//write output
+        if(thing instanceof InputStream) {
+            out.setStreamed();
+        }
     }
 
     public static TypedStream.Output writeStream(TypedStream.Output out) throws IOException {
@@ -275,7 +281,12 @@ public enum FilePipe {
 
     private static Object getJson(TypedStream.Input in) throws IOException {
         try {
-            return new JSONParser().parse(new InputStreamReader(in));
+            return new JSONParser().parse(new InputStreamReader(in) {
+                @Override
+                public void close() {
+                    //prevent back closure on local exit
+                }
+            });
         } catch(Exception e) {
             Data.io(e);
             return null;
@@ -345,6 +356,9 @@ public enum FilePipe {
     private static void putAAudio(TypedStream.Output out, Object audio) throws IOException {
         Data.io(new UnsupportedEncodingException("No AAC format"));
     }
+
+    //=== MANGLERS, MANGLERS, MANGLERS =================================
+    //==================================================================
 
     //============================ RASTER FORMAT =======================
 
