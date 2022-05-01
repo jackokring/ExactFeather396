@@ -222,13 +222,18 @@ public enum FilePipe {
 
     //======================== COMPONENT HANDLERS ================================
 
-    public static Object readComponent(TypedStream.Input in) throws IOException {
+    public static Object readComponent(TypedStream.Input in, boolean closeIn) throws IOException {
         var x = ins.get(in.getFilePipe());
         if(in.isStreamed()) Data.io(new UnsupportedOperationException("Can not stream twice"));
         if(x == null) Data.io(new DataFormatException("No component reader"));
         Object temp = x.apply(in);
         if(temp instanceof InputStream) {
             in.setStreamed();
+        }
+        if(closeIn) {
+            if(in.isStreamed())
+                Data.io(new UnsupportedOperationException("Closing the stream now is illogical"));
+            in.close();
         }
         return temp;
     }
@@ -237,19 +242,25 @@ public enum FilePipe {
         if(in.getFilePipe().uses.isMangler()) {
             var x = inMan.get(in.getFilePipe());
             if(x == null) Data.io(new DataFormatException("No component read mangler"));
-            return x.apply(readComponent(in), in.getFilePipe());
+            return x.apply(readComponent(in, false), in.getFilePipe());
         } else {
             return in;//pass through
         }
     }
 
-    public static void writeComponent(TypedStream.Output out, Object thing) throws IOException {
+    public static void writeComponent(TypedStream.Output out, Object thing,
+                                      boolean closeOut) throws IOException {
         var x = outs.get(out.getFilePipe());
         if(out.isStreamed()) Data.io(new UnsupportedOperationException("Can not stream twice"));
         if(x == null) Data.io(new DataFormatException("No component writer"));
         x.accept(out, thing);
         if(thing instanceof InputStream) {
             out.setStreamed();
+        }
+        if(closeOut) {
+            if(out.isStreamed())
+                Data.io(new UnsupportedOperationException("Closing the stream now is illogical"));
+            out.close();
         }
     }
 
@@ -258,10 +269,20 @@ public enum FilePipe {
             var x = outMan.get(out.getFilePipe());
             if(x == null) Data.io(new DataFormatException("No component write mangler"));
             PipedOutputStream pos = new PipedOutputStream();
-            Object obj = x.apply(new TypedStream.Input(
-                    new PipedInputStream(pos), out.getFilePipe(), null));
-            writeComponent(out, obj);
-            return new TypedStream.Output(pos, out.getFilePipe(), out.getTask());
+            Task t = new Task() {
+                @Override
+                public void run() {
+                    try {
+                        Object obj = x.apply(new TypedStream.Input(
+                                new PipedInputStream(pos), out.getFilePipe(), null));
+                        writeComponent(out, obj, false);
+                    } catch(IOException e) {
+                        setError(e);
+                    }
+                }
+            };
+            t.start();
+            return new TypedStream.Output(pos, out.getFilePipe(), t);
         } else {
             return out;
         }

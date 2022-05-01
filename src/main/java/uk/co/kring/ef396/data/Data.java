@@ -226,7 +226,8 @@ public class Data {
         }, new String[]{ GIT_URL }, false),
         AUDIO('p', "play audio", (args) -> {
             audioCanvas((AudioInputStream)
-                    FilePipe.readComponent(FilePipe.getInputStream(new File(args[0]))));//create if possible
+                    FilePipe.readComponent(FilePipe.getInputStream(new File(args[0])),
+                            false));//create if possible
         }, new String[] { ARCH }, false),
         OK_VERSION('o', "check version is at least required", (args) -> {
             String[] v = version.split(new Perl(".").get());
@@ -295,7 +296,8 @@ public class Data {
         }, new String[]{ ARCH, FILE }, false),
         IMAGE('i', "image load and view", (args) -> {
             imageCanvas((BufferedImage)
-                    FilePipe.readComponent(FilePipe.getInputStream(new File(args[0]))));//create if possible
+                    FilePipe.readComponent(FilePipe.getInputStream(new File(args[0])),
+                            true));//create if possible
         }, new String[]{ ARCH }, false);
 
         private final char option;

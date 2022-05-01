@@ -7,7 +7,7 @@ import java.io.*;
 
 public class BWTStream {
 
-    public static final int K1 = 1024;
+    public static final int K1 = 1024 * 4;//=> 16M block size
 
     public static class Input extends FilterInputStream {
 
