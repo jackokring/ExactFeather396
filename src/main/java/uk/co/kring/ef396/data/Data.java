@@ -102,13 +102,16 @@ public class Data {
         FilePipe.Task j3 = FilePipe.cloneStream(es, System.err, false);//leave errors open
         //j1.rejoin();//all input absorbed? Not an error
         j2.rejoin();//no output from process left so done producing
+        es.close();//cause j3 join ok.
+        j3.rejoin();//all errors placed for view
         if(closeIn) {
             in.close();//might not have absorbed all input
-            //clone consumer eventually stops?
-            os.close();//should even kill a blocking write with an exception
+            //but as completed output it won't need it most likely
+            //os never picks up the possible input left
+            os.close();//so make it not available
+            //if waiting on write then causes exception
         }
-        j3.rejoin();//all errors placed for view
-        j1.rejoin();//might even throw
+        j1.rejoin();//might even throw as way of exit
         return p.exitValue();
     }
 
