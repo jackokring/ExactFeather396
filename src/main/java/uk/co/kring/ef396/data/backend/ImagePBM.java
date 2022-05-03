@@ -93,7 +93,7 @@ public class ImagePBM {
                         }
                     }
                 }
-                int j = 0;
+                int j;
                 while ((j = in.read()) != -1) {
                     if(state == 3) {
                         r = j;
