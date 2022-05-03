@@ -3,12 +3,14 @@ package uk.co.kring.ef396.data;
 import net.sourceforge.jaad.spi.javasound.AACAudioFileReader;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import uk.co.kring.ef396.data.backend.ImagePBM;
 import uk.co.kring.ef396.data.backend.Pipe;
 import uk.co.kring.ef396.data.streams.LocalDataStream;
 import uk.co.kring.ef396.data.streams.TypedStream;
 
 import javax.imageio.ImageIO;
 import javax.sound.sampled.*;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.Socket;
@@ -42,6 +44,8 @@ public enum FilePipe {
     AAC("aac", Pipe.MANGLER, false,
             FilePipe::registerAAudioInputStreamComponent),
     JSON("json", Pipe.NULL, false, FilePipe::registerJsonComponent),
+    BMP("bmp", Pipe.MANGLER, false, ImagePBM::registerBMPComponent),
+    WFA("wfa", Pipe.MANGLER, false, ImagePBM::registerWFAComponent),
     NULL("", Pipe.NULL, false, null);
 
     private final String extension;
@@ -383,7 +387,7 @@ public enum FilePipe {
 
     //============================ RASTER FORMAT =======================
 
-    private static TypedStream.Input getImage(Object in, FilePipe fp) throws IOException {
+    public static TypedStream.Input getImage(Object in, FilePipe fp) throws IOException {
         BufferedImage bim = (BufferedImage) in;
         //raster basis
         PipedOutputStream pos = new PipedOutputStream();
@@ -409,7 +413,7 @@ public enum FilePipe {
         return new TypedStream.Input(new PipedInputStream(pos), fp, t);
     }
 
-    private static Object putImage(TypedStream.Input in) throws IOException {
+    public static Object putImage(TypedStream.Input in) throws IOException {
         BufferedImage out = new BufferedImage(in.readInt(), in.readInt(), BufferedImage.TYPE_4BYTE_ABGR);
         //raster basis
         for(int y = 0; y < out.getHeight(); y++) {
