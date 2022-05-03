@@ -217,6 +217,10 @@ public class ImagePBM {
 
     public static void putFIASCO(TypedStream.Output out, Object image) throws IOException {
         convertImage("pnmtofiasco -q 100", out, (BufferedImage) image);
+        //the 100% quality method is very time-consuming so
+        //producing a 50% quality and subtracting the recovery from the initial
+        //an applying this about 3 times is much faster and more compact when the
+        //set of wpa files is compressed by gzip.
     }
 
     public static void registerBMPComponent(FilePipe fp) {
