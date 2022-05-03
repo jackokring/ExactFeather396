@@ -52,7 +52,7 @@ public class ImagePBM {
     }
 
     public static BufferedImage convertImage(String command, InputStream in) throws IOException {
-        in = convert(command, in);
+        in = convert(command + "| pnmgamma -ungamma -cieramp | pnmgamma -srgbramp", in);
         //parse header
         if(in.read() != 'P') Data.io(new DataFormatException("Invalid ppm data magic"));
         Scanner sc = new Scanner(in);
@@ -199,7 +199,8 @@ public class ImagePBM {
             }
         };
         t.start();
-        Data.execute(command, new PipedInputStream(pos), out, true, false);
+        Data.execute("pnmgamma -ungamma -srgbramp | pnmgamma -cieramp | " + command,
+                new PipedInputStream(pos), out, true, false);
     }
 
     public static Object getBMP(TypedStream.Input in) throws IOException {
