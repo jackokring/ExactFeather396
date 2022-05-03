@@ -216,7 +216,7 @@ public class ImagePBM {
     }
 
     public static void putFIASCO(TypedStream.Output out, Object image) throws IOException {
-        convertImage("pnmtofiasco", out, (BufferedImage) image);
+        convertImage("pnmtofiasco -q 100", out, (BufferedImage) image);
     }
 
     public static void registerBMPComponent(FilePipe fp) {
