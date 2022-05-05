@@ -10,7 +10,6 @@ import uk.co.kring.ef396.data.streams.TypedStream;
 
 import javax.imageio.ImageIO;
 import javax.sound.sampled.*;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.Socket;
@@ -118,6 +117,7 @@ public enum FilePipe {
 
         IOException error = null;
         boolean running = true;
+        InputStream input = null;
 
         public synchronized void setError(IOException e) {
             error = e;
@@ -138,7 +138,7 @@ public enum FilePipe {
             return !running;
         }
 
-        public void rejoin() throws IOException {//remove unnecessary interrupted condition
+        public InputStream rejoin() throws IOException {//remove unnecessary interrupted condition
             try {
                 join();
             } catch (Exception e) {
@@ -149,6 +149,7 @@ public enum FilePipe {
                 }
             }
             if(error != null) throw error;
+            return input;//back carry unused part of a stream?
         }
     }
 
@@ -159,13 +160,20 @@ public enum FilePipe {
             public void run() {
                 int b = -1;
                 try {
-                    while ((b = in.read()) != -1) {
-                        out.write(b);
+                    input = new BufferedInputStream(in);
+                    input.mark(16);//just in case it can't be forwarded
+                    while ((b = input.read()) != -1) {
+                        //have a read value
+                        out.write(b);//might baulk an exception
                     }
                     if(closeOut) out.close();
-                    in.close();
                 } catch (IOException e) {
                     setError(e);
+                    try {
+                        input.reset();
+                    } catch(IOException f) {
+                        //not a relevant error
+                    }
                 }
             }
         };

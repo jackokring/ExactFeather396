@@ -46,6 +46,11 @@ public class Perl {
         return this;
     }
 
+    public Perl whitespace() {
+        this.literal += "\\s";
+        return this;
+    }
+
     // ================================= REPEATS AND OPTIONALS ==========================
 
     public Perl option() {

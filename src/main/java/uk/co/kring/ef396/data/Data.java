@@ -58,10 +58,15 @@ public class Data {
         System.exit(code.ordinal());
     }
 
-    public static void exitCode(int exit, Error code) {
-        if(exit != 0) {
+    public static void exitCode(InputStream exit, Error code) {
+        if(exit == null) {//error
             exitCode(code);
         } else {
+            try {
+                exit.close();
+            } catch(IOException e) {
+                exitCode(code, e);//print exception
+            }
             exitCode(Error.NONE);
         }
     }
@@ -77,19 +82,19 @@ public class Data {
 
     //====================== TAR / UN-TAR ===============================
 
-    public static int tar(String[] dirs, OutputStream arch) throws IOException {
+    public static InputStream tar(String[] dirs, OutputStream arch) throws IOException {
         return execute(TAR + Arrays.stream(dirs).reduce((s, t) -> s + " " + t),
-                System.in, arch,true, true);
+                System.in, arch,true);
     }
 
-    public static int unTar(InputStream arch) throws IOException {
-        return execute(UN_TAR, arch, System.out, true, true);
+    public static InputStream unTar(InputStream arch) throws IOException {
+        return execute(UN_TAR, arch, System.out, true);
     }
 
     //========================== PROCESS EXECUTE ================================
 
-    public static int execute(String command, InputStream in, OutputStream out,
-                              boolean closeIn, boolean closeOut) throws IOException {
+    public static InputStream execute(String command, InputStream in, OutputStream out,
+                              boolean closeOut) throws IOException {
         ProcessBuilder builder = new ProcessBuilder(command);
         Process p = builder. /* directory(new File("~")). */ start();
         InputStream is = p.getInputStream();
@@ -100,19 +105,19 @@ public class Data {
         FilePipe.Task j1 = FilePipe.cloneStream(in, os, true);
         FilePipe.Task j2 = FilePipe.cloneStream(is, out, closeOut);
         FilePipe.Task j3 = FilePipe.cloneStream(es, System.err, false);//leave errors open
-        //j1.rejoin();//all input absorbed? Not an error
-        j2.rejoin();//no output from process left so done producing
+        j2.rejoin().close();//no output from process left so done producing
+        //returned input stream should be empty
         es.close();//cause j3 join ok.
-        j3.rejoin();//all errors placed for view
-        if(closeIn) {
-            in.close();//might not have absorbed all input
-            //but as completed output it won't need it most likely
-            //os never picks up the possible input left
-            os.close();//so make it not available
-            //if waiting on write then causes exception
+        j3.rejoin().close();//all errors placed for view
+        //returned stream should be empty
+        os.close();//cause j1 join
+        InputStream ret = j1.rejoin();//might even throw as way of exit
+        boolean noError = p.exitValue() == 0;
+        if(noError) {
+            return ret;
         }
-        j1.rejoin();//might even throw as way of exit
-        return p.exitValue();
+        ret.close();//close stream to cascade use of data fault
+        return null;//null as error
     }
 
     //============================= IMAGE ================================
@@ -225,7 +230,7 @@ public class Data {
         }, new String[]{ }, false),
         REPO_GIT('g', "clone git signature repository", (args) -> {
             exitCode(execute(GIT + args[0] + " "    //Oops, a space
-                    + SignedStream.git, null, null, false, false), Error.GIT);
+                    + SignedStream.git, null, null, false), Error.GIT);
         }, new String[]{ GIT_URL }, false),
         AUDIO('p', "play audio", (args) -> {
             audioCanvas((AudioInputStream)
@@ -242,7 +247,7 @@ public class Data {
                     break;
                 }
             }
-            exitCode(ok ? 0 : 1, Error.BAD_VERSION);
+            exitCode(ok ? System.in : null, Error.BAD_VERSION);//any stream for error no!
         }, new String[] { VERSION_LIKE }, false),
         ARCHIVE('a', "archive", (args) -> {
             String[] dirs = shift(args);
@@ -262,19 +267,24 @@ public class Data {
             }
         }, new String[]{ ARCH }, false),
         LOAD('l', "common load dialog", (args) -> {
-            FilePipe.cloneStream(loadDialog(), System.out, false).rejoin();
+            FilePipe.cloneStream(loadDialog(), System.out, false)
+                    .rejoin().close();//close in
         }, new String[]{ }, false),
         SAVE('s', "common save dialog", (args) -> {
-            FilePipe.cloneStream(System.in, saveDialog(), true).rejoin();
+            FilePipe.cloneStream(System.in, saveDialog(), true)
+                    .rejoin().close();
+            //close input to back propagate inability to make sense of data by processing
         }, new String[]{ }, false),
         COMPRESS('c', "compress file", (args) -> {
             FilePipe.cloneStream(System.in,
                     FilePipe.writeStream(FilePipe.getOutputStream(new File(args[0]))),
-                    true).rejoin();
+                    true)
+                    .rejoin().close();//finished
         }, new String[]{ FILE }, false),
         EXPAND('e', "expand file", (args) -> {
             FilePipe.cloneStream(FilePipe.readStream(FilePipe.getInputStream(new File(args[0]))),
-                    System.out, false).rejoin();
+                    System.out, false)
+                    .rejoin().close();//finished
         }, new String[]{ ARCH }, false),
         VERSION('v', "version information", (args) -> {
             System.out.println(version);
@@ -291,11 +301,13 @@ public class Data {
         USE('u', "use command process on file to file", (args) -> {
             exitCode(execute(args[2], FilePipe.readStream(FilePipe.getInputStream(new File(args[0]))),
                     FilePipe.writeStream(FilePipe.getOutputStream(new File(args[1]))),
-                    true, true), Error.USED);
+                    true), Error.USED);
         }, new String[]{ ARCH, FILE, COMMAND }, false),
         TRANSCODE('t', "transcode from file to file", (args) -> {
             FilePipe.cloneStream(FilePipe.readStream(FilePipe.getInputStream(new File(args[0]))),
-                    FilePipe.writeStream(FilePipe.getOutputStream(new File(args[1]))), true);
+                    FilePipe.writeStream(FilePipe.getOutputStream(new File(args[1]))),
+                    true)
+                    .rejoin().close();//close input
         }, new String[]{ ARCH, FILE }, false),
         IMAGE('i', "image load and view", (args) -> {
             imageCanvas((BufferedImage)

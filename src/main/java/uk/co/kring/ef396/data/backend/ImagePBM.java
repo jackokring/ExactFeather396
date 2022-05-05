@@ -2,6 +2,7 @@ package uk.co.kring.ef396.data.backend;
 
 import uk.co.kring.ef396.data.Data;
 import uk.co.kring.ef396.data.FilePipe;
+import uk.co.kring.ef396.data.Perl;
 import uk.co.kring.ef396.data.streams.LocalDataStream;
 import uk.co.kring.ef396.data.streams.TypedStream;
 
@@ -24,7 +25,6 @@ public class ImagePBM {
     //bmptoppm/ppmtobmp - bmp conversion (always colour)
     //jbigtopbm/pbmtojbig - jbig conversion? (is BW always so needs up conversion)
     //pnmtofiasco/fiascotopnm - wfa fractal conversion (needs post to ppm? ppm subset of pnm)
-    //pgmtoppm - any to colour (up conversion)
 
     public static InputStream convert(String command, InputStream in) throws IOException {
         PipedOutputStream pos = new PipedOutputStream();
@@ -43,7 +43,9 @@ public class ImagePBM {
     }
 
     public static int[] scanInput(String in) {
-        String[] val = in.split("\\s");
+
+        String[] val = in.split(new Perl("#") //comment elimination
+                .get())[0].trim().split(new Perl().whitespace().repeated().get());
         int[] x = new int[val.length];
         for (int i = 0; i < val.length; i++) {
             x[i] = Integer.parseInt(val[i].trim());
@@ -68,7 +70,6 @@ public class ImagePBM {
                 boolean pair = false;
                 while(sc.hasNextLine() && !binary) {
                     line = sc.nextLine();
-                    if(line.charAt(0) == '#') continue;
                     int[] v = scanInput(line);
                     for(int i: v) {
                         if (state == 0) {
@@ -124,7 +125,6 @@ public class ImagePBM {
             case '3':
                 while(sc.hasNextLine()) {
                     line = sc.nextLine();
-                    if(line.charAt(0) == '#') continue;
                     int[] v = scanInput(line);
                     for(int i: v) {
                         if (state == 0) {
@@ -193,6 +193,7 @@ public class ImagePBM {
                             dos.writeByte(col.getGreen());
                         }
                     }
+                    dos.closeActual();//close pipe
                 } catch(IOException e) {
                     setError(e);
                 }
