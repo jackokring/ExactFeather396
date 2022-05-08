@@ -8,18 +8,19 @@ import java.util.zip.GZIPOutputStream;
 
 public enum Pipe {
 
-    GZIP(false,false, Runs.NULL, true, false, false),//generic deflate algorithm
-    RLE(false,false, Runs.RLE, false, false, false),//run length encoding
-    ZLE_GZIP(false,false, Runs.ZLE, true, false, false),//long run compression
+    GZIP(false,false, Runs.NULL, true, false, false, false),//generic deflate algorithm
+    RLE(false,false, Runs.RLE, false, false, false, false),//run length encoding
+    ZLE_GZIP(false,false, Runs.ZLE, true, false, false, false),//long run compression
     // before deflate (highly redundant data?)
-    BWT_GZIP(false,true, Runs.NULL, true, false, false),//good
-    LZW(true,false, Runs.NULL, false, false, false),//24-bit dictionary indexing inverted symbols
+    BWT_GZIP(false,true, Runs.NULL, true, false, false, false),//good
+    LZW(true,false, Runs.NULL, false, false, false, false),//24-bit dictionary indexing inverted symbols
     // technically this is slow but does have full size in the 1MB block for dictionary per prefix
     // and the dictionary indexes keeps them as low as possible so GZIP cleans up.
-    BWT_LZW_GZIP(true,true, Runs.NULL, true, true, false),
-    SIGN(false, false, Runs.NULL, false, true, false),
-    MANGLER(false,false, Runs.NULL, false, false, true),//mangle data pipe
-    NULL(false,false, Runs.NULL, false, false, false);//straight data pipe
+    BWT_LZW_GZIP(true,true, Runs.NULL, true, true, false, false),
+    SIGN(false, false, Runs.NULL, false, true, false, false),
+    MANGLER(false,false, Runs.NULL, false, false, true, false),//mangle data pipe
+    NULL(false,false, Runs.NULL, false, false, false, false),//straight data pipe
+    CLOON(false, false, Runs.NULL, false, false, false, true);
 
     private final boolean check;
     private final boolean gzip;
@@ -28,12 +29,13 @@ public enum Pipe {
     private final boolean lzw;
 
     private final boolean mangle;
+    private final boolean clooney;
 
     public enum Runs {
         RLE(), ZLE(), NULL();
     }
 
-    Pipe(boolean lzw, boolean bwt, Runs runs, boolean gzip, boolean check, boolean mangle) {
+    Pipe(boolean lzw, boolean bwt, Runs runs, boolean gzip, boolean check, boolean mangle, boolean clooney) {
         this.lzw = lzw;
         this.bwt = bwt;
         this.runs = runs;
@@ -41,6 +43,7 @@ public enum Pipe {
         this.check = check;
 
         this.mangle = mangle;
+        this.clooney = clooney;
     }
 
     public boolean isMangler() {
@@ -56,6 +59,7 @@ public enum Pipe {
         }
         if(lzw) is = new LZWStream.Input(is);
         if(bwt) is = new BWTStream.Input(is);
+        if(clooney) return new ClooneyStream.Input(is);
         return new DataInputStream(is);
     }
 
@@ -68,6 +72,7 @@ public enum Pipe {
         }
         if(lzw) os = new LZWStream.Output(os);
         if(bwt) os = new BWTStream.Output(os);
+        if(clooney) return new ClooneyStream.Output(os);
         return new DataOutputStream(os);
     }
 }

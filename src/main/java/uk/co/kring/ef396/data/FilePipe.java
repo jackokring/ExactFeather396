@@ -165,6 +165,9 @@ public enum FilePipe {
                     while ((b = input.read()) != -1) {
                         //have a read value
                         out.write(b);//might baulk an exception
+                        input.mark(16);//just in case it can't be forwarded
+                        //input.recoverUnused();//not available
+                        //leave for humour
                     }
                     if(closeOut) out.close();
                 } catch (IOException e) {
