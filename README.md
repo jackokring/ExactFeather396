@@ -2,11 +2,11 @@
 **Currently, undergoing symbol import upgrades**
 
 ### Licence and Tools
-The current version of minecraft the mod compiles against. [**MC Forge**](https://files.minecraftforge.net/net/minecraftforge/forge/) is used to make the module with [**IntelliJ**](https://www.jetbrains.com/idea/download/) and the help of many [**Youtube**](https://youtube.com) videos.
+The current version of minecraft the mod compiles against. [**MC Forge**](https://files.minecraftforge.net/net/minecraftforge/forge/) is used to make the module with [**IntelliJ**](https://www.jetbrains.com/idea/download/) and the help of many [**YouTube**](https://youtube.com) videos.
 Licence is [**MIT**](https://en.wikipedia.org/wiki/MIT_License) for easy use.
 
 ### There's even a Website
-[Here is the pages website](https://jackokring.github.io/ExactFeather396/) which might be for you if you don't like the open source and just want fun.
+[Here is the page's website](https://jackokring.github.io/ExactFeather396/) which might be for you if you don't like the open source and just want fun.
 
 ### Releases when Available
 [Release Page](https://github.com/jackokring/ExactFeather396/releases) for the latest binary `*.jar` releases.
