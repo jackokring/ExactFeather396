@@ -1,4 +1,4 @@
-# MC Version `1.19`
+# MC Version `1.19.1`
 **Currently, undergoing symbol import upgrades**
 
 ### Licence and Tools
